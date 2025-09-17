@@ -140,6 +140,113 @@
             background: white;
             border-radius: 16px;
             padding: 0;
+            overflow: hidden;
+        }
+
+        /* Banner do Topo */
+        .pix-banner {
+            position: relative;
+            height: 120px;
+            border-radius: 16px 16px 0 0;
+            overflow: hidden;
+        }
+
+        .banner-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url('images/banner.jpg');
+        }
+
+        .banner-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .banner-creator-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .banner-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #00FF75;
+            flex-shrink: 0;
+        }
+
+        .banner-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-creator-details {
+            color: white;
+        }
+
+        .banner-creator-name {
+            margin: 0 0 2px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .banner-creator-username {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .banner-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s ease;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .banner-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .banner-close-btn svg {
+            width: 18px;
+            height: 18px;
         }
 
         /* Seção da Criadora */
@@ -366,6 +473,38 @@
                 padding: 0 20px 20px;
             }
 
+            .pix-banner {
+                height: 100px;
+            }
+
+            .banner-content {
+                padding: 15px;
+            }
+
+            .banner-avatar {
+                width: 45px;
+                height: 45px;
+                border-width: 2px;
+            }
+
+            .banner-creator-name {
+                font-size: 16px;
+            }
+
+            .banner-creator-username {
+                font-size: 13px;
+            }
+
+            .banner-close-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .banner-close-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+
             .creator-section {
                 gap: 12px;
                 margin-bottom: 20px;
@@ -427,6 +566,42 @@
 
             .pix-modal-header {
                 padding: 10px 15px 0;
+            }
+
+            .pix-banner {
+                height: 90px;
+            }
+
+            .banner-content {
+                padding: 12px;
+            }
+
+            .banner-creator-info {
+                gap: 10px;
+            }
+
+            .banner-avatar {
+                width: 40px;
+                height: 40px;
+                border-width: 2px;
+            }
+
+            .banner-creator-name {
+                font-size: 15px;
+            }
+
+            .banner-creator-username {
+                font-size: 12px;
+            }
+
+            .banner-close-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .banner-close-btn svg {
+                width: 14px;
+                height: 14px;
             }
 
             .pix-modal-body {
@@ -1492,14 +1667,25 @@ $(document).ready(function() {
             <div class="pix-modal-body">
                 <!-- Card Principal -->
                 <div class="pix-checkout-card">
-                    <!-- Seção da Criadora -->
-                    <div class="creator-section">
-                        <div class="creator-avatar">
-                            <img src="images/perfil.jpg" alt="Foto da criadora" id="creatorImage">
-                        </div>
-                        <div class="creator-info">
-                            <h2 class="creator-name" id="creatorName">Amanda Santinne</h2>
-                            <p class="creator-username" id="creatorUsername">@amanda_santinne</p>
+                    <!-- Banner do Topo -->
+                    <div class="pix-banner">
+                        <div class="banner-background" id="bannerBackground"></div>
+                        <div class="banner-content">
+                            <div class="banner-creator-info">
+                                <div class="banner-avatar">
+                                    <img src="images/perfil.jpg" alt="Foto da criadora" id="bannerCreatorImage">
+                                </div>
+                                <div class="banner-creator-details">
+                                    <h3 class="banner-creator-name" id="bannerCreatorName">Amanda Santinne</h3>
+                                    <p class="banner-creator-username" id="bannerCreatorUsername">@amanda_santinne</p>
+                                </div>
+                            </div>
+                            <button class="banner-close-btn" onclick="closePixModal()" aria-label="Fechar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
                         </div>
                     </div>
 
@@ -1581,6 +1767,12 @@ $(document).ready(function() {
                 const creatorName = document.getElementById('creatorName');
                 const creatorUsername = document.getElementById('creatorUsername');
                 
+                // Elementos do banner
+                const bannerCreatorImage = document.getElementById('bannerCreatorImage');
+                const bannerCreatorName = document.getElementById('bannerCreatorName');
+                const bannerCreatorUsername = document.getElementById('bannerCreatorUsername');
+                const bannerBackground = document.getElementById('bannerBackground');
+                
                 if (creatorImage && creatorData.image) {
                     creatorImage.src = creatorData.image;
                 }
@@ -1589,6 +1781,28 @@ $(document).ready(function() {
                 }
                 if (creatorUsername && creatorData.username) {
                     creatorUsername.textContent = creatorData.username;
+                }
+                
+                // Atualiza elementos do banner
+                if (bannerCreatorImage && creatorData.avatar) {
+                    bannerCreatorImage.src = creatorData.avatar;
+                } else if (bannerCreatorImage && creatorData.image) {
+                    bannerCreatorImage.src = creatorData.image;
+                }
+                if (bannerCreatorName && creatorData.name) {
+                    bannerCreatorName.textContent = creatorData.name;
+                }
+                if (bannerCreatorUsername && creatorData.username) {
+                    bannerCreatorUsername.textContent = creatorData.username;
+                }
+                
+                // Configura imagem de fundo do banner
+                if (bannerBackground) {
+                    const bannerImage = creatorData.banner || creatorData.image;
+                    if (bannerImage) {
+                        bannerBackground.style.backgroundImage = `url('${bannerImage}')`;
+                    }
+                }
                 }
             }
 
