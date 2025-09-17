@@ -103,33 +103,6 @@
             }
         }
 
-        .pix-modal-header {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 20px 25px 0;
-        }
-
-        .pix-modal-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: #999;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .pix-modal-close:hover {
-            background-color: #f5f5f5;
-            color: #666;
-        }
 
         .pix-modal-body {
             padding: 0 25px 25px;
@@ -178,8 +151,7 @@
             z-index: 2;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 20px;
+            padding: 20px 60px 20px 20px;
             height: 100%;
         }
 
@@ -224,6 +196,9 @@
         }
 
         .banner-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.2);
             border: none;
             border-radius: 50%;
@@ -237,6 +212,7 @@
             transition: all 0.2s ease;
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .banner-close-btn:hover {
@@ -465,9 +441,6 @@
                 max-width: none;
             }
 
-            .pix-modal-header {
-                padding: 15px 20px 0;
-            }
 
             .pix-modal-body {
                 padding: 0 20px 20px;
@@ -478,7 +451,7 @@
             }
 
             .banner-content {
-                padding: 15px;
+                padding: 15px 50px 15px 15px;
             }
 
             .banner-avatar {
@@ -496,6 +469,8 @@
             }
 
             .banner-close-btn {
+                top: 12px;
+                right: 12px;
                 width: 32px;
                 height: 32px;
             }
@@ -564,16 +539,13 @@
                 margin: 10px;
             }
 
-            .pix-modal-header {
-                padding: 10px 15px 0;
-            }
 
             .pix-banner {
                 height: 90px;
             }
 
             .banner-content {
-                padding: 12px;
+                padding: 12px 45px 12px 12px;
             }
 
             .banner-creator-info {
@@ -595,6 +567,8 @@
             }
 
             .banner-close-btn {
+                top: 10px;
+                right: 10px;
                 width: 30px;
                 height: 30px;
             }
@@ -1661,9 +1635,6 @@ $(document).ready(function() {
     <!-- Modal PIX -->
     <div id="pixModal" class="pix-modal-overlay" style="display: none;">
         <div class="pix-modal">
-            <div class="pix-modal-header">
-                <button class="pix-modal-close" onclick="closePixModal()">&times;</button>
-            </div>
             <div class="pix-modal-body">
                 <!-- Card Principal -->
                 <div class="pix-checkout-card">
