@@ -3,14 +3,15 @@ services:
     name: checkout-pix-webhook
     env: php
     buildCommand: |
-      echo "Configurando ambiente PHP..."
+      echo "=== CONFIGURAÇÃO PHP ==="
+      echo "Verificando ambiente PHP..."
       php -v
-      echo "Verificando arquivos..."
+      echo "Verificando arquivos do projeto..."
       ls -la
       echo "Criando diretórios necessários..."
       mkdir -p logs data docs
       chmod 755 logs data
-      echo "Build concluído!"
+      echo "=== BUILD CONCLUÍDO ==="
     startCommand: php -S 0.0.0.0:$PORT -t .
     envVars:
       - key: PHP_VERSION
@@ -19,5 +20,7 @@ services:
         value: https://checkout-pix-webhook.onrender.com/webhook-example.php
       - key: ENVIRONMENT
         value: production
+      - key: NODE_ENV
+        value: ""
     healthCheckPath: /index.html
     plan: free
