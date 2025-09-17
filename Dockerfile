@@ -9,6 +9,7 @@ RUN a2enmod rewrite
 RUN a2enmod headers
 RUN a2enmod expires
 RUN a2enmod deflate
+RUN a2enmod ssl
 
 # Copiar arquivos do projeto
 COPY . /var/www/html/

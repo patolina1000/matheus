@@ -9,8 +9,23 @@ services:
         value: https://checkout-pix-webhook.onrender.com/webhook-example.php
       - key: ENVIRONMENT
         value: production
+      - key: OASYFY_PUBLIC_KEY
+        value: kevinmatheus986_a1k8td90862zf2d3
+      - key: OASYFY_SECRET_KEY
+        value: h7gchnycerdys7ty517bspdh2o0inye1cbf97erk8i9421m101zekt389tn83fak
     healthCheckPath: /index.html
     plan: free
     # Configurações adicionais para garantir funcionamento
     autoDeploy: true
     branch: main
+    # Headers CORS para resolver problemas de cross-origin
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /*
+        name: Access-Control-Allow-Methods
+        value: "GET, POST, PUT, DELETE, OPTIONS"
+      - path: /*
+        name: Access-Control-Allow-Headers
+        value: "Content-Type, Authorization, x-public-key, x-secret-key"

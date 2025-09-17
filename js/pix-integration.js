@@ -33,12 +33,14 @@ class PixIntegration {
      */
     async testConnection() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/ping`, {
-                method: 'GET',
+            const response = await fetch('/api-proxy.php', {
+                method: 'POST',
                 headers: {
-                    'x-public-key': this.publicKey,
-                    'x-secret-key': this.secretKey
-                }
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'test_connection'
+                })
             });
 
             const data = await response.json();
@@ -158,14 +160,15 @@ class PixIntegration {
                 callbackUrl: this.callbackUrl
             };
 
-            const response = await fetch(`${this.apiBaseUrl}/gateway/pix/receive`, {
+            const response = await fetch('/api-proxy.php', {
                 method: 'POST',
                 headers: {
-                    'x-public-key': this.publicKey,
-                    'x-secret-key': this.secretKey,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestData)
+                body: JSON.stringify({
+                    action: 'generate_pix',
+                    paymentData: requestData
+                })
             });
 
             const data = await response.json();
@@ -201,12 +204,15 @@ class PixIntegration {
      */
     async checkTransactionStatus(transactionId) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/gateway/transactions?id=${transactionId}`, {
-                method: 'GET',
+            const response = await fetch('/api-proxy.php', {
+                method: 'POST',
                 headers: {
-                    'x-public-key': this.publicKey,
-                    'x-secret-key': this.secretKey
-                }
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'check_status',
+                    transactionId: transactionId
+                })
             });
 
             const data = await response.json();
