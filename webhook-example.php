@@ -12,6 +12,9 @@
  * 7. ✅ Verificação de arquivo de configuração
  */
 
+// Incluir sistema de logs simples
+require_once 'simple-logger.php';
+
 // Verificar se arquivo de configuração existe
 if (!file_exists(__DIR__ . '/config.php')) {
     // Fallback: permitir execução baseada apenas em variáveis de ambiente (ex.: Render.com)
@@ -873,7 +876,7 @@ try {
     Logger::init();
     IdempotencyManager::init();
     
-    Logger::info('Webhook iniciado', [
+    SimpleLogger::webhook('INIT', 'Webhook iniciado', [
         'request_method' => $_SERVER['REQUEST_METHOD'],
         'content_length' => $_SERVER['CONTENT_LENGTH'] ?? 0,
         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
@@ -897,7 +900,7 @@ try {
     }
     
     // 5. Log da requisição recebida
-    Logger::info('Webhook recebido', [
+    SimpleLogger::webhook('RECEIVED', 'Webhook recebido', [
         'event' => $webhookData['event'] ?? 'unknown',
         'transaction_id' => $webhookData['transaction']['id'] ?? 'unknown',
         'size' => strlen($input),

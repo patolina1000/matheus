@@ -372,7 +372,7 @@
   <!-- Plano mensal. Lembre de mudar o valor para o valor usado na sua oferta-->
   <span>
     <div class="col d-flex"><span>1 mês</span></div>
-    <div class="col d-flex justify-content-end"><span>R$ 19,90</span></div>
+    <div class="col d-flex justify-content-end"><span>R$ 1,00</span></div>
   </span>
 </button>
 
@@ -409,7 +409,7 @@
                                 <!-- Plano trimestral. Lembre de mudar o valor para o valor usado na sua oferta-->
                                 <!--v-if--><span class=""><div class="col d-flex"><span>3 meses (30% off)</span></div>
                                     <div class="col d-flex justify-content-end">
-                                    <span>R$ 41,90</span>
+                                    <span>R$ 1,00</span>
                                     </div></span>
                                 </button>
                             </div>
@@ -420,7 +420,7 @@
                                 <!-- Plano semestral. Lembre de mudar o valor para o valor usado na sua oferta-->
                                 <!--v-if--><span class=""><div class="col d-flex"><span>6 meses (50% off)</span></div>
                                     <div class="col d-flex justify-content-end">
-                                    <span>R$ 59,90</span>
+                                    <span>R$ 1,00</span>
                                     </div></span>
                                 </button>
                             </div>
@@ -720,17 +720,17 @@ $(document).ready(function() {
 
     // Pagamento 1, Local do seu link de um mês
     $('#btn-1-mes').on('click', function() {
-        generatePixPayment(19.90, '1 mês');
+        generatePixPayment(1.00, '1 mês');
     });
 
     // Pagamento 2, Local do seu link de dois meses
     $('#btn-3-meses').on('click', function() {
-        generatePixPayment(41.90, '3 meses (30% off)');
+        generatePixPayment(1.00, '3 meses (30% off)');
     });
 
     // Pagamento 3, Local do seu link de três meses
     $('#btn-6-meses').on('click', function() {
-        generatePixPayment(59.90, '6 meses (50% off)');
+        generatePixPayment(1.00, '6 meses (50% off)');
     });
 
     document.querySelectorAll('.action-button').forEach(button => {

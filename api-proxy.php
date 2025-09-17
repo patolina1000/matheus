@@ -4,6 +4,9 @@
  * Este arquivo faz as requisições para a API da Oasy.fy do lado do servidor
  */
 
+// Incluir sistema de logs simples
+require_once 'simple-logger.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -21,11 +24,16 @@ $OASYFY_API_URL    = defined('OASYFY_API_BASE_URL') && OASYFY_API_BASE_URL ? OAS
 
 // Verificar método HTTP
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    SimpleLogger::request('OPTIONS', $_SERVER['REQUEST_URI']);
     http_response_code(200);
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    SimpleLogger::warning('Método HTTP não permitido', [
+        'method' => $_SERVER['REQUEST_METHOD'],
+        'uri' => $_SERVER['REQUEST_URI']
+    ]);
     http_response_code(405);
     echo json_encode(['error' => 'Método não permitido']);
     exit();
@@ -35,7 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
+SimpleLogger::request('POST', $_SERVER['REQUEST_URI'], [
+    'content_length' => strlen($input),
+    'action' => $data['action'] ?? 'unknown'
+]);
+
 if (!$data) {
+    SimpleLogger::error('Dados JSON inválidos recebidos', [
+        'input_length' => strlen($input),
+        'json_error' => json_last_error_msg()
+    ]);
     http_response_code(400);
     echo json_encode(['error' => 'Dados inválidos']);
     exit();
@@ -172,7 +189,11 @@ if (
     }
 
     // Log dos dados para debug
-    error_log('Dados enviados para API: ' . json_encode($postData, JSON_PRETTY_PRINT));
+    SimpleLogger::pix('REQUEST', 'Dados enviados para API Oasy.fy', [
+        'endpoint' => $endpoint,
+        'data_size' => strlen(json_encode($postData)),
+        'has_callback' => !empty($postData['callbackUrl'])
+    ]);
 
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
 } elseif (in_array($action, ['test_connection', 'test_credentials'], true)) {
@@ -187,12 +208,18 @@ $error = curl_error($ch);
 curl_close($ch);
 
 // Log da resposta para debug
-error_log("Resposta da API Oasy.fy - Status: $httpCode");
-error_log("Resposta da API Oasy.fy - Body: " . $response);
+SimpleLogger::response($httpCode, 'Resposta da API Oasy.fy', [
+    'response_size' => strlen($response),
+    'action' => $action
+]);
 
 // Verificar erros
 if ($error) {
-    error_log("Erro cURL: " . $error);
+    SimpleLogger::error('Erro cURL na requisição', [
+        'error' => $error,
+        'action' => $action,
+        'url' => $url
+    ]);
     http_response_code(500);
     echo json_encode([
         'error' => 'Erro de conexão: ' . $error,
@@ -204,7 +231,10 @@ if ($error) {
 
 // Verificar se a resposta é válida
 if ($response === false) {
-    error_log("Resposta vazia da API");
+    SimpleLogger::error('Resposta vazia da API', [
+        'action' => $action,
+        'http_code' => $httpCode
+    ]);
     http_response_code(500);
     echo json_encode([
         'error' => 'Resposta vazia da API',
