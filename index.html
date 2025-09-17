@@ -752,70 +752,6 @@ $(document).ready(function() {
         });
     });
 
-    // Função para gerar pagamento PIX
-    async function generatePixPayment(amount, planName) {
-        try {
-            // Mostra loading
-            Swal.fire({
-                title: 'Gerando PIX...',
-                text: 'Aguarde enquanto processamos seu pagamento',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Dados do pagamento (dados do cliente serão gerados automaticamente)
-            const paymentData = {
-                amount: amount,
-                products: [{
-                    id: 'assinatura-privacy',
-                    name: `Assinatura Privacy - ${planName}`,
-                    quantity: 1,
-                    price: amount
-                }],
-                metadata: {
-                    plan: planName,
-                    source: 'privacy-checkout'
-                }
-            };
-
-            // Gera o PIX (com dados aleatórios do cliente)
-            const result = await pixIntegration.generatePixPayment(paymentData);
-
-            // Fecha o loading
-            Swal.close();
-
-            if (result.success) {
-                // Exibe o modal com QR Code
-                pixIntegration.displayPixData(result.data, result.clientData);
-                
-                // Salva o transactionId para consultas futuras
-                localStorage.setItem('currentTransactionId', result.data.transactionId);
-                
-                // Opcional: Redireciona para página de pagamento
-                // pixIntegration.redirectToPayment(result.data.order.url);
-            } else {
-                // Mostra erro
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro ao gerar PIX',
-                    text: result.error || 'Ocorreu um erro inesperado',
-                    confirmButtonText: 'Tentar novamente'
-                });
-            }
-        } catch (error) {
-            Swal.close();
-            console.error('Erro ao gerar PIX:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Erro',
-                text: 'Ocorreu um erro ao processar o pagamento',
-                confirmButtonText: 'OK'
-            });
-        }
-    }
 
 });
 </script>
@@ -931,6 +867,87 @@ $(document).ready(function() {
     <!-- PIX Integration Script -->
     <script src="js/pix-integration.js"></script>
 
+    <!-- Função para gerar pagamento PIX (após carregamento do SweetAlert2) -->
+    <script>
+    // Função para gerar pagamento PIX
+    async function generatePixPayment(amount, planName) {
+        try {
+            // Verifica se SweetAlert2 está carregado
+            if (typeof Swal === 'undefined') {
+                console.error('SweetAlert2 não está carregado');
+                alert('Erro: Biblioteca de notificações não carregada. Recarregue a página.');
+                return;
+            }
+
+            // Mostra loading
+            Swal.fire({
+                title: 'Gerando PIX...',
+                text: 'Aguarde enquanto processamos seu pagamento',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Dados do pagamento (dados do cliente serão gerados automaticamente)
+            const paymentData = {
+                amount: amount,
+                products: [{
+                    id: 'assinatura-privacy',
+                    name: `Assinatura Privacy - ${planName}`,
+                    quantity: 1,
+                    price: amount
+                }],
+                metadata: {
+                    plan: planName,
+                    source: 'privacy-checkout'
+                }
+            };
+
+            // Gera o PIX (com dados aleatórios do cliente)
+            const result = await pixIntegration.generatePixPayment(paymentData);
+
+            // Fecha o loading
+            Swal.close();
+
+            if (result.success) {
+                // Exibe o modal com QR Code
+                pixIntegration.displayPixData(result.data, result.clientData);
+                
+                // Salva o transactionId para consultas futuras
+                localStorage.setItem('currentTransactionId', result.data.transactionId);
+                
+                // Opcional: Redireciona para página de pagamento
+                // pixIntegration.redirectToPayment(result.data.order.url);
+            } else {
+                // Mostra erro
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro ao gerar PIX',
+                    text: result.error || 'Ocorreu um erro inesperado',
+                    confirmButtonText: 'Tentar novamente'
+                });
+            }
+        } catch (error) {
+            if (typeof Swal !== 'undefined') {
+                Swal.close();
+            }
+            console.error('Erro ao gerar PIX:', error);
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Ocorreu um erro ao processar o pagamento',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                alert('Erro ao processar o pagamento. Recarregue a página.');
+            }
+        }
+    }
+    </script>
     
 <script>
 
