@@ -14,41 +14,148 @@
 
 // Verificar se arquivo de configuração existe
 if (!file_exists(__DIR__ . '/config.php')) {
-    // Tentar carregar config.example.php em modo demonstração
-    if (file_exists(__DIR__ . '/config.example.php')) {
-        // Verificar se está em ambiente de demonstração
-        $isDemo = isset($_GET['demo']) || isset($_SERVER['HTTP_X_DEMO_MODE']) || 
-                  (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'demo') !== false);
-        
-        if ($isDemo) {
-            // Carregar config.example.php em modo somente leitura
-            require_once 'config.example.php';
+    // Fallback: permitir execução baseada apenas em variáveis de ambiente (ex.: Render.com)
+    $envPublicKey = $_ENV['OASYFY_PUBLIC_KEY'] ?? getenv('OASYFY_PUBLIC_KEY');
+    $envSecretKey = $_ENV['OASYFY_SECRET_KEY'] ?? getenv('OASYFY_SECRET_KEY');
+    $hasEnvCreds = !empty($envPublicKey) && !empty($envSecretKey);
+
+    if ($hasEnvCreds) {
+        if (!defined('OASYFY_PUBLIC_KEY')) define('OASYFY_PUBLIC_KEY', $envPublicKey);
+        if (!defined('OASYFY_SECRET_KEY')) define('OASYFY_SECRET_KEY', $envSecretKey);
+        if (!defined('OASYFY_API_BASE_URL')) define('OASYFY_API_BASE_URL', 'https://app.oasyfy.com/api/v1');
+        if (!defined('OASYFY_WEBHOOK_URL')) {
+            $envWebhookUrl = $_ENV['WEBHOOK_URL'] ?? getenv('WEBHOOK_URL') ?? '';
+            define('OASYFY_WEBHOOK_URL', $envWebhookUrl);
+        }
+
+        if (!defined('OASYFY_SYSTEM_CONFIG')) define('OASYFY_SYSTEM_CONFIG', [
+            'timeout' => 30,
+            'retry_attempts' => 3,
+            'retry_delay' => 5,
+            'log_level' => 'info',
+            'enable_debug' => false
+        ]);
+
+        if (!defined('OASYFY_SECURITY_CONFIG')) define('OASYFY_SECURITY_CONFIG', [
+            'valid_tokens' => [
+                'tbdeizos8f',
+                OASYFY_PUBLIC_KEY,
+            ],
+            'max_request_size' => 1024 * 1024,
+            'rate_limit' => 100,
+            'allowed_ips' => [],
+        ]);
+
+        if (!defined('OASYFY_LOG_CONFIG')) define('OASYFY_LOG_CONFIG', [
+            'log_dir' => 'logs/',
+            'log_rotation_days' => 30,
+            'log_levels' => ['debug', 'info', 'warning', 'error', 'critical'],
+            'enable_performance_logs' => true,
+            'enable_audit_logs' => true,
+        ]);
+
+        if (!defined('OASYFY_IDEMPOTENCY_CONFIG')) define('OASYFY_IDEMPOTENCY_CONFIG', [
+            'ttl_hours' => 24,
+            'cache_cleanup_interval' => 3600,
+            'enable_memory_cache' => true,
+            'max_cache_size' => 10000,
+        ]);
+
+        if (!defined('OASYFY_DATABASE_CONFIG')) define('OASYFY_DATABASE_CONFIG', [
+            'enabled' => false,
+            'host' => 'localhost',
+            'database' => 'oasyfy_webhook',
+            'username' => 'usuario',
+            'password' => 'senha',
+            'charset' => 'utf8mb4',
+        ]);
+
+        if (!defined('OASYFY_EMAIL_CONFIG')) define('OASYFY_EMAIL_CONFIG', [
+            'enabled' => false,
+            'smtp_host' => 'smtp.gmail.com',
+            'smtp_port' => 587,
+            'smtp_username' => 'seu_email@gmail.com',
+            'smtp_password' => 'sua_senha_app',
+            'from_email' => 'noreply@seusite.com',
+            'from_name' => 'Sistema PIX',
+        ]);
+
+        if (!defined('OASYFY_NOTIFICATION_CONFIG')) define('OASYFY_NOTIFICATION_CONFIG', [
+            'enable_slack' => false,
+            'slack_webhook_url' => '',
+            'enable_discord' => false,
+            'discord_webhook_url' => '',
+            'enable_telegram' => false,
+            'telegram_bot_token' => '',
+            'telegram_chat_id' => '',
+        ]);
+
+        if (!function_exists('validateOasyfyCredentials')) {
+            function validateOasyfyCredentials() {
+                if (empty(OASYFY_PUBLIC_KEY) || empty(OASYFY_SECRET_KEY)) {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        if (!function_exists('getOasyfyConfig')) {
+            function getOasyfyConfig($key = null) {
+                $configs = [
+                    'public_key' => OASYFY_PUBLIC_KEY,
+                    'secret_key' => OASYFY_SECRET_KEY,
+                    'api_base_url' => OASYFY_API_BASE_URL,
+                    'webhook_url' => OASYFY_WEBHOOK_URL,
+                    'system' => OASYFY_SYSTEM_CONFIG,
+                    'security' => OASYFY_SECURITY_CONFIG,
+                    'log' => OASYFY_LOG_CONFIG,
+                    'idempotency' => OASYFY_IDEMPOTENCY_CONFIG,
+                    'database' => OASYFY_DATABASE_CONFIG,
+                    'email' => OASYFY_EMAIL_CONFIG,
+                    'notification' => OASYFY_NOTIFICATION_CONFIG,
+                ];
+                if ($key === null) return $configs;
+                return $configs[$key] ?? null;
+            }
+        }
+        // prosseguir sem sair; configuração baseada em ENV aplicada
+    } else {
+        // Tentar carregar config.example.php em modo demonstração
+        if (file_exists(__DIR__ . '/config.example.php')) {
+            // Verificar se está em ambiente de demonstração
+            $isDemo = isset($_GET['demo']) || isset($_SERVER['HTTP_X_DEMO_MODE']) || 
+                      (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'demo') !== false);
+            
+            if ($isDemo) {
+                // Carregar config.example.php em modo somente leitura
+                require_once 'config.example.php';
+            } else {
+                // Retornar erro 500 com instruções
+                http_response_code(500);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'Config file not found',
+                    'hint' => 'Copie config.example.php para config.php',
+                    'instructions' => [
+                        '1. Copie o arquivo config.example.php para config.php',
+                        '2. Configure suas credenciais no arquivo config.php',
+                        '3. Para modo demonstração, adicione ?demo=1 à URL'
+                    ]
+                ]);
+                exit;
+            }
         } else {
-            // Retornar erro 500 com instruções
+            // Nenhum arquivo de configuração encontrado
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => 'Config file not found',
-                'hint' => 'Copie config.example.php para config.php',
-                'instructions' => [
-                    '1. Copie o arquivo config.example.php para config.php',
-                    '2. Configure suas credenciais no arquivo config.php',
-                    '3. Para modo demonstração, adicione ?demo=1 à URL'
-                ]
+                'error' => 'No configuration files found',
+                'hint' => 'Verifique se config.example.php existe no diretório'
             ]);
             exit;
         }
-    } else {
-        // Nenhum arquivo de configuração encontrado
-        http_response_code(500);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'success' => false,
-            'error' => 'No configuration files found',
-            'hint' => 'Verifique se config.example.php existe no diretório'
-        ]);
-        exit;
     }
 } else {
     // Carregar configurações normalmente
