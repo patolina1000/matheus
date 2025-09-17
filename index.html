@@ -105,7 +105,11 @@
 
 
         .pix-modal-body {
-            padding: 0 25px 25px;
+            padding: 0;
+        }
+
+        .pix-modal-content {
+            padding: 25px;
         }
 
         /* Card Principal */
@@ -114,6 +118,7 @@
             border-radius: 16px;
             padding: 0;
             overflow: hidden;
+            width: 100%;
         }
 
         /* Banner do Topo */
@@ -122,6 +127,7 @@
             height: 120px;
             border-radius: 16px 16px 0 0;
             overflow: hidden;
+            width: 100%;
         }
 
         .banner-background {
@@ -130,10 +136,13 @@
             left: 0;
             right: 0;
             bottom: 0;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-image: url('images/banner.jpg');
+            object-fit: cover;
         }
 
         .banner-background::before {
@@ -443,7 +452,11 @@
 
 
             .pix-modal-body {
-                padding: 0 20px 20px;
+                padding: 0;
+            }
+
+            .pix-modal-content {
+                padding: 20px;
             }
 
             .pix-banner {
@@ -579,7 +592,11 @@
             }
 
             .pix-modal-body {
-                padding: 0 15px 15px;
+                padding: 0;
+            }
+
+            .pix-modal-content {
+                padding: 15px;
             }
 
             .creator-section {
@@ -1660,8 +1677,10 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <!-- Benefícios Exclusivos -->
-                    <div class="benefits-section">
+                    <!-- Conteúdo com Padding -->
+                    <div class="pix-modal-content">
+                        <!-- Benefícios Exclusivos -->
+                        <div class="benefits-section">
                         <h3 class="benefits-title">Benefícios Exclusivos</h3>
                         <ul class="benefits-list">
                             <li class="benefit-item">
@@ -1704,6 +1723,7 @@ $(document).ready(function() {
                             <input type="text" id="pixCodeInput" readonly class="pix-key-input">
                             <button onclick="copyPixCode()" class="pix-copy-btn">📋 Copiar chave PIX</button>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
