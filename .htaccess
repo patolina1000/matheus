@@ -1,0 +1,29 @@
+# Configurações para PHP no Render
+RewriteEngine On
+
+# Redirecionar todas as requisições para index.php se o arquivo não existir
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Configurações de segurança
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Headers de segurança
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+
+# Configurações PHP
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value memory_limit 128M
+php_value max_execution_time 30

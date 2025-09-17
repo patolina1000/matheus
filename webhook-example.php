@@ -712,12 +712,12 @@ try {
     SecurityValidator::validateRequest();
     
     // 4. Receber e decodificar dados
-    $input = file_get_contents('php://input');
+        $input = file_get_contents('php://input');
     if (empty($input)) {
         throw new ValidationException('Corpo da requisição está vazio');
     }
     
-    $webhookData = json_decode($input, true);
+        $webhookData = json_decode($input, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new ValidationException('JSON inválido: ' . json_last_error_msg());
     }
@@ -754,8 +754,8 @@ try {
             'expires_at' => $transactionInfo['expires_at'] ?? 'unknown'
         ]);
         
-        http_response_code(200);
-        echo json_encode([
+            http_response_code(200);
+            echo json_encode([
             'status' => 'already_processed',
             'message' => 'Transação já foi processada anteriormente',
             'transaction_id' => $transactionId,
@@ -771,9 +771,9 @@ try {
     
     Logger::info('Iniciando processamento do evento', [
         'event' => $event,
-        'transaction_id' => $transactionId
-    ]);
-    
+                'transaction_id' => $transactionId
+            ]);
+            
     $response = processWebhookEvent($webhookData);
     
     $processingTime = round((microtime(true) - $startProcessing) * 1000, 2);
@@ -793,7 +793,7 @@ try {
     ]);
     
     // 12. Resposta de sucesso
-    http_response_code(200);
+            http_response_code(200);
     echo json_encode(array_merge($response, [
         'request_id' => Logger::getRequestId(),
         'processing_time_ms' => $processingTime,
@@ -820,7 +820,7 @@ try {
     ]);
     
     http_response_code($e->getHttpStatusCode());
-    echo json_encode([
+            echo json_encode([
         'status' => 'error',
         'error_code' => $e->getErrorCode(),
         'message' => 'Erro de segurança'
@@ -844,21 +844,21 @@ try {
         'message' => 'Erro de processamento - retry agendado'
     ]);
     
-} catch (Exception $e) {
+    } catch (Exception $e) {
     Logger::critical('Erro inesperado', [
         'error' => $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString()
     ]);
-    
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
+        
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
         'error_code' => 'INTERNAL_ERROR',
-        'message' => 'Erro interno do servidor'
-    ]);
-}
+            'message' => 'Erro interno do servidor'
+        ]);
+    }
 
 /**
  * Processa eventos do webhook
@@ -995,8 +995,8 @@ function processPaymentConfirmed($transactionId, $amount, $clientName, $clientEm
             'client_name' => $clientName,
             'client_email' => $clientEmail
         ]);
-        
-        // 1. Salvar no banco de dados
+    
+    // 1. Salvar no banco de dados
         try {
             savePaymentToDatabase($transactionId, $amount, $clientName, $clientEmail);
             Logger::info('Pagamento salvo no banco de dados', ['transaction_id' => $transactionId]);
@@ -1007,8 +1007,8 @@ function processPaymentConfirmed($transactionId, $amount, $clientName, $clientEm
             ]);
             throw new ProcessingException('Falha ao salvar no banco de dados', $e);
         }
-        
-        // 2. Enviar email de confirmação
+    
+    // 2. Enviar email de confirmação
         try {
             sendConfirmationEmail($clientEmail, $clientName, $amount);
             Logger::info('Email de confirmação enviado', [
@@ -1023,8 +1023,8 @@ function processPaymentConfirmed($transactionId, $amount, $clientName, $clientEm
             ]);
             // Não falha o processamento por erro de email
         }
-        
-        // 3. Liberar acesso ao conteúdo
+    
+    // 3. Liberar acesso ao conteúdo
         try {
             grantAccessToContent($clientEmail, $fullData);
             Logger::info('Acesso liberado para o cliente', [
@@ -1039,8 +1039,8 @@ function processPaymentConfirmed($transactionId, $amount, $clientName, $clientEm
             ]);
             throw new ProcessingException('Falha ao liberar acesso ao conteúdo', $e);
         }
-        
-        // 4. Atualizar status do pedido
+    
+    // 4. Atualizar status do pedido
         try {
             updateOrderStatus($transactionId, 'paid');
             Logger::info('Status do pedido atualizado', ['transaction_id' => $transactionId]);
@@ -1051,8 +1051,8 @@ function processPaymentConfirmed($transactionId, $amount, $clientName, $clientEm
             ]);
             throw new ProcessingException('Falha ao atualizar status do pedido', $e);
         }
-        
-        // 5. Notificar sistemas internos
+    
+    // 5. Notificar sistemas internos
         try {
             notifyInternalSystems($transactionId, $amount);
             Logger::info('Sistemas internos notificados', ['transaction_id' => $transactionId]);
@@ -1129,19 +1129,19 @@ function savePaymentBackup($transactionId, $amount, $clientName, $clientEmail, $
 function savePaymentToDatabase($transactionId, $amount, $clientName, $clientEmail) {
     try {
         // Exemplo com MySQL - descomente e configure conforme necessário
-        /*
+    /*
         $pdo = new PDO('mysql:host=localhost;dbname=seu_banco', 'usuario', 'senha', [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
-        
-        $stmt = $pdo->prepare("
-            INSERT INTO payments (transaction_id, amount, client_name, client_email, status, created_at) 
-            VALUES (?, ?, ?, ?, 'confirmed', NOW())
-        ");
-        
-        $stmt->execute([$transactionId, $amount, $clientName, $clientEmail]);
-        */
+    
+    $stmt = $pdo->prepare("
+        INSERT INTO payments (transaction_id, amount, client_name, client_email, status, created_at) 
+        VALUES (?, ?, ?, ?, 'confirmed', NOW())
+    ");
+    
+    $stmt->execute([$transactionId, $amount, $clientName, $clientEmail]);
+    */
         
         // Simulação para demonstração
         Logger::info('Simulando salvamento no banco de dados', [
@@ -1178,8 +1178,8 @@ function savePaymentToDatabase($transactionId, $amount, $clientName, $clientEmai
 function sendConfirmationEmail($clientEmail, $clientName, $amount) {
     try {
         // Exemplo com PHPMailer - descomente e configure conforme necessário
-        /*
-        $mail = new PHPMailer(true);
+    /*
+    $mail = new PHPMailer(true);
         
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
@@ -1188,22 +1188,22 @@ function sendConfirmationEmail($clientEmail, $clientName, $amount) {
         $mail->Password = 'sua_senha_app';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
+    
+    $mail->setFrom('noreply@seusite.com', 'Seu Site');
+    $mail->addAddress($clientEmail, $clientName);
+    $mail->Subject = 'Pagamento Confirmado - Assinatura Privacy';
+    $mail->Body = "
+        Olá $clientName,
         
-        $mail->setFrom('noreply@seusite.com', 'Seu Site');
-        $mail->addAddress($clientEmail, $clientName);
-        $mail->Subject = 'Pagamento Confirmado - Assinatura Privacy';
-        $mail->Body = "
-            Olá $clientName,
-            
-            Seu pagamento de R$ $amount foi confirmado com sucesso!
-            
-            Agora você tem acesso completo ao conteúdo exclusivo.
-            
-            Obrigado pela sua assinatura!
-        ";
+        Seu pagamento de R$ $amount foi confirmado com sucesso!
         
-        $mail->send();
-        */
+        Agora você tem acesso completo ao conteúdo exclusivo.
+        
+        Obrigado pela sua assinatura!
+    ";
+    
+    $mail->send();
+    */
         
         // Simulação para demonstração
         Logger::info('Simulando envio de email', [

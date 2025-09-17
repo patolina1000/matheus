@@ -1,0 +1,30 @@
+{
+    "name": "oasyfy/checkout-pix-webhook",
+    "description": "Sistema completo de webhook PIX com tratamento de erros robusto",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oasy.fy",
+            "email": "contato@oasispay.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Oasyfy\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "php test-credentials.php && php test-webhook.php all"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
