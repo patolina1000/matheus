@@ -158,6 +158,21 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
+        .pix-qr-message {
+            display: none;
+            margin: 10px 0 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .pix-qr-message.is-visible {
+            display: block;
+        }
+
+        .pix-qr-message.is-error {
+            color: #ff4d4f;
+        }
+
         .pix-instructions {
             color: #666;
             font-size: 16px;
@@ -1297,7 +1312,8 @@ $(document).ready(function() {
             </div>
             <div class="pix-modal-body">
                 <div class="pix-qr-container">
-                    <div id="pixQRCode"></div>
+                    <canvas id="pixQRCode" role="img" aria-label="Código QR para pagamento PIX"></canvas>
+                    <p id="pixQRCodeMessage" class="pix-qr-message" aria-live="polite"></p>
                     <p class="pix-instructions">Escaneie o QR Code com seu app de pagamento</p>
                 </div>
                 
@@ -1344,47 +1360,101 @@ $(document).ready(function() {
         function showPixModal(pixData) {
             console.log('showPixModal chamada com dados:', pixData);
             const modal = document.getElementById('pixModal');
-            const qrCodeContainer = document.getElementById('pixQRCode');
+            let qrCanvas = document.getElementById('pixQRCode');
+            const qrMessageElement = document.getElementById('pixQRCodeMessage');
             const pixCodeInput = document.getElementById('pixCodeInput');
 
             normalizeQRCodeGlobal();
-            
+
+            function updateQrMessage(message, isError) {
+                if (!qrMessageElement) {
+                    return;
+                }
+
+                if (message) {
+                    qrMessageElement.textContent = message;
+                    qrMessageElement.classList.add('is-visible');
+                    if (isError) {
+                        qrMessageElement.classList.add('is-error');
+                    } else {
+                        qrMessageElement.classList.remove('is-error');
+                    }
+                } else {
+                    qrMessageElement.textContent = '';
+                    qrMessageElement.classList.remove('is-visible');
+                    qrMessageElement.classList.remove('is-error');
+                }
+            }
+
+            function ensurePixCanvas() {
+                if (!qrCanvas) {
+                    qrCanvas = document.getElementById('pixQRCode');
+                }
+
+                if (!qrCanvas) {
+                    console.error('Elemento do canvas do QR Code não encontrado na DOM.');
+                    return null;
+                }
+
+                if (qrCanvas.tagName.toLowerCase() !== 'canvas') {
+                    const replacement = document.createElement('canvas');
+                    replacement.id = 'pixQRCode';
+
+                    if (qrCanvas.parentNode) {
+                        qrCanvas.parentNode.replaceChild(replacement, qrCanvas);
+                    }
+
+                    qrCanvas = replacement;
+                } else if (qrCanvas.parentNode) {
+                    const replacement = qrCanvas.cloneNode(false);
+                    replacement.id = 'pixQRCode';
+                    qrCanvas.parentNode.replaceChild(replacement, qrCanvas);
+                    qrCanvas = replacement;
+                }
+
+                qrCanvas.setAttribute('role', 'img');
+                qrCanvas.setAttribute('aria-label', 'Código QR para pagamento PIX');
+                qrCanvas.style.display = '';
+                return qrCanvas;
+            }
+
             // Debug: Verifica se a biblioteca está carregada
             console.log('Verificando biblioteca QRCode...');
             console.log('typeof QRCode:', typeof QRCode);
             console.log('pixData:', pixData);
             console.log('pixData.pix_code:', pixData.pix_code);
-            
+
             // Gera QR Code se a biblioteca estiver disponível
             if (typeof QRCode !== 'undefined' && pixData.pix_code) {
                 console.log('✅ Condições atendidas, gerando QR Code...');
-                // Limpa QR Code anterior
-                qrCodeContainer.innerHTML = '';
-                
-                // Cria o elemento canvas que receberá o QR Code
-                const qrCanvas = document.createElement('canvas');
-                qrCanvas.setAttribute('role', 'img');
-                qrCanvas.setAttribute('aria-label', 'Código QR para pagamento PIX');
-                qrCodeContainer.appendChild(qrCanvas);
+                const canvasElement = ensurePixCanvas();
 
-                // Gera novo QR Code usando a biblioteca qrcode.js
-                QRCode.toCanvas(qrCanvas, pixData.pix_code, {
-                    width: 250,
-                    height: 250,
-                    color: {
-                        dark: '#000000',
-                        light: '#FFFFFF'
-                    },
-                    margin: 2,
-                    errorCorrectionLevel: 'M'
-                }, function (error) {
-                    if (error) {
-                        console.error('Erro ao gerar QR Code:', error);
-                        qrCodeContainer.innerHTML = '<p style="color: red; padding: 20px;">Erro ao gerar QR Code</p>';
-                    } else {
-                        console.log('✅ QR Code gerado com sucesso!');
-                    }
-                });
+                if (canvasElement) {
+                    updateQrMessage('', false);
+
+                    QRCode.toCanvas(canvasElement, pixData.pix_code, {
+                        width: 250,
+                        height: 250,
+                        color: {
+                            dark: '#000000',
+                            light: '#FFFFFF'
+                        },
+                        margin: 2,
+                        errorCorrectionLevel: 'M'
+                    }, function (error) {
+                        if (error) {
+                            console.error('Erro ao gerar QR Code:', error);
+                            canvasElement.style.display = 'none';
+                            updateQrMessage('Erro ao gerar QR Code', true);
+                        } else {
+                            console.log('✅ QR Code gerado com sucesso!');
+                            canvasElement.style.display = '';
+                            updateQrMessage('', false);
+                        }
+                    });
+                } else {
+                    updateQrMessage('QR Code não disponível', true);
+                }
             } else {
                 // Fallback se QRCode não estiver disponível
                 if (typeof QRCode === 'undefined') {
@@ -1394,17 +1464,20 @@ $(document).ready(function() {
                     console.error('❌ Código PIX não fornecido!');
                 }
                 console.warn('Biblioteca QRCode não carregada ou código PIX não fornecido');
-                qrCodeContainer.innerHTML = '<p style="color: #666; padding: 20px;">QR Code não disponível</p>';
+                if (qrCanvas) {
+                    qrCanvas.style.display = 'none';
+                }
+                updateQrMessage('QR Code não disponível', false);
             }
-            
+
             // Define o código PIX no input
             if (pixCodeInput && pixData.pix_code) {
                 pixCodeInput.value = pixData.pix_code;
             }
-            
+
             // Mostra o modal
             modal.style.display = 'flex';
-            
+
             // Inicia verificação de status se disponível
             if (pixData.id) {
                 startPaymentStatusCheck(pixData.id);
