@@ -106,8 +106,8 @@ class SimpleLogger {
             $extraData = ' | ' . json_encode($data, JSON_UNESCAPED_UNICODE);
         }
         
-        // Linha de log formatada
-        $logLine = "[{$timestamp}] [{$level}] [{$ip}] [{$self::$requestId}] {$message}{$extraData}\n";
+        // Linha de log formatada (sem interpolação incorreta)
+        $logLine = '[' . $timestamp . '] [' . $level . '] [' . $ip . '] [' . self::$requestId . '] ' . $message . $extraData . "\n";
         
         // Escrever no arquivo
         file_put_contents(self::$logFile, $logLine, FILE_APPEND | LOCK_EX);

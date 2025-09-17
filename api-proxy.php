@@ -7,6 +7,10 @@
 // Incluir sistema de logs simples
 require_once 'simple-logger.php';
 
+// Garantir que erros PHP não sejam enviados no corpo da resposta JSON
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
