@@ -1,6 +1,7 @@
 <!DOCTYPE html><html class="v10" data-theme-lock="true"><head>
    
     <script src="js/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <!-- Required meta tags -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -1315,6 +1316,13 @@ $(document).ready(function() {
                         <span>Aguardando pagamento...</span>
                     </div>
                 </div>
+                
+                <!-- Botão de teste temporário -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="testQRCode()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        🧪 Testar QR Code
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1323,6 +1331,7 @@ $(document).ready(function() {
     <script>
         // Função para mostrar o modal PIX
         function showPixModal(pixData) {
+            console.log('showPixModal chamada com dados:', pixData);
             const modal = document.getElementById('pixModal');
             const qrCodeContainer = document.getElementById('pixQRCode');
             const pixCodeInput = document.getElementById('pixCodeInput');
@@ -1332,23 +1341,28 @@ $(document).ready(function() {
                 // Limpa QR Code anterior
                 qrCodeContainer.innerHTML = '';
                 
-                // Gera novo QR Code
+                // Gera novo QR Code usando a biblioteca qrcode.js
                 QRCode.toCanvas(qrCodeContainer, pixData.pix_code, {
                     width: 250,
                     height: 250,
                     color: {
                         dark: '#000000',
                         light: '#FFFFFF'
-                    }
+                    },
+                    margin: 2,
+                    errorCorrectionLevel: 'M'
                 }, function (error) {
                     if (error) {
                         console.error('Erro ao gerar QR Code:', error);
-                        qrCodeContainer.innerHTML = '<p style="color: red;">Erro ao gerar QR Code</p>';
+                        qrCodeContainer.innerHTML = '<p style="color: red; padding: 20px;">Erro ao gerar QR Code</p>';
+                    } else {
+                        console.log('QR Code gerado com sucesso!');
                     }
                 });
             } else {
                 // Fallback se QRCode não estiver disponível
-                qrCodeContainer.innerHTML = '<p style="color: #666;">QR Code não disponível</p>';
+                console.warn('Biblioteca QRCode não carregada ou código PIX não fornecido');
+                qrCodeContainer.innerHTML = '<p style="color: #666; padding: 20px;">QR Code não disponível</p>';
             }
             
             // Define o código PIX no input
@@ -1362,6 +1376,22 @@ $(document).ready(function() {
             // Inicia verificação de status se disponível
             if (pixData.id) {
                 startPaymentStatusCheck(pixData.id);
+            }
+        }
+        
+        // Função de teste para verificar QR Code
+        function testQRCode() {
+            console.log('Testando biblioteca QRCode...');
+            if (typeof QRCode !== 'undefined') {
+                console.log('✅ Biblioteca QRCode carregada com sucesso!');
+                showPixModal({
+                    pix_code: '00020101021226810014br.gov.bcb.pix0114+551199999999952040000530398654010.005802BR5913Teste Pagamento6009Sao Paulo62070503***6304',
+                    amount: '10.00',
+                    id: 'test-123'
+                });
+            } else {
+                console.error('❌ Biblioteca QRCode não está carregada!');
+                alert('Biblioteca QRCode não está carregada. Verifique o console para mais detalhes.');
             }
         }
         
