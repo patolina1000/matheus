@@ -10,9 +10,14 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, x-public-key, x-secret-key');
 
 // Configurações da API Oasy.fy
-$OASYFY_PUBLIC_KEY = 'kevinmatheus986_a1k8td90862zf2d3';
-$OASYFY_SECRET_KEY = 'h7gchnycerdys7ty517bspdh2o0inye1cbf97erk8i9421m101zekt389tn83fak';
-$OASYFY_API_URL = 'https://app.oasyfy.com/api/v1';
+// Preferir usar as constantes de config.php quando disponíveis, mantendo as chaves atuais como fallback
+if (file_exists(__DIR__ . '/config.php')) {
+    require_once __DIR__ . '/config.php';
+}
+
+$OASYFY_PUBLIC_KEY = defined('OASYFY_PUBLIC_KEY') && OASYFY_PUBLIC_KEY ? OASYFY_PUBLIC_KEY : 'kevinmatheus986_a1k8td90862zf2d3';
+$OASYFY_SECRET_KEY = defined('OASYFY_SECRET_KEY') && OASYFY_SECRET_KEY ? OASYFY_SECRET_KEY : 'h7gchnycerdys7ty517bspdh2o0inye1cbf97erk8i9421m101zekt389tn83fak';
+$OASYFY_API_URL    = defined('OASYFY_API_BASE_URL') && OASYFY_API_BASE_URL ? OASYFY_API_BASE_URL : 'https://app.oasyfy.com/api/v1';
 
 // Verificar método HTTP
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
