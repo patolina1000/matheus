@@ -1,29 +1,55 @@
-# Configurações para PHP no Render
+# Configurações do Apache para o projeto
 RewriteEngine On
 
-# Redirecionar todas as requisições para index.php se o arquivo não existir
+# Bloquear acesso a arquivos .map (source maps)
+RewriteRule \.map$ - [F,L]
+
+# Redirecionar todas as requisições para index.html (exceto arquivos existentes)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^(.*)$ index.html [QSA,L]
 
-# Configurações de segurança
-<Files "config.php">
-    Order Allow,Deny
-    Deny from all
-</Files>
+# Configurar tipos MIME corretos
+AddType text/css .css
+AddType application/javascript .js
+AddType image/svg+xml .svg
+AddType application/font-woff .woff
+AddType application/font-woff2 .woff2
+AddType application/font-ttf .ttf
+AddType application/font-eot .eot
 
-<Files "*.log">
-    Order Allow,Deny
-    Deny from all
-</Files>
+# Configurar cache para arquivos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType application/font-woff "access plus 1 month"
+    ExpiresByType application/font-woff2 "access plus 1 month"
+    ExpiresByType application/font-ttf "access plus 1 month"
+    ExpiresByType application/font-eot "access plus 1 month"
+</IfModule>
 
-# Headers de segurança
-Header always set X-Content-Type-Options nosniff
-Header always set X-Frame-Options DENY
-Header always set X-XSS-Protection "1; mode=block"
+# Configurar compressão
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
 
-# Configurações PHP
-php_value upload_max_filesize 10M
-php_value post_max_size 10M
-php_value memory_limit 128M
-php_value max_execution_time 30
+# Configurar headers de segurança
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>

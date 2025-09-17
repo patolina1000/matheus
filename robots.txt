@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /logs/
+Disallow: /data/
+Disallow: /docs/
+Disallow: /*.map$
+Disallow: /*.log$
+
+# Permitir acesso aos arquivos principais
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /fonts/
+Allow: /media/
+Allow: /index.html

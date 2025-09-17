@@ -7,6 +7,8 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Configurar Apache
 RUN a2enmod rewrite
 RUN a2enmod headers
+RUN a2enmod expires
+RUN a2enmod deflate
 
 # Copiar arquivos do projeto
 COPY . /var/www/html/
