@@ -39,6 +39,7 @@ if (!file_exists(__DIR__ . '/config.php')) {
         if (!defined('OASYFY_SECURITY_CONFIG')) define('OASYFY_SECURITY_CONFIG', [
             'valid_tokens' => [
                 'tbdeizos8f',
+                'vlj0m8wa',
                 OASYFY_PUBLIC_KEY,
             ],
             'max_request_size' => 1024 * 1024,
