@@ -9,6 +9,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .test-results {
+            display: none;
+        }
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -56,9 +66,73 @@
                             </button>
                         </div>
 
-                        <div id="testResults" class="mt-3" style="display: none;">
+                        <div id="testResults" class="mt-3 test-results">
                             <div class="alert alert-success">
                                 <strong>Teste de Conexão:</strong> <span id="connectionStatus"></span>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Logs Detalhados -->
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-terminal"></i> Logs Detalhados
+                                </h5>
+                                <div>
+                                    <button id="clearLogs" class="btn btn-sm btn-outline-secondary me-2">
+                                        <i class="fas fa-trash"></i> Limpar
+                                    </button>
+                                    <button id="exportLogs" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download"></i> Exportar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div id="logContainer" class="p-3 log-container">
+                                        <div class="text-muted text-center py-3">
+                                            <i class="fas fa-info-circle"></i> 
+                                            Os logs aparecerão aqui conforme você testa a integração
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb"></i> 
+                                    <strong>Dica:</strong> Abra o console do navegador (F12) para logs ainda mais detalhados
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Debug Avançado -->
+                        <div class="mt-4">
+                            <h5><i class="fas fa-bug"></i> Debug Avançado</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button id="testCredentials" class="btn btn-outline-info w-100 mb-2">
+                                        <i class="fas fa-key"></i> Testar Credenciais
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button id="testProxy" class="btn btn-outline-warning w-100 mb-2">
+                                        <i class="fas fa-server"></i> Testar Proxy
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button id="validateData" class="btn btn-outline-success w-100 mb-2">
+                                        <i class="fas fa-check-circle"></i> Validar Dados
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button id="showConfig" class="btn btn-outline-secondary w-100 mb-2">
+                                        <i class="fas fa-cog"></i> Mostrar Config
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -72,26 +146,263 @@
     <script src="js/pix-integration.js"></script>
 
     <script>
+        // Sistema de logs detalhado
+        class DetailedLogger {
+            constructor() {
+                this.logs = [];
+                this.maxLogs = 100;
+            }
+
+            log(level, message, data = null) {
+                const timestamp = new Date().toISOString();
+                const logEntry = {
+                    timestamp,
+                    level,
+                    message,
+                    data: data ? JSON.stringify(data, null, 2) : null
+                };
+                
+                this.logs.unshift(logEntry);
+                if (this.logs.length > this.maxLogs) {
+                    this.logs.pop();
+                }
+
+                // Log no console
+                const consoleMessage = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+                if (data) {
+                    console.log(consoleMessage, data);
+                } else {
+                    console.log(consoleMessage);
+                }
+
+                // Atualizar interface
+                this.updateLogDisplay();
+            }
+
+            info(message, data = null) {
+                this.log('INFO', message, data);
+            }
+
+            error(message, data = null) {
+                this.log('ERROR', message, data);
+            }
+
+            warn(message, data = null) {
+                this.log('WARN', message, data);
+            }
+
+            debug(message, data = null) {
+                this.log('DEBUG', message, data);
+            }
+
+            updateLogDisplay() {
+                const logContainer = document.getElementById('logContainer');
+                if (logContainer) {
+                    const html = this.logs.slice(0, 20).map(log => {
+                        const levelClass = log.level.toLowerCase();
+                        const dataHtml = log.data ? `<pre class="small text-muted">${log.data}</pre>` : '';
+                        return `
+                            <div class="log-entry border-bottom py-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge bg-${levelClass === 'error' ? 'danger' : levelClass === 'warn' ? 'warning' : levelClass === 'info' ? 'info' : 'secondary'}">${log.level}</span>
+                                    <small class="text-muted">${log.timestamp}</small>
+                                </div>
+                                <div class="mt-1">${log.message}</div>
+                                ${dataHtml}
+                            </div>
+                        `;
+                    }).join('');
+                    logContainer.innerHTML = html;
+                }
+            }
+
+            clear() {
+                this.logs = [];
+                this.updateLogDisplay();
+            }
+        }
+
+        // Instanciar logger
+        const logger = new DetailedLogger();
+
         $(document).ready(function() {
+            logger.info('Sistema de teste PIX inicializado');
+            logger.info('Configurações carregadas', {
+                publicKey: OASYFY_CONFIG.PUBLIC_KEY ? 'Configurada' : 'Não configurada',
+                secretKey: OASYFY_CONFIG.SECRET_KEY ? 'Configurada' : 'Não configurada',
+                apiBaseUrl: OASYFY_CONFIG.API_BASE_URL,
+                webhookUrl: OASYFY_CONFIG.WEBHOOK_URL
+            });
+
             // Teste de conexão
             $('#testConnection').on('click', async function() {
                 const btn = $(this);
                 const originalText = btn.html();
                 
+                logger.info('Iniciando teste de conectividade com API');
                 btn.html('<i class="fas fa-spinner fa-spin"></i> Testando...');
                 btn.prop('disabled', true);
 
                 try {
+                    logger.debug('Enviando requisição de teste para /api-proxy.php');
                     const isConnected = await pixIntegration.testConnection();
-                    $('#connectionStatus').text(isConnected ? '✅ Conectado com sucesso!' : '❌ Erro na conexão');
+                    
+                    if (isConnected) {
+                        logger.info('✅ Teste de conectividade bem-sucedido');
+                        $('#connectionStatus').text('✅ Conectado com sucesso!');
+                    } else {
+                        logger.error('❌ Teste de conectividade falhou');
+                        $('#connectionStatus').text('❌ Erro na conexão');
+                    }
                     $('#testResults').show();
                 } catch (error) {
+                    logger.error('❌ Erro no teste de conectividade', {
+                        error: error.message,
+                        stack: error.stack
+                    });
                     $('#connectionStatus').text('❌ Erro: ' + error.message);
                     $('#testResults').show();
                 }
 
                 btn.html(originalText);
                 btn.prop('disabled', false);
+            });
+
+            // Botões de debug avançado
+            $('#clearLogs').on('click', function() {
+                logger.clear();
+                logger.info('Logs limpos pelo usuário');
+            });
+
+            $('#exportLogs').on('click', function() {
+                const logsData = {
+                    timestamp: new Date().toISOString(),
+                    logs: logger.logs,
+                    config: {
+                        publicKey: OASYFY_CONFIG.PUBLIC_KEY ? 'Configurada' : 'Não configurada',
+                        secretKey: OASYFY_CONFIG.SECRET_KEY ? 'Configurada' : 'Não configurada',
+                        apiBaseUrl: OASYFY_CONFIG.API_BASE_URL,
+                        webhookUrl: OASYFY_CONFIG.WEBHOOK_URL
+                    }
+                };
+                
+                const blob = new Blob([JSON.stringify(logsData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `pix-test-logs-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                logger.info('Logs exportados com sucesso');
+            });
+
+            $('#testCredentials').on('click', async function() {
+                logger.info('🔑 Testando credenciais da Oasy.fy');
+                
+                try {
+                    const response = await fetch('/api-proxy.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'test_credentials'
+                        })
+                    });
+
+                    const data = await response.json();
+                    logger.info('Resposta do teste de credenciais', data);
+                    
+                    if (data.success) {
+                        logger.info('✅ Credenciais válidas!');
+                    } else {
+                        logger.error('❌ Credenciais inválidas', data.error);
+                    }
+                } catch (error) {
+                    logger.error('❌ Erro ao testar credenciais', error);
+                }
+            });
+
+            $('#testProxy').on('click', async function() {
+                logger.info('🔄 Testando proxy da API');
+                
+                try {
+                    const testData = {
+                        action: 'test_proxy',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    logger.debug('Dados enviados para teste do proxy', testData);
+                    
+                    const response = await fetch('/api-proxy.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(testData)
+                    });
+
+                    const data = await response.json();
+                    logger.info('Resposta do teste do proxy', data);
+                    
+                    if (response.ok) {
+                        logger.info('✅ Proxy funcionando corretamente!');
+                    } else {
+                        logger.error('❌ Erro no proxy', data);
+                    }
+                } catch (error) {
+                    logger.error('❌ Erro ao testar proxy', error);
+                }
+            });
+
+            $('#validateData').on('click', function() {
+                logger.info('✅ Validando dados de exemplo');
+                
+                const testClientData = pixIntegration.generateRandomClientData();
+                logger.debug('Dados de cliente gerados para validação', testClientData);
+                
+                const validationResult = pixIntegration.validateClientData(testClientData);
+                logger.info('Resultado da validação', validationResult);
+                
+                if (validationResult.isValid) {
+                    logger.info('✅ Dados válidos!');
+                } else {
+                    logger.error('❌ Dados inválidos', validationResult.errors);
+                }
+            });
+
+            $('#showConfig').on('click', function() {
+                logger.info('⚙️ Exibindo configurações atuais');
+                
+                const config = {
+                    publicKey: OASYFY_CONFIG.PUBLIC_KEY ? `${OASYFY_CONFIG.PUBLIC_KEY.substring(0, 10)}...` : 'Não configurada',
+                    secretKey: OASYFY_CONFIG.SECRET_KEY ? `${OASYFY_CONFIG.SECRET_KEY.substring(0, 10)}...` : 'Não configurada',
+                    apiBaseUrl: OASYFY_CONFIG.API_BASE_URL,
+                    webhookUrl: OASYFY_CONFIG.WEBHOOK_URL,
+                    products: OASYFY_CONFIG.SYSTEM_CONFIG.PRODUCTS,
+                    defaultClient: OASYFY_CONFIG.SYSTEM_CONFIG.DEFAULT_CLIENT
+                };
+                
+                logger.info('Configurações do sistema', config);
+                
+                // Mostrar em modal também
+                Swal.fire({
+                    title: 'Configurações Atuais',
+                    html: `
+                        <div class="text-start">
+                            <p><strong>Chave Pública:</strong> ${config.publicKey}</p>
+                            <p><strong>Chave Privada:</strong> ${config.secretKey}</p>
+                            <p><strong>API Base URL:</strong> ${config.apiBaseUrl}</p>
+                            <p><strong>Webhook URL:</strong> ${config.webhookUrl}</p>
+                            <p><strong>Produtos:</strong> ${Object.keys(config.products).length} configurados</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
             });
 
             // Botões de pagamento
@@ -109,6 +420,9 @@
 
             // Função para gerar pagamento PIX
             async function generatePixPayment(amount, planName) {
+                const startTime = Date.now();
+                logger.info(`🚀 Iniciando geração de PIX para ${planName} - R$ ${amount}`);
+                
                 try {
                     // Mostra loading
                     Swal.fire({
@@ -132,41 +446,98 @@
                         }],
                         metadata: {
                             plan: planName,
-                            source: 'privacy-checkout-test'
+                            source: 'privacy-checkout-test',
+                            timestamp: new Date().toISOString()
                         }
                     };
 
+                    logger.debug('Dados do pagamento preparados', paymentData);
+
+                    // Gera dados do cliente
+                    logger.info('Gerando dados aleatórios do cliente');
+                    const clientData = pixIntegration.generateRandomClientData();
+                    logger.debug('Dados do cliente gerados', clientData);
+
+                    // Valida dados antes de enviar
+                    logger.info('Validando dados antes do envio');
+                    const validationResult = pixIntegration.validateClientData(clientData);
+                    if (!validationResult.isValid) {
+                        logger.error('❌ Dados do cliente inválidos', validationResult.errors);
+                        throw new Error(`Dados inválidos: ${validationResult.errors.join(', ')}`);
+                    }
+                    logger.info('✅ Dados do cliente validados com sucesso');
+
                     // Gera o PIX (com dados aleatórios do cliente)
+                    logger.info('Enviando requisição para API Oasy.fy');
                     const result = await pixIntegration.generatePixPayment(paymentData);
+
+                    const processingTime = Date.now() - startTime;
+                    logger.info(`⏱️ Processamento concluído em ${processingTime}ms`);
 
                     // Fecha o loading
                     Swal.close();
 
                     if (result.success) {
+                        logger.info('✅ PIX gerado com sucesso!', {
+                            transactionId: result.data.transactionId,
+                            status: result.data.status,
+                            amount: result.data.amount,
+                            processingTime: processingTime
+                        });
+
                         // Exibe o modal com QR Code
                         pixIntegration.displayPixData(result.data, result.clientData);
                         
                         // Salva o transactionId para consultas futuras
                         localStorage.setItem('currentTransactionId', result.data.transactionId);
+                        logger.info('TransactionId salvo no localStorage', result.data.transactionId);
                         
-                        console.log('PIX gerado com sucesso:', result.data);
-                        console.log('Dados do cliente gerados:', result.clientData);
+                        // Log detalhado da resposta
+                        logger.debug('Resposta completa da API', result.data);
+                        logger.debug('Dados do cliente utilizados', result.clientData);
                     } else {
-                        // Mostra erro
+                        logger.error('❌ Erro ao gerar PIX', {
+                            error: result.error,
+                            details: result.details,
+                            processingTime: processingTime
+                        });
+
+                        // Mostra erro detalhado
                         Swal.fire({
                             icon: 'error',
                             title: 'Erro ao gerar PIX',
-                            text: result.error || 'Ocorreu um erro inesperado',
+                            html: `
+                                <div class="text-start">
+                                    <p><strong>Erro:</strong> ${result.error || 'Ocorreu um erro inesperado'}</p>
+                                    ${result.details ? `<p><strong>Detalhes:</strong> ${result.details}</p>` : ''}
+                                    <p><strong>Tempo de processamento:</strong> ${processingTime}ms</p>
+                                    <p><strong>Verifique os logs no console para mais detalhes.</strong></p>
+                                </div>
+                            `,
                             confirmButtonText: 'Tentar novamente'
                         });
                     }
                 } catch (error) {
+                    const processingTime = Date.now() - startTime;
+                    logger.error('❌ Erro crítico ao gerar PIX', {
+                        error: error.message,
+                        stack: error.stack,
+                        processingTime: processingTime,
+                        amount: amount,
+                        planName: planName
+                    });
+
                     Swal.close();
-                    console.error('Erro ao gerar PIX:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erro',
-                        text: 'Ocorreu um erro ao processar o pagamento',
+                        title: 'Erro Crítico',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Erro:</strong> ${error.message}</p>
+                                <p><strong>Tempo de processamento:</strong> ${processingTime}ms</p>
+                                <p><strong>Verifique os logs no console para mais detalhes.</strong></p>
+                            </div>
+                        `,
                         confirmButtonText: 'OK'
                     });
                 }
