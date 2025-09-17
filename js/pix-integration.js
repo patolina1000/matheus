@@ -133,6 +133,35 @@ class PixIntegration {
     }
 
     /**
+     * Valida dados do cliente antes de enviar
+     * @param {Object} clientData - Dados do cliente
+     * @returns {Object} - Dados validados
+     */
+    validateClientData(clientData) {
+        // Validar nome (mínimo 2 caracteres)
+        if (!clientData.name || clientData.name.length < 2) {
+            clientData.name = 'Cliente Teste';
+        }
+
+        // Validar email (formato básico)
+        if (!clientData.email || !clientData.email.includes('@')) {
+            clientData.email = 'cliente.teste@gmail.com';
+        }
+
+        // Validar telefone (formato brasileiro)
+        if (!clientData.phone || !clientData.phone.match(/\(\d{2}\)\s\d{4,5}-\d{4}/)) {
+            clientData.phone = '(11) 99999-9999';
+        }
+
+        // Validar CPF (formato brasileiro)
+        if (!clientData.document || !clientData.document.match(/\d{3}\.\d{3}\.\d{3}-\d{2}/)) {
+            clientData.document = '123.456.789-00';
+        }
+
+        return clientData;
+    }
+
+    /**
      * Gera uma cobrança PIX
      * @param {Object} paymentData - Dados do pagamento
      * @returns {Promise<Object>} - Resposta da API
@@ -140,25 +169,33 @@ class PixIntegration {
     async generatePixPayment(paymentData) {
         try {
             // Gera dados aleatórios do cliente
-            const clientData = this.generateRandomClientData();
+            let clientData = this.generateRandomClientData();
+            
+            // Valida os dados do cliente
+            clientData = this.validateClientData(clientData);
 
+            // Estrutura correta para a API Oasy.fy
             const requestData = {
                 identifier: `pedido-${Date.now()}`,
-                amount: paymentData.amount,
+                amount: parseFloat(paymentData.amount), // Garantir que é número
                 client: {
                     name: clientData.name,
                     email: clientData.email,
                     phone: clientData.phone,
                     document: clientData.document
                 },
-                products: paymentData.products || [],
-                shippingFee: paymentData.shippingFee || 0,
-                extraFee: paymentData.extraFee || 0,
-                discount: paymentData.discount || 0,
-                dueDate: paymentData.dueDate || null,
-                metadata: paymentData.metadata || {},
+                // Campos opcionais - só incluir se tiver valor
+                ...(paymentData.products && paymentData.products.length > 0 && { products: paymentData.products }),
+                ...(paymentData.shippingFee > 0 && { shippingFee: parseFloat(paymentData.shippingFee) }),
+                ...(paymentData.extraFee > 0 && { extraFee: parseFloat(paymentData.extraFee) }),
+                ...(paymentData.discount > 0 && { discount: parseFloat(paymentData.discount) }),
+                ...(paymentData.dueDate && { dueDate: paymentData.dueDate }),
+                ...(paymentData.metadata && Object.keys(paymentData.metadata).length > 0 && { metadata: paymentData.metadata }),
                 callbackUrl: this.callbackUrl
             };
+
+            // Log dos dados para debug
+            console.log('Dados enviados para API:', JSON.stringify(requestData, null, 2));
 
             const response = await fetch('/api-proxy.php', {
                 method: 'POST',
@@ -173,6 +210,9 @@ class PixIntegration {
 
             const data = await response.json();
             
+            // Log da resposta para debug
+            console.log('Resposta da API:', data);
+            
             if (data.status === 'OK') {
                 console.log('PIX gerado com sucesso:', data);
                 console.log('Dados do cliente gerados:', clientData);
@@ -185,14 +225,15 @@ class PixIntegration {
                 console.error('Erro ao gerar PIX:', data);
                 return {
                     success: false,
-                    error: data.errorDescription || 'Erro desconhecido'
+                    error: data.errorDescription || data.message || 'Erro desconhecido',
+                    details: data.details || null
                 };
             }
         } catch (error) {
             console.error('Erro na requisição PIX:', error);
             return {
                 success: false,
-                error: 'Erro de conexão com a API'
+                error: 'Erro de conexão com a API: ' + error.message
             };
         }
     }

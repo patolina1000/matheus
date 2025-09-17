@@ -76,7 +76,14 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 // Para requisições POST, enviar dados
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'check_status' && $action !== 'test_connection') {
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data['paymentData'] ?? $data));
+    
+    // Corrigir estrutura dos dados
+    $postData = $data['paymentData'] ?? $data;
+    
+    // Log dos dados para debug
+    error_log('Dados enviados para API: ' . json_encode($postData, JSON_PRETTY_PRINT));
+    
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
 }
 
 // Executar requisição
@@ -85,10 +92,31 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $error = curl_error($ch);
 curl_close($ch);
 
+// Log da resposta para debug
+error_log("Resposta da API Oasy.fy - Status: $httpCode");
+error_log("Resposta da API Oasy.fy - Body: " . $response);
+
 // Verificar erros
 if ($error) {
+    error_log("Erro cURL: " . $error);
     http_response_code(500);
-    echo json_encode(['error' => 'Erro de conexão: ' . $error]);
+    echo json_encode([
+        'error' => 'Erro de conexão: ' . $error,
+        'statusCode' => 500,
+        'errorCode' => 'CONNECTION_ERROR'
+    ]);
+    exit();
+}
+
+// Verificar se a resposta é válida
+if ($response === false) {
+    error_log("Resposta vazia da API");
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Resposta vazia da API',
+        'statusCode' => 500,
+        'errorCode' => 'EMPTY_RESPONSE'
+    ]);
     exit();
 }
 
