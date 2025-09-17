@@ -1345,34 +1345,57 @@ function savePaymentBackup($transactionId, $amount, $clientName, $clientEmail, $
  */
 function savePaymentToDatabase($transactionId, $amount, $clientName, $clientEmail) {
     try {
-        // Exemplo com MySQL - descomente e configure conforme necessário
-    /*
-        $pdo = new PDO('mysql:host=localhost;dbname=seu_banco', 'usuario', 'senha', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        // Se banco estiver habilitado nas configs, usar PDO real
+        $dbConfig = defined('OASYFY_DATABASE_CONFIG') ? OASYFY_DATABASE_CONFIG : ['enabled' => false];
+        if (!empty($dbConfig['enabled'])) {
+            $host = $dbConfig['host'] ?? 'localhost';
+            $database = $dbConfig['database'] ?? '';
+            $username = $dbConfig['username'] ?? '';
+            $password = $dbConfig['password'] ?? '';
+            $charset = $dbConfig['charset'] ?? 'utf8mb4';
+            $dsn = "mysql:host={$host};dbname={$database};charset={$charset}";
+
+            $pdo = new PDO($dsn, $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+
+            // Criar tabela se não existir (idempotente)
+            $pdo->exec(
+                "CREATE TABLE IF NOT EXISTS payments (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    transaction_id VARCHAR(100) NOT NULL UNIQUE,
+                    amount DECIMAL(12,2) NOT NULL,
+                    client_name VARCHAR(255) NOT NULL,
+                    client_email VARCHAR(255) NOT NULL,
+                    status VARCHAR(50) NOT NULL DEFAULT 'confirmed',
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET={$charset}"
+            );
+
+            $stmt = $pdo->prepare(
+                "INSERT INTO payments (transaction_id, amount, client_name, client_email, status) VALUES (?, ?, ?, ?, 'confirmed')"
+            );
+            $stmt->execute([$transactionId, $amount, $clientName, $clientEmail]);
+
+            Logger::info('Pagamento salvo no banco de dados (PDO)', [
+                'transaction_id' => $transactionId,
+                'amount' => $amount,
+                'client_email' => $clientEmail
+            ]);
+            return;
+        }
+
+        // Caso banco não esteja habilitado, manter simulação/log
+        Logger::info('Banco de dados desabilitado; usando fallback (arquivo/log)', [
+            'transaction_id' => $transactionId
         ]);
-    
-    $stmt = $pdo->prepare("
-        INSERT INTO payments (transaction_id, amount, client_name, client_email, status, created_at) 
-        VALUES (?, ?, ?, ?, 'confirmed', NOW())
-    ");
-    
-    $stmt->execute([$transactionId, $amount, $clientName, $clientEmail]);
-    */
-        
-        // Simulação para demonstração
-        Logger::info('Simulando salvamento no banco de dados', [
-            'transaction_id' => $transactionId,
-            'amount' => $amount,
-            'client_name' => $clientName,
-            'client_email' => $clientEmail
-        ]);
-        
+
         // Simular possível erro ocasional
         if (rand(1, 100) <= 5) { // 5% de chance de erro
             throw new Exception('Erro simulado de conexão com banco de dados');
         }
-        
+
     } catch (PDOException $e) {
         Logger::error('Erro de banco de dados', [
             'transaction_id' => $transactionId,

@@ -7,6 +7,8 @@ class PixIntegration {
     constructor() {
         // Carrega configurações
         this.loadConfig();
+        // Controle de polling
+        this.activePolls = {};
     }
 
     loadConfig() {
@@ -242,6 +244,19 @@ class PixIntegration {
             console.log('Resposta da API:', data);
             
             if (data.status === 'OK') {
+                // Salvar registro local como pendente
+                try {
+                    this.saveLocalPaymentRecord({
+                        transactionId: data.transactionId,
+                        status: 'PENDING',
+                        amount: data.amount ?? paymentData.amount,
+                        createdAt: new Date().toISOString(),
+                        client: clientData,
+                        orderUrl: data.order?.url ?? null
+                    });
+                } catch (e) {
+                    console.warn('Falha ao salvar no localStorage:', e);
+                }
                 console.log('PIX gerado com sucesso:', data);
                 console.log('Dados do cliente gerados:', clientData);
                 return {
@@ -293,6 +308,73 @@ class PixIntegration {
     }
 
     /**
+     * Inicia polling automático do status até completar ou expirar
+     * @param {string} transactionId
+     * @param {{intervalMs?: number, maxAttempts?: number, onUpdate?: Function, onComplete?: Function, onTimeout?: Function}} options
+     */
+    startPolling(transactionId, options = {}) {
+        const intervalMs = typeof options.intervalMs === 'number' ? options.intervalMs : 6000;
+        const maxAttempts = typeof options.maxAttempts === 'number' ? options.maxAttempts : 60; // ~6 min
+        let attempts = 0;
+
+        // Evitar múltiplos polling para o mesmo ID
+        this.stopPolling(transactionId);
+
+        const tick = async () => {
+            attempts += 1;
+            const status = await this.checkTransactionStatus(transactionId);
+            // Atualiza espelho local
+            if (status && status.status) {
+                this.updateLocalPaymentStatus(transactionId, status.status, status);
+            }
+            if (typeof options.onUpdate === 'function') {
+                try { options.onUpdate(status, attempts); } catch (_) {}
+            }
+
+            if (status && (status.status === 'COMPLETED' || status.status === 'CANCELED' || status.status === 'FAILED')) {
+                clearInterval(this.activePolls[transactionId]);
+                delete this.activePolls[transactionId];
+                if (typeof options.onComplete === 'function') {
+                    try { options.onComplete(status); } catch (_) {}
+                }
+                if (status.status === 'COMPLETED') {
+                    alert('Pagamento confirmado! Redirecionando...');
+                    window.location.href = '/obrigado.html';
+                } else if (status.status === 'CANCELED') {
+                    alert('Pagamento cancelado.');
+                } else if (status.status === 'FAILED') {
+                    alert('Pagamento falhou.');
+                }
+                return;
+            }
+
+            if (attempts >= maxAttempts) {
+                clearInterval(this.activePolls[transactionId]);
+                delete this.activePolls[transactionId];
+                if (typeof options.onTimeout === 'function') {
+                    try { options.onTimeout(); } catch (_) {}
+                }
+                alert('Tempo de verificação esgotado. Tente novamente mais tarde.');
+            }
+        };
+
+        // Executa primeiro tick imediatamente e agenda os próximos
+        tick();
+        this.activePolls[transactionId] = setInterval(tick, intervalMs);
+    }
+
+    /**
+     * Interrompe polling para a transação
+     * @param {string} transactionId
+     */
+    stopPolling(transactionId) {
+        if (this.activePolls && this.activePolls[transactionId]) {
+            clearInterval(this.activePolls[transactionId]);
+            delete this.activePolls[transactionId];
+        }
+    }
+
+    /**
      * Exibe o QR Code e código PIX na interface
      * @param {Object} pixData - Dados do PIX retornados pela API
      * @param {Object} clientData - Dados do cliente gerados
@@ -304,6 +386,52 @@ class PixIntegration {
         
         // Mostra o modal
         $(modal).modal('show');
+
+        // Inicia polling automático assim que exibir o modal
+        if (pixData && pixData.transactionId) {
+            this.startPolling(pixData.transactionId);
+        }
+    }
+
+    /**
+     * Persiste um registro de pagamento no localStorage (lista 'pix_payments')
+     * @param {object} record
+     */
+    saveLocalPaymentRecord(record) {
+        const key = 'pix_payments';
+        const current = JSON.parse(localStorage.getItem(key) || '[]');
+        const existsIdx = current.findIndex(r => r.transactionId === record.transactionId);
+        if (existsIdx >= 0) {
+            current[existsIdx] = { ...current[existsIdx], ...record };
+        } else {
+            current.unshift(record);
+        }
+        localStorage.setItem(key, JSON.stringify(current));
+    }
+
+    /**
+     * Atualiza status local da transação
+     * @param {string} transactionId
+     * @param {string} status
+     * @param {object} providerData
+     */
+    updateLocalPaymentStatus(transactionId, status, providerData = null) {
+        const key = 'pix_payments';
+        const current = JSON.parse(localStorage.getItem(key) || '[]');
+        const idx = current.findIndex(r => r.transactionId === transactionId);
+        if (idx >= 0) {
+            current[idx].status = status;
+            current[idx].updatedAt = new Date().toISOString();
+            if (providerData) current[idx].provider = providerData;
+            localStorage.setItem(key, JSON.stringify(current));
+        } else {
+            this.saveLocalPaymentRecord({
+                transactionId,
+                status,
+                updatedAt: new Date().toISOString(),
+                provider: providerData || null
+            });
+        }
     }
 
     /**

@@ -139,6 +139,38 @@ if (
     // Corrigir estrutura dos dados
     $postData = $data['paymentData'] ?? $data;
 
+    // Garantir callbackUrl válido e apontando para webhook-example.php
+    if (isset($postData['callbackUrl'])) {
+        $callbackUrl = $postData['callbackUrl'];
+        // Preferir valor de config.php se definido
+        if (defined('OASYFY_WEBHOOK_URL') && OASYFY_WEBHOOK_URL) {
+            $callbackUrl = OASYFY_WEBHOOK_URL;
+        }
+        // Normalização simples: exigir HTTPS e arquivo webhook-example.php
+        if (!is_string($callbackUrl) || stripos($callbackUrl, 'https://') !== 0) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Callback URL deve usar HTTPS',
+                'field' => 'callbackUrl'
+            ]);
+            exit();
+        }
+        if (strpos($callbackUrl, 'webhook-example.php') === false) {
+            // Forçar caminho correto se o host estiver ok
+            $parsed = parse_url($callbackUrl);
+            if (!empty($parsed['scheme']) && !empty($parsed['host'])) {
+                $callbackUrl = sprintf('%s://%s/webhook-example.php', $parsed['scheme'], $parsed['host']);
+            }
+        }
+        $postData['callbackUrl'] = $callbackUrl;
+    } elseif ($action === 'generate_pix') {
+        // Se gerar PIX sem callback, tentar preencher da config
+        if (defined('OASYFY_WEBHOOK_URL') && OASYFY_WEBHOOK_URL) {
+            $postData['callbackUrl'] = OASYFY_WEBHOOK_URL;
+        }
+    }
+
     // Log dos dados para debug
     error_log('Dados enviados para API: ' . json_encode($postData, JSON_PRETTY_PRINT));
 

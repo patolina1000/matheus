@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obrigado pelo pagamento</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/core.css">
+    <style>
+        body { background: #f7f9fc; }
+        .thankyou-card { max-width: 560px; margin: 10vh auto; }
+    </style>
+    <script>
+        (function(){
+            try {
+                const key = 'pix_payments';
+                const list = JSON.parse(localStorage.getItem(key) || '[]');
+                if (list.length > 0) {
+                    const last = list.find(i => i.status === 'COMPLETED') || list[0];
+                    window.__PIX_LAST__ = last;
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function(){
+            var info = window.__PIX_LAST__ || null;
+            if (info) {
+                var elId = document.getElementById('tx-id');
+                var elAmt = document.getElementById('tx-amount');
+                if (elId && info.transactionId) elId.textContent = info.transactionId;
+                if (elAmt && (info.amount || (info.provider && info.provider.amount))) {
+                    var v = info.amount || (info.provider && info.provider.amount);
+                    elAmt.textContent = 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            }
+        });
+    </script>
+    <link rel="icon" href="/images/logo.png">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+</head>
+<body>
+    <div class="container">
+        <div class="card shadow thankyou-card">
+            <div class="card-body text-center p-5">
+                <img src="/images/logo.svg" alt="Logo" style="height:48px" class="mb-3"/>
+                <h3 class="mb-2">Pagamento confirmado!</h3>
+                <p class="text-muted mb-4">Obrigado pela sua compra. Seu pagamento via PIX foi aprovado.</p>
+                <div class="alert alert-success text-start" role="alert">
+                    <div><strong>Status:</strong> Confirmado</div>
+                    <div><strong>Transação:</strong> <span id="tx-id">—</span></div>
+                    <div><strong>Valor:</strong> <span id="tx-amount">—</span></div>
+                </div>
+                <a href="/" class="btn btn-primary">Voltar para o início</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
