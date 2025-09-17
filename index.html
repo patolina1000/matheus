@@ -855,9 +855,9 @@ $(document).ready(function() {
 </script>
 
 
+    <!-- Core js - SweetAlert2 deve ser carregado primeiro -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/jquery.mask.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Core js -->
-    <script src="js/sweetalert.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Page and UI related js -->
     
@@ -869,6 +869,15 @@ $(document).ready(function() {
 
     <!-- Função para gerar pagamento PIX (após carregamento do SweetAlert2) -->
     <script>
+    // Verifica se SweetAlert2 está disponível
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Swal === 'undefined') {
+            console.warn('SweetAlert2 não foi carregado corretamente');
+        } else {
+            console.log('SweetAlert2 carregado com sucesso');
+        }
+    });
+
     // Função para gerar pagamento PIX
     async function generatePixPayment(amount, planName) {
         try {
@@ -932,10 +941,6 @@ $(document).ready(function() {
         } catch (error) {
             if (typeof Swal !== 'undefined') {
                 Swal.close();
-            }
-            console.error('Erro ao gerar PIX:', error);
-            
-            if (typeof Swal !== 'undefined') {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erro',
@@ -943,6 +948,7 @@ $(document).ready(function() {
                     confirmButtonText: 'OK'
                 });
             } else {
+                console.error('Erro ao gerar PIX:', error);
                 alert('Erro ao processar o pagamento. Recarregue a página.');
             }
         }
