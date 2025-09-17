@@ -9,6 +9,18 @@ Este guia mostra como implementar apenas duas funcionalidades essenciais:
 
 ## 1. Configuração Inicial
 
+### ⚠️ Configuração Obrigatória
+**ANTES de usar o sistema, você DEVE:**
+
+1. **Copiar o arquivo de configuração:**
+   ```bash
+   cp config.example.php config.php
+   ```
+
+2. **Configurar suas credenciais no `config.php`**
+
+**Se você não fizer isso, o webhook retornará erro 500.**
+
 ### Credenciais
 Você precisa de duas chaves da Oasy.fy:
 - `x-public-key`: Sua chave pública
@@ -19,6 +31,7 @@ Você precisa de duas chaves da Oasy.fy:
 2. Vá em Integrações > API
 3. Clique em "Gerar credenciais"
 4. Copie e guarde as chaves (não serão mostradas novamente)
+5. **Configure no arquivo `config.php`**
 
 ### URL Base
 ```

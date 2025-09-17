@@ -9,10 +9,51 @@
  * 4. ✅ Idempotência para evitar processamento duplicado
  * 5. ✅ Retry logic para falhas temporárias
  * 6. ✅ Classes de exceção personalizadas
+ * 7. ✅ Verificação de arquivo de configuração
  */
 
-// Carregar configurações
-require_once 'config.php';
+// Verificar se arquivo de configuração existe
+if (!file_exists(__DIR__ . '/config.php')) {
+    // Tentar carregar config.example.php em modo demonstração
+    if (file_exists(__DIR__ . '/config.example.php')) {
+        // Verificar se está em ambiente de demonstração
+        $isDemo = isset($_GET['demo']) || isset($_SERVER['HTTP_X_DEMO_MODE']) || 
+                  (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'demo') !== false);
+        
+        if ($isDemo) {
+            // Carregar config.example.php em modo somente leitura
+            require_once 'config.example.php';
+        } else {
+            // Retornar erro 500 com instruções
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'error' => 'Config file not found',
+                'hint' => 'Copie config.example.php para config.php',
+                'instructions' => [
+                    '1. Copie o arquivo config.example.php para config.php',
+                    '2. Configure suas credenciais no arquivo config.php',
+                    '3. Para modo demonstração, adicione ?demo=1 à URL'
+                ]
+            ]);
+            exit;
+        }
+    } else {
+        // Nenhum arquivo de configuração encontrado
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'No configuration files found',
+            'hint' => 'Verifique se config.example.php existe no diretório'
+        ]);
+        exit;
+    }
+} else {
+    // Carregar configurações normalmente
+    require_once 'config.php';
+}
 
 // Configurações de segurança
 ini_set('display_errors', 0);

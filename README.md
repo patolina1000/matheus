@@ -31,16 +31,54 @@ O script irá:
 ### 2. Instalação Manual
 ```bash
 # 1. Clone ou baixe os arquivos
-# 2. Configure suas credenciais no config.php
-# 3. Crie os diretórios
+# 2. Copie o arquivo de configuração
+cp config.example.php config.php
+
+# 3. Configure suas credenciais no config.php
+# 4. Crie os diretórios
 mkdir logs data docs
 chmod 755 logs data
 
-# 4. Teste a instalação
+# 5. Teste a instalação
 php test-credentials.php
 ```
 
+**⚠️ Importante:** Sempre copie `config.example.php` para `config.php` antes de usar o sistema. O webhook retornará erro 500 se o arquivo de configuração não existir.
+
 ## 🔧 Configuração
+
+### ⚠️ Configuração Obrigatória
+**ANTES de usar o sistema, você DEVE:**
+
+1. **Copiar o arquivo de configuração:**
+   ```bash
+   cp config.example.php config.php
+   ```
+
+2. **Configurar suas credenciais no `config.php`:**
+   - Edite o arquivo `config.php`
+   - Substitua as credenciais de exemplo pelas suas
+   - Salve o arquivo
+
+3. **Verificar se o arquivo existe:**
+   ```bash
+   ls -la config.php
+   ```
+
+**Se você não fizer isso, o webhook retornará erro 500 com a mensagem:**
+```json
+{
+  "success": false,
+  "error": "Config file not found",
+  "hint": "Copie config.example.php para config.php"
+}
+```
+
+### Modo Demonstração
+Para usar o sistema em modo demonstração (usando `config.example.php`):
+- Adicione `?demo=1` à URL do webhook
+- Ou configure o header `X-Demo-Mode: true`
+- Ou use um domínio que contenha "demo"
 
 ### Suas Credenciais (já configuradas)
 - **Chave Pública**: `kevinmatheus986_a1k8td90862zf2d3`

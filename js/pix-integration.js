@@ -78,7 +78,10 @@ class PixIntegration {
 
         // Gera email aleatório
         const dominios = ['gmail.com', 'hotmail.com', 'yahoo.com.br', 'outlook.com', 'uol.com.br'];
-        const nomeEmail = nome.toLowerCase().replace(' ', '');
+        // Normaliza nome removendo acentos e convertendo para minúsculas
+        const nomeNormalizado = nome.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+        // Remove espaços múltiplos e converte para formato de email
+        const nomeEmail = nomeNormalizado.replace(/\s+/g, '');
         const dominio = dominios[Math.floor(Math.random() * dominios.length)];
         const email = `${nomeEmail}${Math.floor(Math.random() * 999)}@${dominio}`;
 
@@ -147,9 +150,22 @@ class PixIntegration {
             errors.push('Nome corrigido automaticamente');
         }
 
-        // Validar email (formato básico)
-        if (!clientData.email || !clientData.email.includes('@')) {
-            clientData.email = 'cliente.teste@gmail.com';
+        // Validar email com regex robusta
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!clientData.email || !emailRegex.test(clientData.email)) {
+            const emailOriginal = clientData.email;
+            // Normaliza e-mail: converte para minúsculas e remove espaços múltiplos
+            clientData.email = clientData.email ? 
+                clientData.email.toLowerCase().replace(/\s+/g, '') : 
+                'cliente.teste@gmail.com';
+            
+            // Se ainda não for válido após normalização, usa email padrão
+            if (!emailRegex.test(clientData.email)) {
+                clientData.email = 'cliente.teste@gmail.com';
+            }
+            
+            // Log para auditoria
+            console.log(`Email ajustado: '${emailOriginal}' -> '${clientData.email}'`);
             errors.push('Email corrigido automaticamente');
         }
 
