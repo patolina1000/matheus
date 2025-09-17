@@ -1,0 +1,70 @@
+# Arquivos de log
+logs/*.log
+logs/*.txt
+
+# Dados sensíveis
+data/*.json
+data/*.txt
+
+# Arquivos de configuração com credenciais
+config.php
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de cache
+cache/
+tmp/
+
+# Arquivos de upload
+uploads/
+
+# Arquivos de sessão
+sessions/
+
+# Arquivos de erro
+error_log
+php_errors.log
+
+# Arquivos de backup
+*.sql
+*.dump
+
+# Arquivos de configuração local
+.env
+.env.local
+.env.production
+
+# Arquivos de dependências
+vendor/
+node_modules/
+
+# Arquivos de build
+dist/
+build/
+
+# Arquivos de teste
+test-results/
+coverage/
+
+# Arquivos de documentação gerada
+docs/generated/
+
+# Arquivos de monitoramento
+monitor-*.log
+stats-*.json

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo - Geração de Dados Aleatórios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Exemplo - Geração de Dados Aleatórios</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <strong>Demonstração:</strong> Este exemplo mostra como o sistema gera automaticamente dados aleatórios do cliente para o PIX.
+                        </div>
+
+                        <div class="mb-3">
+                            <button id="generateData" class="btn btn-primary">
+                                <i class="fas fa-random"></i> Gerar Dados Aleatórios
+                            </button>
+                        </div>
+
+                        <div id="generatedData" class="row" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-user"></i> Dados do Cliente</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Nome:</strong> <span id="clientName"></span></p>
+                                        <p><strong>Email:</strong> <span id="clientEmail"></span></p>
+                                        <p><strong>Telefone:</strong> <span id="clientPhone"></span></p>
+                                        <p><strong>CPF:</strong> <span id="clientDocument"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informações</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-check text-success"></i> CPF válido com dígitos verificadores</li>
+                                            <li><i class="fas fa-check text-success"></i> Telefone com DDD brasileiro</li>
+                                            <li><i class="fas fa-check text-success"></i> Email com domínios reais</li>
+                                            <li><i class="fas fa-check text-success"></i> Nome brasileiro realista</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h5>Como Funciona:</h5>
+                            <ol>
+                                <li><strong>Nome:</strong> Seleciona aleatoriamente de uma lista de nomes brasileiros</li>
+                                <li><strong>Email:</strong> Gera baseado no nome + número aleatório + domínio</li>
+                                <li><strong>Telefone:</strong> DDD brasileiro + 9 dígitos aleatórios</li>
+                                <li><strong>CPF:</strong> 9 dígitos aleatórios + cálculo dos dígitos verificadores</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/pix-integration.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#generateData').on('click', function() {
+                // Gera dados aleatórios usando a classe PixIntegration
+                const pixIntegration = new PixIntegration();
+                const clientData = pixIntegration.generateRandomClientData();
+
+                // Exibe os dados gerados
+                $('#clientName').text(clientData.name);
+                $('#clientEmail').text(clientData.email);
+                $('#clientPhone').text(clientData.phone);
+                $('#clientDocument').text(clientData.document);
+
+                // Mostra a seção de dados
+                $('#generatedData').show();
+
+                // Log no console
+                console.log('Dados do cliente gerados:', clientData);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste PIX Integration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Teste de Integração PIX</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <strong>Instruções:</strong>
+                            <ol>
+                                <li>Configure suas credenciais no arquivo <code>js/config.js</code></li>
+                                <li>Clique em um dos botões abaixo para testar</li>
+                                <li>Preencha os dados do cliente no modal</li>
+                                <li>Verifique se o PIX é gerado corretamente</li>
+                            </ol>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <button id="btn-1-mes" class="btn btn-primary w-100">
+                                    <strong>1 mês</strong><br>
+                                    <small>R$ 19,90</small>
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button id="btn-3-meses" class="btn btn-success w-100">
+                                    <strong>3 meses</strong><br>
+                                    <small>R$ 41,90 (30% off)</small>
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button id="btn-6-meses" class="btn btn-warning w-100">
+                                    <strong>6 meses</strong><br>
+                                    <small>R$ 59,90 (50% off)</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button id="testConnection" class="btn btn-outline-secondary">
+                                <i class="fas fa-wifi"></i> Testar Conexão com API
+                            </button>
+                        </div>
+
+                        <div id="testResults" class="mt-3" style="display: none;">
+                            <div class="alert alert-success">
+                                <strong>Teste de Conexão:</strong> <span id="connectionStatus"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/pix-integration.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Teste de conexão
+            $('#testConnection').on('click', async function() {
+                const btn = $(this);
+                const originalText = btn.html();
+                
+                btn.html('<i class="fas fa-spinner fa-spin"></i> Testando...');
+                btn.prop('disabled', true);
+
+                try {
+                    const isConnected = await pixIntegration.testConnection();
+                    $('#connectionStatus').text(isConnected ? '✅ Conectado com sucesso!' : '❌ Erro na conexão');
+                    $('#testResults').show();
+                } catch (error) {
+                    $('#connectionStatus').text('❌ Erro: ' + error.message);
+                    $('#testResults').show();
+                }
+
+                btn.html(originalText);
+                btn.prop('disabled', false);
+            });
+
+            // Botões de pagamento
+            $('#btn-1-mes').on('click', function() {
+                generatePixPayment(19.90, '1 mês');
+            });
+
+            $('#btn-3-meses').on('click', function() {
+                generatePixPayment(41.90, '3 meses (30% off)');
+            });
+
+            $('#btn-6-meses').on('click', function() {
+                generatePixPayment(59.90, '6 meses (50% off)');
+            });
+
+            // Função para gerar pagamento PIX
+            async function generatePixPayment(amount, planName) {
+                try {
+                    // Mostra loading
+                    Swal.fire({
+                        title: 'Gerando PIX...',
+                        text: 'Aguarde enquanto processamos seu pagamento',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Dados do pagamento (dados do cliente serão gerados automaticamente)
+                    const paymentData = {
+                        amount: amount,
+                        products: [{
+                            id: 'assinatura-privacy',
+                            name: `Assinatura Privacy - ${planName}`,
+                            quantity: 1,
+                            price: amount
+                        }],
+                        metadata: {
+                            plan: planName,
+                            source: 'privacy-checkout-test'
+                        }
+                    };
+
+                    // Gera o PIX (com dados aleatórios do cliente)
+                    const result = await pixIntegration.generatePixPayment(paymentData);
+
+                    // Fecha o loading
+                    Swal.close();
+
+                    if (result.success) {
+                        // Exibe o modal com QR Code
+                        pixIntegration.displayPixData(result.data, result.clientData);
+                        
+                        // Salva o transactionId para consultas futuras
+                        localStorage.setItem('currentTransactionId', result.data.transactionId);
+                        
+                        console.log('PIX gerado com sucesso:', result.data);
+                        console.log('Dados do cliente gerados:', result.clientData);
+                    } else {
+                        // Mostra erro
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro ao gerar PIX',
+                            text: result.error || 'Ocorreu um erro inesperado',
+                            confirmButtonText: 'Tentar novamente'
+                        });
+                    }
+                } catch (error) {
+                    Swal.close();
+                    console.error('Erro ao gerar PIX:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Ocorreu um erro ao processar o pagamento',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
