@@ -15,9 +15,13 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 
+# Criar diretórios necessários
+RUN mkdir -p /var/www/html/logs /var/www/html/data /var/www/html/docs
+RUN chmod 755 /var/www/html/logs /var/www/html/data
+
 # Configurar Apache para usar a porta do Render
-RUN echo "Listen \${PORT}" > /etc/apache2/ports.conf
-RUN echo "<VirtualHost *:\${PORT}>\n\
+RUN echo "Listen 80" > /etc/apache2/ports.conf
+RUN echo "<VirtualHost *:80>\n\
     DocumentRoot /var/www/html\n\
     <Directory /var/www/html>\n\
         AllowOverride All\n\
@@ -25,10 +29,18 @@ RUN echo "<VirtualHost *:\${PORT}>\n\
     </Directory>\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
-# Expor a porta
-EXPOSE $PORT
+# Expor a porta 80 (o Render mapeará para $PORT)
+EXPOSE 80
+
+# Script de inicialização
+RUN echo '#!/bin/bash\n\
+# Configurar porta do Render\n\
+sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf\n\
+sed -i "s/80/$PORT/g" /etc/apache2/ports.conf\n\
+# Iniciar Apache\n\
+apache2-foreground' > /usr/local/bin/start.sh
+
+RUN chmod +x /usr/local/bin/start.sh
 
 # Comando de inicialização
-CMD sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf && \
-    sed -i "s/80/$PORT/g" /etc/apache2/ports.conf && \
-    apache2-foreground
+CMD ["/usr/local/bin/start.sh"]
