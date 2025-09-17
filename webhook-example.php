@@ -1070,6 +1070,49 @@ function processWebhookEvent($webhookData) {
  * Processa pagamento confirmado
  */
 function processTransactionPaid($transaction, $client, $fullData) {
+    // Garantias específicas para PIX pago
+    if (($transaction['paymentMethod'] ?? null) !== 'PIX') {
+        Logger::warning('Evento TRANSACTION_PAID ignorado: método de pagamento não é PIX', [
+            'transaction_id' => $transaction['id'] ?? 'unknown',
+            'paymentMethod' => $transaction['paymentMethod'] ?? null
+        ]);
+        return [
+            'success' => true,
+            'status' => 'ignored',
+            'message' => 'Evento não é PIX: processamento ignorado',
+            'transaction_id' => $transaction['id'] ?? null
+        ];
+    }
+
+    if (($transaction['status'] ?? null) !== 'COMPLETED') {
+        Logger::info('Evento TRANSACTION_PAID recebido, mas status não é COMPLETED', [
+            'transaction_id' => $transaction['id'] ?? 'unknown',
+            'status' => $transaction['status'] ?? null
+        ]);
+        return [
+            'success' => true,
+            'status' => 'ignored',
+            'message' => 'Transação PIX ainda não concluída',
+            'transaction_id' => $transaction['id'] ?? null
+        ];
+    }
+
+    // Se informações PIX vierem no payload, exigir endToEndId quando pago
+    if (isset($transaction['pixInformation'])) {
+        $endToEndId = $transaction['pixInformation']['endToEndId'] ?? null;
+        if (empty($endToEndId)) {
+            Logger::info('PIX marcado como COMPLETED sem endToEndId', [
+                'transaction_id' => $transaction['id'] ?? 'unknown'
+            ]);
+            return [
+                'success' => true,
+                'status' => 'ignored',
+                'message' => 'PIX sem endToEndId: aguardando confirmação bancária',
+                'transaction_id' => $transaction['id'] ?? null
+            ];
+        }
+    }
+
     try {
         $transactionId = $transaction['id'];
         $amount = $transaction['amount'];
