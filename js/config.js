@@ -17,8 +17,8 @@ const OASYFY_CONFIG = {
     // URL base da API
     API_BASE_URL: 'https://app.oasyfy.com/api/v1',
     
-    // URL do webhook (ajuste conforme seu domínio)
-    WEBHOOK_URL: window.location.origin + '/webhook/pix',
+    // URL do webhook (será configurada automaticamente)
+    WEBHOOK_URL: window.location.origin + '/webhook-example.php',
     
     // Configurações do sistema
     SYSTEM_CONFIG: {
