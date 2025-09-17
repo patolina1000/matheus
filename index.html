@@ -315,38 +315,44 @@
         /* Informações do Plano */
         .plan-section {
             margin-bottom: 25px;
-            padding: 20px;
-            background: white;
+            padding: 16px;
+            background: #F8F9FA;
             border-radius: 12px;
-            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .plan-info {
             text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
         }
 
-        .plan-label {
-            margin: 0 0 8px 0;
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
+        .plan-text {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 400;
+            color: #000;
         }
 
-        .price-label {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
+        .value-label {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6B7280;
         }
 
         .plan-name {
-            font-weight: 700;
-            color: #333;
+            font-weight: 400;
+            color: #000;
         }
 
         .plan-price {
+            margin: 0;
+            font-size: 20px;
             font-weight: 700;
-            color: #333;
+            color: #000;
         }
 
         /* QR Code PIX */
@@ -531,16 +537,20 @@
             }
 
             .plan-section {
-                padding: 15px;
+                padding: 16px;
                 margin-bottom: 20px;
             }
 
-            .plan-label {
-                font-size: 16px;
+            .plan-text {
+                font-size: 15px;
             }
 
-            .price-label {
-                font-size: 16px;
+            .value-label {
+                font-size: 13px;
+            }
+
+            .plan-price {
+                font-size: 18px;
             }
 
             .pix-key-container {
@@ -638,16 +648,20 @@
             }
 
             .plan-section {
-                padding: 12px;
+                padding: 16px;
                 margin-bottom: 15px;
             }
 
-            .plan-label {
-                font-size: 15px;
+            .plan-text {
+                font-size: 14px;
             }
 
-            .price-label {
-                font-size: 15px;
+            .value-label {
+                font-size: 12px;
+            }
+
+            .plan-price {
+                font-size: 16px;
             }
 
             .qr-title {
@@ -1711,8 +1725,9 @@ $(document).ready(function() {
                     <!-- Informações do Plano -->
                     <div class="plan-section">
                         <div class="plan-info">
-                            <p class="plan-label">Plano: <span class="plan-name" id="planName">1 mês</span></p>
-                            <p class="price-label">Valor: <span class="plan-price" id="planPrice">R$ 1,00</span></p>
+                            <p class="plan-text">Plano: <span class="plan-name" id="planName">1 mês</span></p>
+                            <p class="value-label">Valor</p>
+                            <p class="plan-price" id="planPrice">R$ 1,00</p>
                         </div>
                     </div>
 
