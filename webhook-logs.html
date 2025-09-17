@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs de Webhooks - Sistema PIX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 2px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        
+        .log-sent {
+            background-color: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        .log-received {
+            background-color: #e8f5e8;
+            border-left-color: #4caf50;
+        }
+        
+        .log-error {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .log-warning {
+            background-color: #fff3e0;
+            border-left-color: #ff9800;
+        }
+        
+        .log-info {
+            background-color: #f3e5f5;
+            border-left-color: #9c27b0;
+        }
+        
+        .log-timestamp {
+            color: #666;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .log-type {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: white;
+        }
+        
+        .type-sent {
+            background-color: #2196f3;
+        }
+        
+        .type-received {
+            background-color: #4caf50;
+        }
+        
+        .type-error {
+            background-color: #f44336;
+        }
+        
+        .type-warning {
+            background-color: #ff9800;
+        }
+        
+        .type-info {
+            background-color: #9c27b0;
+        }
+        
+        .log-ip {
+            color: #007bff;
+            font-size: 10px;
+        }
+        
+        .log-request-id {
+            color: #6c757d;
+            font-size: 10px;
+        }
+        
+        .log-message {
+            margin-top: 4px;
+            word-break: break-all;
+        }
+        
+        .log-data {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 8px;
+            margin-top: 4px;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .filter-badge {
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 2px;
+        }
+        
+        .filter-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .filter-badge.active {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+        
+        .log-container {
+            max-height: 70vh;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .webhook-direction {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            margin-right: 8px;
+        }
+        
+        .direction-sent {
+            background-color: #2196f3;
+        }
+        
+        .direction-received {
+            background-color: #4caf50;
+        }
+        
+        .json-viewer {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .auto-refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        
+        .auto-refresh-indicator.disabled {
+            background-color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="auto-refresh-indicator" id="refreshIndicator">
+        <i class="fas fa-sync-alt"></i> Auto-refresh ativo
+    </div>
+    
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-exchange-alt text-primary"></i>
+                    Logs de Webhooks - Sistema PIX
+                </h1>
+            </div>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-paper-plane fa-2x mb-2"></i>
+                        <h5 id="sentCount">0</h5>
+                        <small>Enviados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-download fa-2x mb-2"></i>
+                        <h5 id="receivedCount">0</h5>
+                        <small>Recebidos</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                        <h5 id="errorCount">0</h5>
+                        <small>Erros</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exchange-alt fa-2x mb-2"></i>
+                        <h5 id="apiCallsCount">0</h5>
+                        <small>Chamadas API</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-credit-card fa-2x mb-2"></i>
+                        <h5 id="pixCount">0</h5>
+                        <small>Transações PIX</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <h5 id="lastUpdate">--:--</h5>
+                        <small>Última Atualização</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-calendar"></i> Data</h6>
+                    </div>
+                    <div class="card-body">
+                        <input type="date" class="form-control" id="dateFilter" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-filter"></i> Filtros</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge filter-badge active bg-primary" onclick="changeFilter('all')">Todos</span>
+                            <span class="badge filter-badge bg-info" onclick="changeFilter('sent')">Enviados</span>
+                            <span class="badge filter-badge bg-success" onclick="changeFilter('received')">Recebidos</span>
+                            <span class="badge filter-badge bg-warning" onclick="changeFilter('error')">Erros</span>
+                            <span class="badge filter-badge bg-secondary" onclick="changeFilter('warning')">Avisos</span>
+                            <span class="badge filter-badge bg-dark" onclick="changeFilter('api')">API Calls</span>
+                            <span class="badge filter-badge bg-primary" onclick="changeFilter('pix')">PIX</span>
+                            <span class="badge filter-badge bg-info" onclick="changeFilter('performance')">Performance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controles -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button class="btn btn-primary" onclick="refreshLogs()">
+                                    <i class="fas fa-sync-alt"></i> Atualizar
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="toggleAutoRefresh()">
+                                    <i class="fas fa-play" id="autoRefreshIcon"></i> 
+                                    <span id="autoRefreshText">Auto-refresh</span>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="clearLogs()">
+                                    <i class="fas fa-trash"></i> Limpar
+                                </button>
+                            </div>
+                            <div>
+                                <span class="badge bg-light text-dark">
+                                    <i class="fas fa-list"></i> 
+                                    <span id="totalLogs">0</span> logs
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logs -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">
+                            <i class="fas fa-list"></i> 
+                            Logs de Webhooks
+                            <span id="currentFilter" class="badge bg-secondary ms-2">Todos</span>
+                        </h6>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" onclick="exportLogs()">
+                                <i class="fas fa-download"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="log-container p-3" id="logContainer">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                                <p>Carregando logs...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let autoRefreshEnabled = true;
+        let autoRefreshInterval;
+        
+        // Dados de exemplo para demonstração
+        const sampleLogs = [
+            {
+                timestamp: '2024-01-15 14:30:25',
+                type: 'sent',
+                level: 'info',
+                message: 'Webhook enviado para cliente',
+                ip: '192.168.1.100',
+                requestId: 'req_65a4b2c1d3e4f',
+                data: {
+                    event: 'TRANSACTION_PAID',
+                    transaction_id: 'txn_123456789',
+                    amount: 99.90,
+                    client_email: 'cliente@exemplo.com'
+                }
+            },
+            {
+                timestamp: '2024-01-15 14:30:20',
+                type: 'received',
+                level: 'info',
+                message: 'Webhook recebido da Oasy.fy',
+                ip: '54.123.45.67',
+                requestId: 'req_65a4b2c1d3e4e',
+                data: {
+                    event: 'TRANSACTION_PAID',
+                    transaction: {
+                        id: 'txn_123456789',
+                        amount: 99.90,
+                        status: 'COMPLETED'
+                    },
+                    client: {
+                        name: 'João Silva',
+                        email: 'cliente@exemplo.com'
+                    }
+                }
+            },
+            {
+                timestamp: '2024-01-15 14:25:15',
+                type: 'sent',
+                level: 'info',
+                message: 'Webhook enviado para cliente',
+                ip: '192.168.1.100',
+                requestId: 'req_65a4b2c1d3e4d',
+                data: {
+                    event: 'TRANSACTION_CREATED',
+                    transaction_id: 'txn_123456789',
+                    amount: 99.90,
+                    client_email: 'cliente@exemplo.com'
+                }
+            },
+            {
+                timestamp: '2024-01-15 14:25:10',
+                type: 'received',
+                level: 'info',
+                message: 'Webhook recebido da Oasy.fy',
+                ip: '54.123.45.67',
+                requestId: 'req_65a4b2c1d3e4c',
+                data: {
+                    event: 'TRANSACTION_CREATED',
+                    transaction: {
+                        id: 'txn_123456789',
+                        amount: 99.90,
+                        status: 'PENDING'
+                    },
+                    client: {
+                        name: 'João Silva',
+                        email: 'cliente@exemplo.com'
+                    }
+                }
+            },
+            {
+                timestamp: '2024-01-15 14:20:05',
+                type: 'received',
+                level: 'error',
+                message: 'Erro ao processar webhook',
+                ip: '54.123.45.67',
+                requestId: 'req_65a4b2c1d3e4b',
+                data: {
+                    error: 'Token inválido',
+                    event: 'TRANSACTION_PAID',
+                    transaction_id: 'txn_123456788'
+                }
+            },
+            {
+                timestamp: '2024-01-15 14:15:30',
+                type: 'sent',
+                level: 'warning',
+                message: 'Falha ao enviar webhook - tentativa 2/3',
+                ip: '192.168.1.100',
+                requestId: 'req_65a4b2c1d3e4a',
+                data: {
+                    event: 'TRANSACTION_PAID',
+                    transaction_id: 'txn_123456787',
+                    retry_count: 2,
+                    error: 'Connection timeout'
+                }
+            }
+        ];
+        
+        function init() {
+            // Definir data atual como padrão
+            document.getElementById('dateFilter').value = new Date().toISOString().split('T')[0];
+            
+            // Adicionar listener para mudanças na data
+            document.getElementById('dateFilter').addEventListener('change', loadLogs);
+            
+            // Carregar logs iniciais
+            loadLogs();
+            
+            // Iniciar auto-refresh
+            startAutoRefresh();
+        }
+        
+        function loadLogs() {
+            const date = document.getElementById('dateFilter').value;
+            const filter = currentFilter;
+            
+            fetch(`webhook-logs-api.php?date=${date}&filter=${filter}&limit=100`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayLogs(data.logs);
+                        updateStats(data.logs, data.stats);
+                        updateLastUpdateTime();
+                    } else {
+                        console.error('Erro ao carregar logs:', data.error);
+                        displayError('Erro ao carregar logs: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    displayError('Erro na requisição: ' + error.message);
+                });
+        }
+        
+        function displayLogs(logs) {
+            const container = document.getElementById('logContainer');
+            const filteredLogs = filterLogs(logs);
+            
+            if (filteredLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <p>Nenhum log encontrado para os filtros selecionados.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredLogs.map(log => createLogEntry(log)).join('');
+        }
+        
+        function displayError(message) {
+            const container = document.getElementById('logContainer');
+            container.innerHTML = `
+                <div class="text-center text-danger py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <p>${message}</p>
+                    <button class="btn btn-primary" onclick="loadLogs()">
+                        <i class="fas fa-retry"></i> Tentar Novamente
+                    </button>
+                </div>
+            `;
+        }
+        
+        function createLogEntry(log) {
+            const directionIcon = log.type === 'sent' ? '↗' : '↙';
+            const directionClass = log.type === 'sent' ? 'direction-sent' : 'direction-received';
+            const logClass = `log-${log.level}`;
+            const typeClass = `type-${log.level}`;
+            
+            // Determinar ícone baseado no tipo de log
+            let icon = '📄';
+            if (log.type === 'sent') icon = '📤';
+            else if (log.type === 'received') icon = '📥';
+            else if (log.level === 'error') icon = '❌';
+            else if (log.level === 'warning') icon = '⚠️';
+            else if (log.message.toLowerCase().includes('pix')) icon = '💳';
+            else if (log.message.toLowerCase().includes('api')) icon = '🔗';
+            
+            return `
+                <div class="log-entry ${logClass}">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="webhook-direction ${directionClass}">${directionIcon}</span>
+                        <span class="me-2">${icon}</span>
+                        <span class="log-timestamp">[${log.timestamp}]</span>
+                        <span class="log-type ${typeClass}">${log.level.toUpperCase()}</span>
+                        <span class="log-ip ms-2">[${log.ip}]</span>
+                        <span class="log-request-id ms-2">[${log.requestId}]</span>
+                        ${log.source ? `<span class="badge bg-light text-dark ms-2">${log.source}</span>` : ''}
+                    </div>
+                    <div class="log-message">
+                        <strong>${log.type === 'sent' ? 'ENVIADO' : log.type === 'received' ? 'RECEBIDO' : 'LOG'}:</strong> ${log.message}
+                    </div>
+                    ${log.data && Object.keys(log.data).length > 0 ? `
+                        <div class="log-data">
+                            <strong>Dados:</strong>
+                            <pre class="json-viewer">${JSON.stringify(log.data, null, 2)}</pre>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        function filterLogs(logs) {
+            if (currentFilter === 'all') {
+                return logs;
+            }
+            
+            return logs.filter(log => {
+                const message = log.message.toLowerCase();
+                const source = log.source ? log.source.toLowerCase() : '';
+                
+                switch (currentFilter) {
+                    case 'sent':
+                        return log.type === 'sent';
+                    case 'received':
+                        return log.type === 'received';
+                    case 'error':
+                        return log.level === 'error';
+                    case 'warning':
+                        return log.level === 'warning';
+                    case 'api':
+                        return message.includes('api') || message.includes('proxy') || message.includes('oasyfy');
+                    case 'pix':
+                        return message.includes('pix') || message.includes('transaction') || message.includes('payment');
+                    case 'performance':
+                        return source.includes('performance') || message.includes('execution_time') || message.includes('memory');
+                    default:
+                        return true;
+                }
+            });
+        }
+        
+        function changeFilter(filter) {
+            currentFilter = filter;
+            
+            // Atualizar badges
+            document.querySelectorAll('.filter-badge').forEach(badge => {
+                badge.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Atualizar filtro atual
+            document.getElementById('currentFilter').textContent = 
+                filter === 'all' ? 'Todos' : 
+                filter === 'sent' ? 'Enviados' :
+                filter === 'received' ? 'Recebidos' :
+                filter === 'error' ? 'Erros' :
+                filter === 'warning' ? 'Avisos' : filter;
+            
+            // Recarregar logs
+            loadLogs();
+        }
+        
+        function updateStats(logs, stats = null) {
+            if (stats) {
+                // Usar estatísticas da API
+                document.getElementById('sentCount').textContent = stats.sent || 0;
+                document.getElementById('receivedCount').textContent = stats.received || 0;
+                document.getElementById('errorCount').textContent = stats.errors || 0;
+                document.getElementById('apiCallsCount').textContent = stats.api_calls || 0;
+                document.getElementById('pixCount').textContent = stats.pix_transactions || 0;
+                document.getElementById('totalLogs').textContent = stats.total || 0;
+            } else {
+                // Calcular estatísticas localmente
+                const sentCount = logs.filter(log => log.type === 'sent').length;
+                const receivedCount = logs.filter(log => log.type === 'received').length;
+                const errorCount = logs.filter(log => log.level === 'error').length;
+                const apiCallsCount = logs.filter(log => 
+                    log.message.toLowerCase().includes('api') || 
+                    log.message.toLowerCase().includes('proxy')
+                ).length;
+                const pixCount = logs.filter(log => 
+                    log.message.toLowerCase().includes('pix') || 
+                    log.message.toLowerCase().includes('transaction')
+                ).length;
+                
+                document.getElementById('sentCount').textContent = sentCount;
+                document.getElementById('receivedCount').textContent = receivedCount;
+                document.getElementById('errorCount').textContent = errorCount;
+                document.getElementById('apiCallsCount').textContent = apiCallsCount;
+                document.getElementById('pixCount').textContent = pixCount;
+                document.getElementById('totalLogs').textContent = logs.length;
+            }
+        }
+        
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR');
+            document.getElementById('lastUpdate').textContent = timeString;
+        }
+        
+        function refreshLogs() {
+            loadLogs();
+        }
+        
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            
+            const icon = document.getElementById('autoRefreshIcon');
+            const text = document.getElementById('autoRefreshText');
+            const indicator = document.getElementById('refreshIndicator');
+            
+            if (autoRefreshEnabled) {
+                icon.className = 'fas fa-pause';
+                text.textContent = 'Pausar auto-refresh';
+                indicator.classList.remove('disabled');
+                startAutoRefresh();
+            } else {
+                icon.className = 'fas fa-play';
+                text.textContent = 'Auto-refresh';
+                indicator.classList.add('disabled');
+                stopAutoRefresh();
+            }
+        }
+        
+        function startAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            autoRefreshInterval = setInterval(() => {
+                if (autoRefreshEnabled) {
+                    loadLogs();
+                }
+            }, 10000); // Atualizar a cada 10 segundos
+        }
+        
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+        
+        function clearLogs() {
+            if (confirm('Tem certeza que deseja limpar todos os logs? Esta ação não pode ser desfeita.')) {
+                fetch('webhook-logs-api.php?cleanup=1')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('logContainer').innerHTML = `
+                                <div class="text-center text-muted py-5">
+                                    <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                                    <p>Logs limpos com sucesso!</p>
+                                </div>
+                            `;
+                            
+                            // Resetar estatísticas
+                            document.getElementById('sentCount').textContent = '0';
+                            document.getElementById('receivedCount').textContent = '0';
+                            document.getElementById('errorCount').textContent = '0';
+                            document.getElementById('totalLogs').textContent = '0';
+                        } else {
+                            alert('Erro ao limpar logs: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao limpar logs:', error);
+                        alert('Erro ao limpar logs: ' + error.message);
+                    });
+            }
+        }
+        
+        function exportLogs() {
+            const date = document.getElementById('dateFilter').value;
+            const filter = currentFilter;
+            
+            fetch(`webhook-logs-api.php?date=${date}&filter=${filter}&limit=1000`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const dataStr = JSON.stringify(data.logs, null, 2);
+                        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                        
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(dataBlob);
+                        link.download = `webhook-logs-${date}-${filter}.json`;
+                        link.click();
+                    } else {
+                        alert('Erro ao exportar logs: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao exportar logs:', error);
+                    alert('Erro ao exportar logs: ' + error.message);
+                });
+        }
+        
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
