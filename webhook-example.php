@@ -406,41 +406,63 @@ class Logger {
  * Validador de Dados do Webhook
  */
 class WebhookValidator {
-    private static $requiredFields = [
-        'event',
-        'transaction' => ['id', 'status', 'amount'],
-        'client' => ['id', 'name', 'email']
-    ];
+	private static $requiredFields = [
+		'event',
+		'client' => ['id', 'name', 'email']
+	];
     
     public static function validate($data) {
         if (empty($data)) {
             throw new ValidationException('Dados do webhook estão vazios');
         }
         
-        // Validar campos obrigatórios
-        self::validateRequiredFields($data, self::$requiredFields);
-        
-        // Validar formato do evento
-        if (!in_array($data['event'], ['TRANSACTION_CREATED', 'TRANSACTION_PAID', 'TRANSACTION_CANCELED', 'TRANSACTION_REFUNDED'])) {
-            throw new ValidationException('Evento inválido: ' . $data['event']);
-        }
-        
-        // Validar ID da transação
-        if (empty($data['transaction']['id']) || !is_string($data['transaction']['id'])) {
-            throw new ValidationException('ID da transação inválido');
-        }
-        
-        // Validar valor
-        if (!isset($data['transaction']['amount']) || !is_numeric($data['transaction']['amount']) || $data['transaction']['amount'] <= 0) {
-            throw new ValidationException('Valor da transação inválido');
-        }
-        
-        // Validar email do cliente
-        if (!filter_var($data['client']['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new ValidationException('Email do cliente inválido');
-        }
-        
-        return true;
+		// Validar campos base obrigatórios
+		self::validateRequiredFields($data, self::$requiredFields);
+		
+		// Validar formato do evento (transação e transferência)
+		$validEvents = [
+			'TRANSACTION_CREATED', 'TRANSACTION_PAID', 'TRANSACTION_CANCELED', 'TRANSACTION_REFUNDED',
+			'TRANSFER_CREATED', 'TRANSFER_COMPLETED', 'TRANSFER_FAILED'
+		];
+		if (!in_array($data['event'], $validEvents)) {
+			throw new ValidationException('Evento inválido: ' . $data['event']);
+		}
+		
+		// Regras condicionais por tipo de evento
+		if (strpos($data['event'], 'TRANSACTION_') === 0) {
+			// Requer objeto transaction
+			self::validateRequiredFields($data, [ 'transaction' => ['id', 'status', 'amount'] ]);
+			
+			// Validar ID da transação
+			if (empty($data['transaction']['id']) || !is_string($data['transaction']['id'])) {
+				throw new ValidationException('ID da transação inválido');
+			}
+			
+			// Validar valor da transação
+			if (!isset($data['transaction']['amount']) || !is_numeric($data['transaction']['amount']) || $data['transaction']['amount'] <= 0) {
+				throw new ValidationException('Valor da transação inválido');
+			}
+		} elseif (strpos($data['event'], 'TRANSFER_') === 0) {
+			// Requer objeto withdraw
+			self::validateRequiredFields($data, [ 'withdraw' => ['id', 'status', 'amount'] ]);
+			
+			// Validar ID da transferência
+			if (empty($data['withdraw']['id']) || !is_string($data['withdraw']['id'])) {
+				throw new ValidationException('ID da transferência inválido');
+			}
+			
+			// Validar valor da transferência
+			if (!isset($data['withdraw']['amount']) || !is_numeric($data['withdraw']['amount']) || $data['withdraw']['amount'] < 0) {
+				throw new ValidationException('Valor da transferência inválido');
+			}
+		}
+		
+		// Validar email do cliente
+		if (!filter_var($data['client']['email'], FILTER_VALIDATE_EMAIL)) {
+			throw new ValidationException('Email do cliente inválido');
+		}
+		
+		return true;
     }
     
     private static function validateRequiredFields($data, $required, $prefix = '') {
