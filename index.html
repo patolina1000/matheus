@@ -316,27 +316,37 @@
         .plan-section {
             margin-bottom: 25px;
             padding: 20px;
-            background: #f8f9fa;
+            background: white;
             border-radius: 12px;
             border: 1px solid #e9ecef;
         }
 
         .plan-info {
-            text-align: center;
+            text-align: left;
         }
 
-        .plan-name {
+        .plan-label {
             margin: 0 0 8px 0;
             font-size: 18px;
             font-weight: 700;
             color: #333;
         }
 
-        .plan-price {
+        .price-label {
             margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-            color: #F58170;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .plan-name {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .plan-price {
+            font-weight: 700;
+            color: #333;
         }
 
         /* QR Code PIX */
@@ -525,12 +535,12 @@
                 margin-bottom: 20px;
             }
 
-            .plan-name {
+            .plan-label {
                 font-size: 16px;
             }
 
-            .plan-price {
-                font-size: 20px;
+            .price-label {
+                font-size: 16px;
             }
 
             .pix-key-container {
@@ -632,12 +642,12 @@
                 margin-bottom: 15px;
             }
 
-            .plan-name {
+            .plan-label {
                 font-size: 15px;
             }
 
-            .plan-price {
-                font-size: 18px;
+            .price-label {
+                font-size: 15px;
             }
 
             .qr-title {
@@ -1701,8 +1711,8 @@ $(document).ready(function() {
                     <!-- Informações do Plano -->
                     <div class="plan-section">
                         <div class="plan-info">
-                            <h4 class="plan-name" id="planName">1 mês</h4>
-                            <p class="plan-price" id="planPrice">R$ 1,00</p>
+                            <p class="plan-label">Plano: <span class="plan-name" id="planName">1 mês</span></p>
+                            <p class="price-label">Valor: <span class="plan-price" id="planPrice">R$ 1,00</span></p>
                         </div>
                     </div>
 
@@ -1721,7 +1731,7 @@ $(document).ready(function() {
                         <p class="pix-key-label">Ou copie a chave PIX:</p>
                         <div class="pix-key-container">
                             <input type="text" id="pixCodeInput" readonly class="pix-key-input">
-                            <button onclick="copyPixCode()" class="pix-copy-btn">📋 Copiar chave PIX</button>
+                            <button onclick="copyPixCode()" class="pix-copy-btn">Copiar chave PIX</button>
                         </div>
                     </div>
                     </div>
