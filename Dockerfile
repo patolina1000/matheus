@@ -37,9 +37,11 @@ EXPOSE 80
 
 # Script de inicialização
 RUN echo '#!/bin/bash\n\
-# Configurar porta do Render\n\
-sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf\n\
-sed -i "s/80/$PORT/g" /etc/apache2/ports.conf\n\
+# Configurar porta do Render (se definida)\n\
+if [ ! -z "$PORT" ]; then\n\
+    sed -i "s/Listen 80/Listen $PORT/g" /etc/apache2/ports.conf\n\
+    sed -i "s/*:80/*:$PORT/g" /etc/apache2/sites-available/000-default.conf\n\
+fi\n\
 # Iniciar Apache\n\
 apache2-foreground' > /usr/local/bin/start.sh
 

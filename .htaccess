@@ -3,8 +3,14 @@ Header always set Access-Control-Allow-Origin "*"
 Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
 Header always set Access-Control-Allow-Headers "Content-Type, Authorization, x-public-key, x-secret-key"
 
-# Permitir requisições OPTIONS (preflight)
+# Ativar RewriteEngine
 RewriteEngine On
+
+# Evitar loops de redirecionamento
+RewriteCond %{ENV:REDIRECT_STATUS} !^$
+RewriteRule ^(.*)$ - [L]
+
+# Permitir requisições OPTIONS (preflight)
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ $1 [R=200,L]
 
@@ -38,7 +44,8 @@ Header always set X-XSS-Protection "1; mode=block"
     AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
 
-# Redirecionamento para HTTPS
+# Redirecionamento para HTTPS (apenas se não estiver no Render)
+RewriteCond %{HTTP_HOST} !\.onrender\.com$ [NC]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 

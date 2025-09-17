@@ -6,7 +6,7 @@ services:
       - key: PHP_VERSION
         value: 8.1
       - key: WEBHOOK_URL
-        value: https://checkout-pix-webhook.onrender.com/webhook-example.php
+        value: https://matheus-39wu.onrender.com/webhook-example.php
       - key: ENVIRONMENT
         value: production
       - key: OASYFY_PUBLIC_KEY
@@ -18,6 +18,8 @@ services:
     # Configurações adicionais para garantir funcionamento
     autoDeploy: true
     branch: main
+    # Configurações de rede para evitar problemas de redirecionamento
+    region: oregon
     # Headers CORS para resolver problemas de cross-origin
     headers:
       - path: /*
