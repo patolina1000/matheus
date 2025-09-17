@@ -18,6 +18,30 @@
             overflow-y: auto;
             background-color: #f8f9fa;
         }
+        .metric-item {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+        }
+        .metric-item h4 {
+            margin: 0;
+            font-weight: bold;
+        }
+        .webhook-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -135,6 +159,126 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Seção de Webhook -->
+                        <div class="mt-4">
+                            <h5><i class="fas fa-webhook"></i> Teste de Webhook</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button id="testWebhook" class="btn btn-outline-primary w-100 mb-2">
+                                        <i class="fas fa-play"></i> Testar Webhook
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button id="simulatePaid" class="btn btn-outline-success w-100 mb-2">
+                                        <i class="fas fa-check"></i> Simular PAGO
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button id="simulateCreated" class="btn btn-outline-info w-100 mb-2">
+                                        <i class="fas fa-plus"></i> Simular CRIADO
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button id="testCallbackUrl" class="btn btn-outline-warning w-100 mb-2">
+                                        <i class="fas fa-link"></i> Testar Callback URL
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button id="clearWebhookLogs" class="btn btn-outline-danger w-100 mb-2">
+                                        <i class="fas fa-trash"></i> Limpar Logs Webhook
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Idempotência -->
+                        <div class="mt-4">
+                            <h5><i class="fas fa-shield-alt"></i> Teste de Idempotência</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button id="testIdempotency" class="btn btn-outline-primary w-100 mb-2">
+                                        <i class="fas fa-repeat"></i> Testar Duplicação
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button id="showCache" class="btn btn-outline-info w-100 mb-2">
+                                        <i class="fas fa-database"></i> Ver Cache
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button id="clearCache" class="btn btn-outline-warning w-100 mb-2">
+                                        <i class="fas fa-broom"></i> Limpar Cache
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção de Monitoramento -->
+                        <div class="mt-4">
+                            <h5><i class="fas fa-chart-line"></i> Monitoramento e Métricas</h5>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button id="getMetrics" class="btn btn-outline-success w-100 mb-2">
+                                        <i class="fas fa-chart-bar"></i> Métricas
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button id="getStats" class="btn btn-outline-info w-100 mb-2">
+                                        <i class="fas fa-chart-pie"></i> Estatísticas
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button id="monitorStatus" class="btn btn-outline-warning w-100 mb-2">
+                                        <i class="fas fa-heartbeat"></i> Status
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button id="performanceTest" class="btn btn-outline-primary w-100 mb-2">
+                                        <i class="fas fa-tachometer-alt"></i> Performance
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Métricas em Tempo Real -->
+                            <div class="mt-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-tachometer-alt"></i> Métricas em Tempo Real</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-md-3">
+                                                <div class="metric-item">
+                                                    <h4 id="metricTransactions" class="text-primary">0</h4>
+                                                    <small>Transações</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="metric-item">
+                                                    <h4 id="metricSuccess" class="text-success">0</h4>
+                                                    <small>Sucessos</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="metric-item">
+                                                    <h4 id="metricErrors" class="text-danger">0</h4>
+                                                    <small>Erros</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="metric-item">
+                                                    <h4 id="metricAvgTime" class="text-info">0ms</h4>
+                                                    <small>Tempo Médio</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -225,6 +369,274 @@
         // Instanciar logger
         const logger = new DetailedLogger();
 
+        // Sistema de Idempotência
+        class IdempotencyManager {
+            constructor() {
+                this.cache = new Map();
+                this.ttl = 24 * 60 * 60 * 1000; // 24 horas
+                this.loadFromStorage();
+            }
+
+            isTransactionProcessed(transactionId) {
+                const cached = this.cache.get(transactionId);
+                if (!cached) return false;
+                
+                // Verificar se expirou
+                if (Date.now() - cached.timestamp > this.ttl) {
+                    this.cache.delete(transactionId);
+                    this.saveToStorage();
+                    return false;
+                }
+                
+                return true;
+            }
+
+            markTransactionAsProcessed(transactionId, event, data = null) {
+                this.cache.set(transactionId, {
+                    timestamp: Date.now(),
+                    event: event,
+                    data: data,
+                    processed: true
+                });
+                this.saveToStorage();
+            }
+
+            getTransactionInfo(transactionId) {
+                return this.cache.get(transactionId);
+            }
+
+            clearCache() {
+                this.cache.clear();
+                this.saveToStorage();
+            }
+
+            getCacheStats() {
+                return {
+                    size: this.cache.size,
+                    entries: Array.from(this.cache.entries()).map(([id, data]) => ({
+                        id,
+                        timestamp: new Date(data.timestamp).toISOString(),
+                        event: data.event,
+                        age: Date.now() - data.timestamp
+                    }))
+                };
+            }
+
+            loadFromStorage() {
+                try {
+                    const stored = localStorage.getItem('idempotency_cache');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.cache = new Map(data);
+                    }
+                } catch (error) {
+                    logger.error('Erro ao carregar cache de idempotência', error);
+                }
+            }
+
+            saveToStorage() {
+                try {
+                    const data = Array.from(this.cache.entries());
+                    localStorage.setItem('idempotency_cache', JSON.stringify(data));
+                } catch (error) {
+                    logger.error('Erro ao salvar cache de idempotência', error);
+                }
+            }
+        }
+
+        // Sistema de Métricas
+        class MetricsManager {
+            constructor() {
+                this.metrics = {
+                    transactions: 0,
+                    success: 0,
+                    errors: 0,
+                    totalTime: 0,
+                    startTime: Date.now()
+                };
+                this.loadFromStorage();
+            }
+
+            recordTransaction(success, processingTime) {
+                this.metrics.transactions++;
+                this.metrics.totalTime += processingTime;
+                
+                if (success) {
+                    this.metrics.success++;
+                } else {
+                    this.metrics.errors++;
+                }
+                
+                this.saveToStorage();
+                this.updateDisplay();
+            }
+
+            getMetrics() {
+                const avgTime = this.metrics.transactions > 0 
+                    ? Math.round(this.metrics.totalTime / this.metrics.transactions) 
+                    : 0;
+                
+                return {
+                    ...this.metrics,
+                    avgTime: avgTime,
+                    uptime: Date.now() - this.metrics.startTime,
+                    successRate: this.metrics.transactions > 0 
+                        ? Math.round((this.metrics.success / this.metrics.transactions) * 100) 
+                        : 0
+                };
+            }
+
+            updateDisplay() {
+                const metrics = this.getMetrics();
+                document.getElementById('metricTransactions').textContent = metrics.transactions;
+                document.getElementById('metricSuccess').textContent = metrics.success;
+                document.getElementById('metricErrors').textContent = metrics.errors;
+                document.getElementById('metricAvgTime').textContent = metrics.avgTime + 'ms';
+            }
+
+            reset() {
+                this.metrics = {
+                    transactions: 0,
+                    success: 0,
+                    errors: 0,
+                    totalTime: 0,
+                    startTime: Date.now()
+                };
+                this.saveToStorage();
+                this.updateDisplay();
+            }
+
+            loadFromStorage() {
+                try {
+                    const stored = localStorage.getItem('metrics_data');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.metrics = { ...this.metrics, ...data };
+                    }
+                } catch (error) {
+                    logger.error('Erro ao carregar métricas', error);
+                }
+            }
+
+            saveToStorage() {
+                try {
+                    localStorage.setItem('metrics_data', JSON.stringify(this.metrics));
+                } catch (error) {
+                    logger.error('Erro ao salvar métricas', error);
+                }
+            }
+        }
+
+        // Sistema de Webhook
+        class WebhookManager {
+            constructor() {
+                this.webhookLogs = [];
+                this.maxLogs = 50;
+                this.loadFromStorage();
+            }
+
+            logWebhookEvent(event, data, success = true) {
+                const logEntry = {
+                    timestamp: new Date().toISOString(),
+                    event: event,
+                    data: data,
+                    success: success
+                };
+                
+                this.webhookLogs.unshift(logEntry);
+                if (this.webhookLogs.length > this.maxLogs) {
+                    this.webhookLogs.pop();
+                }
+                
+                this.saveToStorage();
+                logger.info(`Webhook ${event}`, { success, data });
+            }
+
+            simulateWebhookEvent(eventType, transactionId = null) {
+                const events = {
+                    'TRANSACTION_PAID': {
+                        event: 'TRANSACTION_PAID',
+                        token: 'tbdeizos8f',
+                        transaction: {
+                            id: transactionId || 'sim_' + Date.now(),
+                            identifier: 'pedido-' + Date.now(),
+                            status: 'COMPLETED',
+                            paymentMethod: 'PIX',
+                            amount: 19.90,
+                            createdAt: new Date().toISOString(),
+                            payedAt: new Date().toISOString()
+                        },
+                        client: {
+                            id: 'client_' + Date.now(),
+                            name: 'Cliente Teste',
+                            email: 'teste@exemplo.com',
+                            phone: '(11) 99999-9999',
+                            document: '123.456.789-00'
+                        }
+                    },
+                    'TRANSACTION_CREATED': {
+                        event: 'TRANSACTION_CREATED',
+                        token: 'tbdeizos8f',
+                        transaction: {
+                            id: transactionId || 'sim_' + Date.now(),
+                            identifier: 'pedido-' + Date.now(),
+                            status: 'PENDING',
+                            paymentMethod: 'PIX',
+                            amount: 19.90,
+                            createdAt: new Date().toISOString()
+                        },
+                        client: {
+                            id: 'client_' + Date.now(),
+                            name: 'Cliente Teste',
+                            email: 'teste@exemplo.com',
+                            phone: '(11) 99999-9999',
+                            document: '123.456.789-00'
+                        }
+                    }
+                };
+
+                const eventData = events[eventType];
+                if (eventData) {
+                    this.logWebhookEvent(eventType, eventData, true);
+                    return eventData;
+                }
+                return null;
+            }
+
+            getWebhookLogs() {
+                return this.webhookLogs;
+            }
+
+            clearLogs() {
+                this.webhookLogs = [];
+                this.saveToStorage();
+            }
+
+            loadFromStorage() {
+                try {
+                    const stored = localStorage.getItem('webhook_logs');
+                    if (stored) {
+                        this.webhookLogs = JSON.parse(stored);
+                    }
+                } catch (error) {
+                    logger.error('Erro ao carregar logs de webhook', error);
+                }
+            }
+
+            saveToStorage() {
+                try {
+                    localStorage.setItem('webhook_logs', JSON.stringify(this.webhookLogs));
+                } catch (error) {
+                    logger.error('Erro ao salvar logs de webhook', error);
+                }
+            }
+        }
+
+        // Instanciar managers
+        const idempotencyManager = new IdempotencyManager();
+        const metricsManager = new MetricsManager();
+        const webhookManager = new WebhookManager();
+
         $(document).ready(function() {
             logger.info('Sistema de teste PIX inicializado');
             logger.info('Configurações carregadas', {
@@ -232,6 +644,16 @@
                 secretKey: OASYFY_CONFIG.SECRET_KEY ? 'Configurada' : 'Não configurada',
                 apiBaseUrl: OASYFY_CONFIG.API_BASE_URL,
                 webhookUrl: OASYFY_CONFIG.WEBHOOK_URL
+            });
+
+            // Inicializar métricas
+            metricsManager.updateDisplay();
+            
+            // Log de inicialização dos sistemas
+            logger.info('Sistemas inicializados', {
+                idempotency: 'Cache carregado com ' + idempotencyManager.getCacheStats().size + ' entradas',
+                metrics: 'Métricas carregadas: ' + metricsManager.getMetrics().transactions + ' transações',
+                webhook: 'Logs de webhook carregados: ' + webhookManager.getWebhookLogs().length + ' eventos'
             });
 
             // Teste de conexão
@@ -405,6 +827,358 @@
                 });
             });
 
+            // ===== WEBHOOK EVENT HANDLERS =====
+            $('#testWebhook').on('click', async function() {
+                logger.info('🔗 Testando webhook endpoint');
+                
+                try {
+                    const response = await fetch('/webhook-example.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            event: 'TEST_WEBHOOK',
+                            token: 'tbdeizos8f',
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+
+                    const data = await response.json();
+                    logger.info('Resposta do webhook', data);
+                    
+                    if (response.ok) {
+                        logger.info('✅ Webhook funcionando!');
+                        webhookManager.logWebhookEvent('TEST_WEBHOOK', data, true);
+                    } else {
+                        logger.error('❌ Erro no webhook', data);
+                        webhookManager.logWebhookEvent('TEST_WEBHOOK', data, false);
+                    }
+                } catch (error) {
+                    logger.error('❌ Erro ao testar webhook', error);
+                    webhookManager.logWebhookEvent('TEST_WEBHOOK', { error: error.message }, false);
+                }
+            });
+
+            $('#simulatePaid').on('click', function() {
+                logger.info('💰 Simulando evento TRANSACTION_PAID');
+                const eventData = webhookManager.simulateWebhookEvent('TRANSACTION_PAID');
+                
+                if (eventData) {
+                    Swal.fire({
+                        title: 'Evento Simulado',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Evento:</strong> ${eventData.event}</p>
+                                <p><strong>Transaction ID:</strong> ${eventData.transaction.id}</p>
+                                <p><strong>Status:</strong> ${eventData.transaction.status}</p>
+                                <p><strong>Valor:</strong> R$ ${eventData.transaction.amount}</p>
+                                <p><strong>Cliente:</strong> ${eventData.client.name}</p>
+                            </div>
+                        `,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            $('#simulateCreated').on('click', function() {
+                logger.info('➕ Simulando evento TRANSACTION_CREATED');
+                const eventData = webhookManager.simulateWebhookEvent('TRANSACTION_CREATED');
+                
+                if (eventData) {
+                    Swal.fire({
+                        title: 'Evento Simulado',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Evento:</strong> ${eventData.event}</p>
+                                <p><strong>Transaction ID:</strong> ${eventData.transaction.id}</p>
+                                <p><strong>Status:</strong> ${eventData.transaction.status}</p>
+                                <p><strong>Valor:</strong> R$ ${eventData.transaction.amount}</p>
+                                <p><strong>Cliente:</strong> ${eventData.client.name}</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            $('#testCallbackUrl').on('click', async function() {
+                logger.info('🔗 Testando callback URL');
+                
+                try {
+                    const callbackUrl = OASYFY_CONFIG.WEBHOOK_URL;
+                    logger.info('URL do callback', callbackUrl);
+                    
+                    // Simular teste de acessibilidade
+                    const response = await fetch('/api-proxy.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'test_callback_url',
+                            callbackUrl: callbackUrl
+                        })
+                    });
+
+                    const data = await response.json();
+                    logger.info('Resultado do teste de callback', data);
+                    
+                    if (data.success) {
+                        logger.info('✅ Callback URL acessível!');
+                    } else {
+                        logger.error('❌ Callback URL não acessível', data.error);
+                    }
+                } catch (error) {
+                    logger.error('❌ Erro ao testar callback URL', error);
+                }
+            });
+
+            $('#clearWebhookLogs').on('click', function() {
+                webhookManager.clearLogs();
+                logger.info('🧹 Logs de webhook limpos');
+                Swal.fire({
+                    title: 'Logs Limpos',
+                    text: 'Logs de webhook foram limpos com sucesso',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+            // ===== IDEMPOTÊNCIA EVENT HANDLERS =====
+            $('#testIdempotency').on('click', async function() {
+                logger.info('🔄 Testando idempotência');
+                
+                const testTransactionId = 'test_idempotency_' + Date.now();
+                
+                // Primeira tentativa
+                logger.info('Primeira tentativa de processamento');
+                if (idempotencyManager.isTransactionProcessed(testTransactionId)) {
+                    logger.warn('Transação já processada (primeira tentativa)');
+                } else {
+                    logger.info('Processando transação pela primeira vez');
+                    idempotencyManager.markTransactionAsProcessed(testTransactionId, 'TRANSACTION_PAID', { amount: 19.90 });
+                }
+                
+                // Segunda tentativa (deve ser detectada como duplicada)
+                logger.info('Segunda tentativa de processamento');
+                if (idempotencyManager.isTransactionProcessed(testTransactionId)) {
+                    logger.info('✅ Idempotência funcionando! Transação duplicada detectada');
+                    Swal.fire({
+                        title: 'Idempotência OK',
+                        text: 'Sistema detectou transação duplicada corretamente',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    logger.error('❌ Idempotência falhou! Transação duplicada não detectada');
+                    Swal.fire({
+                        title: 'Idempotência Falhou',
+                        text: 'Sistema não detectou transação duplicada',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            $('#showCache').on('click', function() {
+                const cacheStats = idempotencyManager.getCacheStats();
+                logger.info('📊 Estatísticas do cache', cacheStats);
+                
+                const cacheHtml = cacheStats.entries.map(entry => `
+                    <div class="border-bottom py-2">
+                        <strong>ID:</strong> ${entry.id}<br>
+                        <strong>Evento:</strong> ${entry.event}<br>
+                        <strong>Timestamp:</strong> ${entry.timestamp}<br>
+                        <strong>Idade:</strong> ${Math.round(entry.age / 1000)}s
+                    </div>
+                `).join('');
+                
+                Swal.fire({
+                    title: `Cache de Idempotência (${cacheStats.size} entradas)`,
+                    html: cacheHtml || '<p>Cache vazio</p>',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+            $('#clearCache').on('click', function() {
+                idempotencyManager.clearCache();
+                logger.info('🧹 Cache de idempotência limpo');
+                Swal.fire({
+                    title: 'Cache Limpo',
+                    text: 'Cache de idempotência foi limpo com sucesso',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+            // ===== MONITORAMENTO EVENT HANDLERS =====
+            $('#getMetrics').on('click', function() {
+                const metrics = metricsManager.getMetrics();
+                logger.info('📊 Métricas do sistema', metrics);
+                
+                Swal.fire({
+                    title: 'Métricas do Sistema',
+                    html: `
+                        <div class="text-start">
+                            <p><strong>Transações:</strong> ${metrics.transactions}</p>
+                            <p><strong>Sucessos:</strong> ${metrics.success}</p>
+                            <p><strong>Erros:</strong> ${metrics.errors}</p>
+                            <p><strong>Taxa de Sucesso:</strong> ${metrics.successRate}%</p>
+                            <p><strong>Tempo Médio:</strong> ${metrics.avgTime}ms</p>
+                            <p><strong>Uptime:</strong> ${Math.round(metrics.uptime / 1000)}s</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+            $('#getStats').on('click', function() {
+                const metrics = metricsManager.getMetrics();
+                const cacheStats = idempotencyManager.getCacheStats();
+                const webhookLogs = webhookManager.getWebhookLogs();
+                
+                logger.info('📈 Estatísticas completas', {
+                    metrics,
+                    cache: cacheStats,
+                    webhookLogs: webhookLogs.length
+                });
+                
+                Swal.fire({
+                    title: 'Estatísticas Completas',
+                    html: `
+                        <div class="text-start">
+                            <h6>Métricas:</h6>
+                            <p><strong>Transações:</strong> ${metrics.transactions}</p>
+                            <p><strong>Taxa de Sucesso:</strong> ${metrics.successRate}%</p>
+                            
+                            <h6 class="mt-3">Cache:</h6>
+                            <p><strong>Entradas:</strong> ${cacheStats.size}</p>
+                            
+                            <h6 class="mt-3">Webhook:</h6>
+                            <p><strong>Logs:</strong> ${webhookLogs.length}</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+
+            $('#monitorStatus').on('click', async function() {
+                logger.info('💓 Verificando status do sistema');
+                
+                try {
+                    const response = await fetch('/monitor-webhook.php');
+                    const data = await response.text();
+                    
+                    if (response.ok) {
+                        logger.info('✅ Monitor webhook acessível');
+                        Swal.fire({
+                            title: 'Status do Sistema',
+                            text: 'Monitor webhook está funcionando',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        logger.error('❌ Monitor webhook não acessível');
+                        Swal.fire({
+                            title: 'Status do Sistema',
+                            text: 'Monitor webhook não está acessível',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                } catch (error) {
+                    logger.error('❌ Erro ao verificar status', error);
+                    Swal.fire({
+                        title: 'Status do Sistema',
+                        text: 'Erro ao verificar status do monitor',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            $('#performanceTest').on('click', async function() {
+                logger.info('⚡ Iniciando teste de performance');
+                
+                const iterations = 5;
+                const results = [];
+                
+                Swal.fire({
+                    title: 'Teste de Performance',
+                    text: `Executando ${iterations} requisições...`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                for (let i = 0; i < iterations; i++) {
+                    const startTime = Date.now();
+                    
+                    try {
+                        const response = await fetch('/api-proxy.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                action: 'test_connection'
+                            })
+                        });
+                        
+                        const endTime = Date.now();
+                        const duration = endTime - startTime;
+                        
+                        results.push({
+                            iteration: i + 1,
+                            duration: duration,
+                            success: response.ok
+                        });
+                        
+                        logger.debug(`Iteração ${i + 1}: ${duration}ms`);
+                    } catch (error) {
+                        results.push({
+                            iteration: i + 1,
+                            duration: 0,
+                            success: false,
+                            error: error.message
+                        });
+                    }
+                }
+                
+                const avgTime = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
+                const successCount = results.filter(r => r.success).length;
+                
+                Swal.close();
+                
+                logger.info('📊 Resultados do teste de performance', {
+                    avgTime: Math.round(avgTime),
+                    successRate: (successCount / iterations) * 100,
+                    results
+                });
+                
+                Swal.fire({
+                    title: 'Teste de Performance Concluído',
+                    html: `
+                        <div class="text-start">
+                            <p><strong>Iterações:</strong> ${iterations}</p>
+                            <p><strong>Tempo Médio:</strong> ${Math.round(avgTime)}ms</p>
+                            <p><strong>Taxa de Sucesso:</strong> ${Math.round((successCount / iterations) * 100)}%</p>
+                            <p><strong>Sucessos:</strong> ${successCount}/${iterations}</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+
             // Botões de pagamento
             $('#btn-1-mes').on('click', function() {
                 generatePixPayment(19.90, '1 mês');
@@ -485,6 +1259,25 @@
                             processingTime: processingTime
                         });
 
+                        // Registrar métricas de sucesso
+                        metricsManager.recordTransaction(true, processingTime);
+
+                        // Verificar idempotência
+                        if (idempotencyManager.isTransactionProcessed(result.data.transactionId)) {
+                            logger.warn('⚠️ Transação já processada anteriormente (idempotência)');
+                        } else {
+                            // Marcar como processada
+                            idempotencyManager.markTransactionAsProcessed(
+                                result.data.transactionId, 
+                                'TRANSACTION_CREATED', 
+                                { amount: amount, planName: planName }
+                            );
+                            logger.info('✅ Transação marcada como processada no cache de idempotência');
+                        }
+
+                        // Simular evento de webhook TRANSACTION_CREATED
+                        webhookManager.simulateWebhookEvent('TRANSACTION_CREATED', result.data.transactionId);
+
                         // Exibe o modal com QR Code
                         pixIntegration.displayPixData(result.data, result.clientData);
                         
@@ -501,6 +1294,17 @@
                             details: result.details,
                             processingTime: processingTime
                         });
+
+                        // Registrar métricas de erro
+                        metricsManager.recordTransaction(false, processingTime);
+
+                        // Log de erro no webhook
+                        webhookManager.logWebhookEvent('TRANSACTION_ERROR', {
+                            error: result.error,
+                            details: result.details,
+                            amount: amount,
+                            planName: planName
+                        }, false);
 
                         // Mostra erro detalhado
                         Swal.fire({

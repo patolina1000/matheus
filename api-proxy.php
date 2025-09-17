@@ -51,6 +51,56 @@ switch ($action) {
     case 'test_connection':
         $endpoint = '/ping';
         break;
+    case 'test_proxy':
+        // Teste simples do proxy
+        http_response_code(200);
+        echo json_encode([
+            'message' => 'Proxy funcionando corretamente',
+            'timestamp' => date('c'),
+            'status' => 'OK'
+        ]);
+        exit();
+    case 'test_callback_url':
+        // Teste de callback URL
+        $callbackUrl = $data['callbackUrl'] ?? '';
+        
+        if (empty($callbackUrl)) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Callback URL não fornecida'
+            ]);
+            exit();
+        }
+        
+        // Verificar se a URL é válida
+        if (!filter_var($callbackUrl, FILTER_VALIDATE_URL)) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'URL inválida'
+            ]);
+            exit();
+        }
+        
+        // Verificar se é HTTPS
+        if (!str_starts_with($callbackUrl, 'https://')) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'URL deve usar HTTPS'
+            ]);
+            exit();
+        }
+        
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Callback URL válida',
+            'url' => $callbackUrl,
+            'timestamp' => date('c')
+        ]);
+        exit();
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Ação não suportada']);
@@ -84,6 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'check_status' && $acti
     error_log('Dados enviados para API: ' . json_encode($postData, JSON_PRETTY_PRINT));
     
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+} elseif ($action === 'test_connection') {
+    // Para teste de conectividade, usar GET
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
 }
 
 // Executar requisição

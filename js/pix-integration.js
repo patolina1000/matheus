@@ -135,30 +135,41 @@ class PixIntegration {
     /**
      * Valida dados do cliente antes de enviar
      * @param {Object} clientData - Dados do cliente
-     * @returns {Object} - Dados validados
+     * @returns {Object} - Resultado da validação
      */
     validateClientData(clientData) {
+        const errors = [];
+        let isValid = true;
+
         // Validar nome (mínimo 2 caracteres)
         if (!clientData.name || clientData.name.length < 2) {
             clientData.name = 'Cliente Teste';
+            errors.push('Nome corrigido automaticamente');
         }
 
         // Validar email (formato básico)
         if (!clientData.email || !clientData.email.includes('@')) {
             clientData.email = 'cliente.teste@gmail.com';
+            errors.push('Email corrigido automaticamente');
         }
 
         // Validar telefone (formato brasileiro)
         if (!clientData.phone || !clientData.phone.match(/\(\d{2}\)\s\d{4,5}-\d{4}/)) {
             clientData.phone = '(11) 99999-9999';
+            errors.push('Telefone corrigido automaticamente');
         }
 
         // Validar CPF (formato brasileiro)
         if (!clientData.document || !clientData.document.match(/\d{3}\.\d{3}\.\d{3}-\d{2}/)) {
             clientData.document = '123.456.789-00';
+            errors.push('CPF corrigido automaticamente');
         }
 
-        return clientData;
+        return {
+            isValid: isValid,
+            errors: errors,
+            data: clientData
+        };
     }
 
     /**
@@ -172,7 +183,8 @@ class PixIntegration {
             let clientData = this.generateRandomClientData();
             
             // Valida os dados do cliente
-            clientData = this.validateClientData(clientData);
+            const validationResult = this.validateClientData(clientData);
+            clientData = validationResult.data;
 
             // Estrutura correta para a API Oasy.fy
             const requestData = {
