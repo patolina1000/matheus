@@ -445,15 +445,18 @@ class WebhookValidator {
     
     private static function validateRequiredFields($data, $required, $prefix = '') {
         foreach ($required as $key => $value) {
-            $fieldPath = $prefix ? "$prefix.$key" : $key;
-            
-            if (is_array($value)) {
-                if (!isset($data[$key]) || !is_array($data[$key])) {
+            // Permitir both formatos: ['event', 'client' => ['id']] 
+            $fieldName = is_int($key) ? $value : $key;
+            $fieldPath = $prefix ? "$prefix.$fieldName" : $fieldName;
+
+            // Quando $value é array E a chave é associativa, tratamos como objeto aninhado
+            if (is_array($value) && !is_int($key)) {
+                if (!isset($data[$fieldName]) || !is_array($data[$fieldName])) {
                     throw new ValidationException("Campo obrigatório não encontrado ou inválido: $fieldPath");
                 }
-                self::validateRequiredFields($data[$key], $value, $fieldPath);
+                self::validateRequiredFields($data[$fieldName], $value, $fieldPath);
             } else {
-                if (!isset($data[$key]) || empty($data[$key])) {
+                if (!isset($data[$fieldName]) || $data[$fieldName] === '' || $data[$fieldName] === null) {
                     throw new ValidationException("Campo obrigatório não encontrado: $fieldPath");
                 }
             }
