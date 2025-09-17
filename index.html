@@ -64,7 +64,7 @@
     
     <!-- CSS do Modal PIX -->
     <style type="text/css">
-        /* ESTILOS DO MODAL PIX */
+        /* ESTILOS DO MODAL PIX - DESIGN PRIVACY */
         .pix-modal-overlay {
             position: fixed;
             top: 0;
@@ -84,7 +84,7 @@
             background: white;
             border-radius: 20px;
             padding: 0;
-            max-width: 500px;
+            max-width: 450px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -105,17 +105,9 @@
 
         .pix-modal-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            padding: 25px 30px 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .pix-modal-header h3 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
+            padding: 20px 25px 0;
         }
 
         .pix-modal-close {
@@ -140,15 +132,134 @@
         }
 
         .pix-modal-body {
-            padding: 30px;
+            padding: 0 25px 25px;
         }
 
-        .pix-qr-container {
+        /* Card Principal */
+        .pix-checkout-card {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+        }
+
+        /* Seção da Criadora */
+        .creator-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .creator-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .creator-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .creator-info {
+            flex: 1;
+        }
+
+        .creator-name {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .creator-username {
+            margin: 0;
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Benefícios Exclusivos */
+        .benefits-section {
+            margin-bottom: 25px;
+        }
+
+        .benefits-title {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .benefit-icon {
+            font-size: 18px;
+            width: 24px;
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        #pixQRCode {
+        /* Informações do Plano */
+        .plan-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .plan-info {
+            text-align: center;
+        }
+
+        .plan-name {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .plan-price {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #F58170;
+        }
+
+        /* QR Code PIX */
+        .pix-qr-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .qr-title {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .qr-container {
             display: inline-block;
             padding: 20px;
             background: white;
@@ -156,6 +267,10 @@
             border-radius: 15px;
             margin-bottom: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #pixQRCode {
+            display: block;
         }
 
         .pix-qr-message {
@@ -173,50 +288,51 @@
             color: #ff4d4f;
         }
 
-        .pix-instructions {
+        .qr-instructions {
             color: #666;
-            font-size: 16px;
+            font-size: 15px;
             margin: 0;
             font-weight: 500;
         }
 
-        .pix-copy-container {
-            margin-bottom: 30px;
+        /* Chave PIX */
+        .pix-key-section {
+            margin-bottom: 0;
         }
 
-        .pix-copy-container p {
+        .pix-key-label {
             color: #333;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
-        .pix-copy-input {
+        .pix-key-container {
             display: flex;
             gap: 10px;
             align-items: center;
         }
 
-        .pix-copy-input input {
+        .pix-key-input {
             flex: 1;
-            padding: 15px;
+            padding: 12px 15px;
             border: 2px solid #eee;
             border-radius: 10px;
-            font-size: 19.6px;
+            font-size: 14px;
             font-family: 'Courier New', monospace;
             background-color: #f9f9f9;
             color: #333;
         }
 
-        .pix-copy-input input:focus {
+        .pix-key-input:focus {
             outline: none;
             border-color: #F58170;
             background-color: white;
         }
 
-        .pix-copy-input button {
-            padding: 15px 25px;
-            background: linear-gradient(45deg, #F58170, #F9AF77);
+        .pix-copy-btn {
+            padding: 12px 20px;
+            background: #F58170;
             color: white;
             border: none;
             border-radius: 10px;
@@ -224,59 +340,13 @@
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+            font-size: 14px;
         }
 
-        .pix-copy-input button:hover {
-            background: linear-gradient(45deg, #FFA08A, #FFC09A);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 129, 112, 0.3);
-        }
-
-        .pix-status {
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            border: 2px solid #e9ecef;
-        }
-
-        .pix-status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .pix-status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #ffc107;
-            animation: pulse 2s infinite;
-        }
-
-        .pix-status-dot.success {
-            background-color: #28a745;
-            animation: none;
-        }
-
-        .pix-status-dot.expired {
-            background-color: #dc3545;
-            animation: none;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
-            }
+        .pix-copy-btn:hover {
+            background: #FFA08A;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(245, 129, 112, 0.3);
         }
 
         /* RESPONSIVIDADE */
@@ -284,29 +354,66 @@
             .pix-modal {
                 width: 95%;
                 margin: 20px;
+                max-width: none;
             }
 
             .pix-modal-header {
-                padding: 20px 20px 15px;
-            }
-
-            .pix-modal-header h3 {
-                font-size: 20px;
+                padding: 15px 20px 0;
             }
 
             .pix-modal-body {
-                padding: 20px;
+                padding: 0 20px 20px;
             }
 
-            .pix-copy-input {
+            .creator-section {
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .creator-avatar {
+                width: 50px;
+                height: 50px;
+            }
+
+            .creator-name {
+                font-size: 18px;
+            }
+
+            .creator-username {
+                font-size: 14px;
+            }
+
+            .benefits-title {
+                font-size: 16px;
+            }
+
+            .benefit-item {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+
+            .plan-section {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            .plan-name {
+                font-size: 16px;
+            }
+
+            .plan-price {
+                font-size: 20px;
+            }
+
+            .pix-key-container {
                 flex-direction: column;
             }
 
-            .pix-copy-input button {
+            .pix-copy-btn {
                 width: 100%;
             }
 
-            #pixQRCode {
+            .qr-container {
                 padding: 15px;
             }
         }
@@ -318,15 +425,74 @@
             }
 
             .pix-modal-header {
-                padding: 15px 15px 10px;
+                padding: 10px 15px 0;
             }
 
             .pix-modal-body {
-                padding: 15px;
+                padding: 0 15px 15px;
             }
 
-            .pix-instructions {
+            .creator-section {
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .creator-avatar {
+                width: 45px;
+                height: 45px;
+            }
+
+            .creator-name {
+                font-size: 16px;
+            }
+
+            .creator-username {
+                font-size: 13px;
+            }
+
+            .benefits-title {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+
+            .benefit-item {
+                font-size: 13px;
+                padding: 8px 0;
+            }
+
+            .plan-section {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .plan-name {
+                font-size: 15px;
+            }
+
+            .plan-price {
+                font-size: 18px;
+            }
+
+            .qr-title {
+                font-size: 16px;
+            }
+
+            .qr-instructions {
+                font-size: 13px;
+            }
+
+            .pix-key-label {
                 font-size: 14px;
+            }
+
+            .pix-key-input {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+
+            .pix-copy-btn {
+                font-size: 13px;
+                padding: 10px 15px;
             }
         }
     </style>
@@ -1189,12 +1355,25 @@ $(document).ready(function() {
             Swal.close();
 
             if (result.success) {
+                // Dados da criadora (pode ser personalizado conforme necessário)
+                const creatorData = {
+                    image: 'images/perfil.jpg',
+                    name: 'Amanda Santinne',
+                    username: '@amanda_santinne'
+                };
+
+                // Dados do plano
+                const planData = {
+                    name: planName,
+                    amount: amount
+                };
+
                 // Exibe o modal PIX customizado
                 showPixModal({
                     pix_code: result.data.pix.code,
                     amount: result.data.amount,
                     id: result.data.transactionId
-                });
+                }, creatorData, planData);
                 
                 // Salva o transactionId para consultas futuras
                 localStorage.setItem('currentTransactionId', result.data.transactionId);
@@ -1307,36 +1486,67 @@ $(document).ready(function() {
     <div id="pixModal" class="pix-modal-overlay" style="display: none;">
         <div class="pix-modal">
             <div class="pix-modal-header">
-                <h3>💳 Pagamento PIX</h3>
                 <button class="pix-modal-close" onclick="closePixModal()">&times;</button>
             </div>
             <div class="pix-modal-body">
-                <div class="pix-qr-container">
-                    <canvas id="pixQRCode" role="img" aria-label="Código QR para pagamento PIX"></canvas>
-                    <p id="pixQRCodeMessage" class="pix-qr-message" aria-live="polite"></p>
-                    <p class="pix-instructions">Escaneie o QR Code com seu app de pagamento</p>
-                </div>
-                
-                <div class="pix-copy-container">
-                    <p>Ou copie o código PIX:</p>
-                    <div class="pix-copy-input">
-                        <input type="text" id="pixCodeInput" readonly>
-                        <button onclick="copyPixCode()">📋 Copiar</button>
+                <!-- Card Principal -->
+                <div class="pix-checkout-card">
+                    <!-- Seção da Criadora -->
+                    <div class="creator-section">
+                        <div class="creator-avatar">
+                            <img src="images/perfil.jpg" alt="Foto da criadora" id="creatorImage">
+                        </div>
+                        <div class="creator-info">
+                            <h2 class="creator-name" id="creatorName">Amanda Santinne</h2>
+                            <p class="creator-username" id="creatorUsername">@amanda_santinne</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="pix-status">
-                    <div class="pix-status-indicator">
-                        <div class="pix-status-dot"></div>
-                        <span>Aguardando pagamento...</span>
+
+                    <!-- Benefícios Exclusivos -->
+                    <div class="benefits-section">
+                        <h3 class="benefits-title">Benefícios Exclusivos</h3>
+                        <ul class="benefits-list">
+                            <li class="benefit-item">
+                                <span class="benefit-icon">📱</span>
+                                <span>Acesso ao conteúdo</span>
+                            </li>
+                            <li class="benefit-item">
+                                <span class="benefit-icon">💬</span>
+                                <span>Chat exclusivo com o criador</span>
+                            </li>
+                            <li class="benefit-item">
+                                <span class="benefit-icon">🔄</span>
+                                <span>Cancele a qualquer hora</span>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                
-                <!-- Botão de teste temporário -->
-                <div style="text-align: center; margin-top: 20px;">
-                    <button onclick="testQRCode()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        🧪 Testar QR Code
-                    </button>
+
+                    <!-- Informações do Plano -->
+                    <div class="plan-section">
+                        <div class="plan-info">
+                            <h4 class="plan-name" id="planName">1 mês</h4>
+                            <p class="plan-price" id="planPrice">R$ 1,00</p>
+                        </div>
+                    </div>
+
+                    <!-- QR Code PIX -->
+                    <div class="pix-qr-section">
+                        <h4 class="qr-title">Pagamento PIX</h4>
+                        <div class="qr-container">
+                            <canvas id="pixQRCode" role="img" aria-label="Código QR para pagamento PIX"></canvas>
+                            <p id="pixQRCodeMessage" class="pix-qr-message" aria-live="polite"></p>
+                        </div>
+                        <p class="qr-instructions">Escaneie o QR Code com seu app de pagamento</p>
+                    </div>
+
+                    <!-- Chave PIX -->
+                    <div class="pix-key-section">
+                        <p class="pix-key-label">Ou copie a chave PIX:</p>
+                        <div class="pix-key-container">
+                            <input type="text" id="pixCodeInput" readonly class="pix-key-input">
+                            <button onclick="copyPixCode()" class="pix-copy-btn">📋 Copiar chave PIX</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1357,12 +1567,47 @@ $(document).ready(function() {
         }
 
         // Função para mostrar o modal PIX
-        function showPixModal(pixData) {
+        function showPixModal(pixData, creatorData = null, planData = null) {
             console.log('showPixModal chamada com dados:', pixData);
             const modal = document.getElementById('pixModal');
             let qrCanvas = document.getElementById('pixQRCode');
             const qrMessageElement = document.getElementById('pixQRCodeMessage');
             const pixCodeInput = document.getElementById('pixCodeInput');
+
+            // Atualiza dados da criadora se fornecidos
+            if (creatorData) {
+                const creatorImage = document.getElementById('creatorImage');
+                const creatorName = document.getElementById('creatorName');
+                const creatorUsername = document.getElementById('creatorUsername');
+                
+                if (creatorImage && creatorData.image) {
+                    creatorImage.src = creatorData.image;
+                }
+                if (creatorName && creatorData.name) {
+                    creatorName.textContent = creatorData.name;
+                }
+                if (creatorUsername && creatorData.username) {
+                    creatorUsername.textContent = creatorData.username;
+                }
+            }
+
+            // Atualiza dados do plano se fornecidos
+            if (planData) {
+                const planName = document.getElementById('planName');
+                const planPrice = document.getElementById('planPrice');
+                
+                if (planName && planData.name) {
+                    planName.textContent = planData.name;
+                }
+                if (planPrice && planData.amount) {
+                    // Converte centavos para reais
+                    const priceInReais = (planData.amount / 100).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                    planPrice.textContent = priceInReais;
+                }
+            }
 
             normalizeQRCodeGlobal();
 
@@ -1493,11 +1738,24 @@ $(document).ready(function() {
             
             if (typeof QRCode !== 'undefined') {
                 console.log('✅ Biblioteca QRCode carregada com sucesso!');
+                
+                // Dados de teste
+                const creatorData = {
+                    image: 'images/perfil.jpg',
+                    name: 'Amanda Santinne',
+                    username: '@amanda_santinne'
+                };
+
+                const planData = {
+                    name: '1 mês',
+                    amount: 100 // 1 real em centavos
+                };
+
                 showPixModal({
                     pix_code: '00020101021226810014br.gov.bcb.pix0114+551199999999952040000530398654010.005802BR5913Teste Pagamento6009Sao Paulo62070503***6304',
                     amount: '10.00',
                     id: 'test-123'
-                });
+                }, creatorData, planData);
             } else {
                 console.error('❌ Biblioteca QRCode não está carregada!');
                 console.log('Tentando carregar biblioteca QRCode...');
