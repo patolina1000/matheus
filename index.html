@@ -1,7 +1,6 @@
 <!DOCTYPE html><html class="v10" data-theme-lock="true"><head>
    
     <script src="js/jquery.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <!-- Required meta tags -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -1336,8 +1335,15 @@ $(document).ready(function() {
             const qrCodeContainer = document.getElementById('pixQRCode');
             const pixCodeInput = document.getElementById('pixCodeInput');
             
+            // Debug: Verifica se a biblioteca está carregada
+            console.log('Verificando biblioteca QRCode...');
+            console.log('typeof QRCode:', typeof QRCode);
+            console.log('pixData:', pixData);
+            console.log('pixData.pix_code:', pixData.pix_code);
+            
             // Gera QR Code se a biblioteca estiver disponível
             if (typeof QRCode !== 'undefined' && pixData.pix_code) {
+                console.log('✅ Condições atendidas, gerando QR Code...');
                 // Limpa QR Code anterior
                 qrCodeContainer.innerHTML = '';
                 
@@ -1356,11 +1362,17 @@ $(document).ready(function() {
                         console.error('Erro ao gerar QR Code:', error);
                         qrCodeContainer.innerHTML = '<p style="color: red; padding: 20px;">Erro ao gerar QR Code</p>';
                     } else {
-                        console.log('QR Code gerado com sucesso!');
+                        console.log('✅ QR Code gerado com sucesso!');
                     }
                 });
             } else {
                 // Fallback se QRCode não estiver disponível
+                if (typeof QRCode === 'undefined') {
+                    console.error('❌ Biblioteca QRCode não está carregada!');
+                }
+                if (!pixData.pix_code) {
+                    console.error('❌ Código PIX não fornecido!');
+                }
                 console.warn('Biblioteca QRCode não carregada ou código PIX não fornecido');
                 qrCodeContainer.innerHTML = '<p style="color: #666; padding: 20px;">QR Code não disponível</p>';
             }
@@ -1382,6 +1394,9 @@ $(document).ready(function() {
         // Função de teste para verificar QR Code
         function testQRCode() {
             console.log('Testando biblioteca QRCode...');
+            console.log('typeof QRCode:', typeof QRCode);
+            console.log('QRCode object:', QRCode);
+            
             if (typeof QRCode !== 'undefined') {
                 console.log('✅ Biblioteca QRCode carregada com sucesso!');
                 showPixModal({
@@ -1391,7 +1406,20 @@ $(document).ready(function() {
                 });
             } else {
                 console.error('❌ Biblioteca QRCode não está carregada!');
-                alert('Biblioteca QRCode não está carregada. Verifique o console para mais detalhes.');
+                console.log('Tentando carregar biblioteca QRCode...');
+                
+                // Tenta carregar a biblioteca dinamicamente
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+                script.onload = function() {
+                    console.log('✅ Biblioteca QRCode carregada dinamicamente!');
+                    testQRCode(); // Chama novamente após carregar
+                };
+                script.onerror = function() {
+                    console.error('❌ Erro ao carregar biblioteca QRCode!');
+                    alert('Erro ao carregar biblioteca QRCode. Verifique sua conexão com a internet.');
+                };
+                document.head.appendChild(script);
             }
         }
         
@@ -1495,6 +1523,7 @@ $(document).ready(function() {
 
     <script src="js/popper.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/bootstrap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" data-cf-beacon="{" rayid":"96bb148ddd5e6cd8","servertiming":{"name":{"cfextpri":true,"cfedge":true,"cforigin":true,"cfl4":true,"cfspeedbrain":true,"cfcachestatus":true}},"version":"2025.7.0","token":"5f5a5dbbbe5f40a7aced6c12a2c59200"}"="" crossorigin="anonymous"></script>
 
 </body></html>
