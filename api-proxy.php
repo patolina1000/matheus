@@ -49,6 +49,7 @@ switch ($action) {
         $endpoint = "/gateway/transactions?id={$transactionId}";
         break;
     case 'test_connection':
+    case 'test_credentials':
         $endpoint = '/ping';
         break;
     case 'test_proxy':
@@ -124,17 +125,20 @@ curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
 // Para requisições POST, enviar dados
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'check_status' && $action !== 'test_connection') {
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && !in_array($action, ['check_status', 'test_connection', 'test_credentials'], true)
+) {
     curl_setopt($ch, CURLOPT_POST, true);
-    
+
     // Corrigir estrutura dos dados
     $postData = $data['paymentData'] ?? $data;
-    
+
     // Log dos dados para debug
     error_log('Dados enviados para API: ' . json_encode($postData, JSON_PRETTY_PRINT));
-    
+
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-} elseif ($action === 'test_connection') {
+} elseif (in_array($action, ['test_connection', 'test_credentials'], true)) {
     // Para teste de conectividade, usar GET
     curl_setopt($ch, CURLOPT_HTTPGET, true);
 }
@@ -170,6 +174,68 @@ if ($response === false) {
         'statusCode' => 500,
         'errorCode' => 'EMPTY_RESPONSE'
     ]);
+    exit();
+}
+
+if ($action === 'test_credentials') {
+    $decodedResponse = json_decode($response, true);
+    $isJson = json_last_error() === JSON_ERROR_NONE;
+    $success = in_array($httpCode, [200, 201], true);
+
+    $details = ['statusCode' => $httpCode];
+    if ($isJson) {
+        $details['response'] = $decodedResponse;
+    } elseif (strlen(trim((string) $response)) > 0) {
+        $details['rawResponse'] = $response;
+    }
+
+    $extractMessage = static function ($data) {
+        if (!is_array($data)) {
+            return null;
+        }
+
+        foreach (['message', 'status', 'detail', 'error'] as $key) {
+            if (isset($data[$key]) && is_string($data[$key]) && trim($data[$key]) !== '') {
+                return trim($data[$key]);
+            }
+        }
+
+        return null;
+    };
+
+    if ($success) {
+        $message = $extractMessage($isJson ? $decodedResponse : null)
+            ?? 'Credenciais válidas e comunicação com a API confirmada.';
+        http_response_code($httpCode ?: 200);
+    } else {
+        $errorMessages = [
+            400 => 'Requisição inválida ao verificar credenciais.',
+            401 => 'Credenciais inválidas. Verifique suas chaves de acesso.',
+            403 => 'Acesso negado. Verifique as permissões da conta.',
+            404 => 'Endpoint de verificação não encontrado.',
+            429 => 'Muitas tentativas de verificação. Aguarde e tente novamente.',
+            500 => 'Erro interno na API da Oasy.fy ao verificar credenciais.'
+        ];
+
+        $message = $errorMessages[$httpCode] ?? 'Erro ao validar credenciais.';
+
+        if ($isJson) {
+            $apiMessage = $extractMessage($decodedResponse);
+            if ($apiMessage && stripos($message, $apiMessage) === false) {
+                $message .= ' Detalhes: ' . $apiMessage;
+            }
+        }
+
+        $normalizedCode = $httpCode > 0 ? $httpCode : 500;
+        http_response_code($normalizedCode);
+        $details['statusCode'] = $normalizedCode;
+    }
+
+    echo json_encode([
+        'success' => $success,
+        'message' => $message,
+        'details' => $details
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit();
 }
 
