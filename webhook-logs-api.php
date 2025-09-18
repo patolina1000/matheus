@@ -34,14 +34,27 @@ try {
     $logs = getWebhookLogs($date, $filter, $limit);
     $stats = getWebhookStats($date);
     
-    echo json_encode([
+    // Debug: adicionar informações de debug se solicitado
+    $debug = isset($_GET['debug']) && $_GET['debug'] === '1';
+    $response = [
         'success' => true,
         'logs' => $logs,
         'stats' => $stats,
         'date' => $date,
         'filter' => $filter,
         'total' => count($logs)
-    ]);
+    ];
+    
+    if ($debug) {
+        $response['debug'] = [
+            'log_dir' => 'logs/',
+            'log_files_found' => glob('logs/*.log'),
+            'date_requested' => $date,
+            'filter_requested' => $filter
+        ];
+    }
+    
+    echo json_encode($response);
     
 } catch (Exception $e) {
     http_response_code(500);
@@ -112,6 +125,12 @@ function getWebhookLogs($date, $filter, $limit) {
  * Analisa uma linha de log e extrai informações
  */
 function parseLogLine($line, $sourceFile) {
+    // Limpar a linha
+    $line = trim($line);
+    if (empty($line)) {
+        return null;
+    }
+    
     // Padrão 1: JSON logs (webhook, performance, audit) - PRIORIDADE ALTA
     if (strpos($line, '{') === 0) {
         $jsonData = json_decode($line, true);
@@ -157,6 +176,20 @@ function parseLogLine($line, $sourceFile) {
         ];
     }
     
+    // Padrão 4: Logs sem formato específico - aceitar qualquer linha não vazia
+    if (!empty($line)) {
+        return [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'level' => 'info',
+            'ip' => 'unknown',
+            'requestId' => 'unknown',
+            'message' => $line,
+            'source' => $sourceFile,
+            'type' => determineLogType($line, 'info'),
+            'data' => extractLogData($line)
+        ];
+    }
+    
     return null;
 }
 
@@ -170,7 +203,8 @@ function isWebhookRelated($logEntry) {
     // Verificar por arquivo de origem primeiro (mais confiável)
     if (strpos($source, 'webhook') !== false || 
         strpos($source, 'performance') !== false ||
-        strpos($source, 'audit') !== false) {
+        strpos($source, 'audit') !== false ||
+        strpos($source, 'app_') !== false) {  // Incluir logs do app principal
         return true;
     }
     
@@ -181,7 +215,10 @@ function isWebhookRelated($logEntry) {
         'paid', 'created', 'canceled', 'refunded', 'completed',
         'processando', 'pagamento', 'processado', 'confirmado',
         'liberado', 'acesso', 'email', 'confirmação', 'backup',
-        'sistemas internos', 'status do pedido', 'banco de dados'
+        'sistemas internos', 'status do pedido', 'banco de dados',
+        'request', 'response', 'curl', 'http', 'api', 'proxy',
+        'dados enviados', 'resposta da api', 'pix gerado',
+        'cliente gerado', 'teste de conectividade', 'credenciais'
     ];
     
     foreach ($webhookKeywords as $keyword) {
@@ -197,8 +234,20 @@ function isWebhookRelated($logEntry) {
             isset($data['event']) || 
             isset($data['amount']) ||
             isset($data['client_email']) ||
-            isset($data['client_name'])) {
+            isset($data['client_name']) ||
+            isset($data['action']) ||
+            isset($data['endpoint'])) {
             return true;
+        }
+    }
+    
+    // Se for um log do SimpleLogger (formato [timestamp] [level] [ip] [requestId] message)
+    // e contiver qualquer uma das palavras-chave, incluir
+    if (strpos($source, 'app_') !== false) {
+        foreach ($webhookKeywords as $keyword) {
+            if (strpos($message, $keyword) !== false) {
+                return true;
+            }
         }
     }
     
@@ -225,6 +274,7 @@ function determineLogType($message, $level) {
     if (strpos($message, 'enviado') !== false || 
         strpos($message, 'sent') !== false ||
         strpos($message, 'enviando') !== false ||
+        strpos($message, 'dados enviados') !== false ||
         strpos($message, 'request') !== false) {
         return 'sent';
     }
@@ -235,7 +285,8 @@ function determineLogType($message, $level) {
         strpos($message, 'webhook init') !== false ||
         strpos($message, 'processando') !== false ||
         strpos($message, 'pagamento') !== false ||
-        strpos($message, 'transaction') !== false) {
+        strpos($message, 'transaction') !== false ||
+        strpos($message, 'resposta da api') !== false) {
         return 'received';
     }
     
@@ -254,7 +305,8 @@ function determineLogType($message, $level) {
     // Verificar se é relacionado a PIX ou API
     if (strpos($message, 'pix') !== false || 
         strpos($message, 'api') !== false ||
-        strpos($message, 'proxy') !== false) {
+        strpos($message, 'proxy') !== false ||
+        strpos($message, 'oasyfy') !== false) {
         return 'api';
     }
     
@@ -290,6 +342,26 @@ function extractLogData($message) {
     
     if (preg_match('/event[:\s]+([A-Z_]+)/i', $message, $matches)) {
         $data['event'] = $matches[1];
+    }
+    
+    // Extrair action se presente
+    if (preg_match('/action[:\s]+([a-zA-Z_]+)/i', $message, $matches)) {
+        $data['action'] = $matches[1];
+    }
+    
+    // Extrair endpoint se presente
+    if (preg_match('/endpoint[:\s]+([a-zA-Z0-9\/_-]+)/i', $message, $matches)) {
+        $data['endpoint'] = $matches[1];
+    }
+    
+    // Extrair client_name se presente
+    if (preg_match('/client_name[:\s]+([a-zA-Z\s]+)/i', $message, $matches)) {
+        $data['client_name'] = trim($matches[1]);
+    }
+    
+    // Extrair client_email se presente
+    if (preg_match('/client_email[:\s]+([a-zA-Z0-9@._-]+)/i', $message, $matches)) {
+        $data['client_email'] = $matches[1];
     }
     
     return $data;
