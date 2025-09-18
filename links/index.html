@@ -1,8 +1,8 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html><html lang="pt-BR"><head>
   <meta charset="UTF-8">
   <title>CloserMe.io - 𝗚𝗲𝗼𝘃𝗮𝗻𝗮</title>
   <meta name="description" content="Encontre todos os links da 𝗚𝗲𝗼𝘃𝗮𝗻𝗮 no CloserMe.io. 𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁.">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="canonical" href="https://closerme.io/lopesedoarda">
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
@@ -15,22 +15,6 @@
   <meta property="og:image" content="images/profile.jpg">
   <link rel="stylesheet" href="css/app.efd734b5.css">
   
-  <!-- Facebook Pixel - CARREGA PRIMEIRO -->
-  <script async="" src="js/fbevents.js"></script><script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1930686130763239');
-    fbq('track', 'PageView');
-  </script>
-  <noscript>
-    <img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1930686130763239&ev=PageView&noscript=1"/>
-  </noscript>
   
   <style>
     /* Aumentar apenas a fonte do status e localização */
@@ -231,6 +215,17 @@
                 <span class="cta-subtext">Respondo em menos de 2 minutos</span>
               </div>
             </a>
+            <a href="../privacy.html" class="cta privacy-link">
+              <div class="cta-icn-round">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="#4CAF50"></path>
+                </svg>
+              </div>
+              <div class="content-text">
+                <span class="cta-text">Política de Privacidade</span>
+                <span class="cta-subtext">Como protegemos seus dados</span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -242,114 +237,31 @@
     <div class="wrapper">
       <div class="container-copyright">
         <p class="footer-link">
-          <a href="https://closerme.io" target="_blank" class="footer-link">© 2025 CloserMe.io</a> -
-          <a href="https://closerme.io/terms" target="_blank" class="footer-link">Termos e Condições</a> -
-          <a href="https://closerme.io/privacy" target="_blank" class="footer-link">Política de Privacidade</a>
+          <a href="https://closerme.io" target="_blank" rel="noopener" class="footer-link">© 2025 CloserMe.io</a> -
+          <a href="https://closerme.io/terms" target="_blank" rel="noopener" class="footer-link">Termos e Condições</a> -
+          <a href="https://closerme.io/privacy" target="_blank" rel="noopener" class="footer-link">Política de Privacidade</a>
         </p>
       </div>
     </div>
   </footer>
 
   <script>
-    // VARIÁVEIS GLOBAIS - EXATAMENTE COMO A V1 QUE FUNCIONAVA
+    // VARIÁVEIS GLOBAIS
     let userLocation = { city: 'São Paulo', country: 'BR' };
     let userData = {
-      fbp: '',
-      fbc: '',
       bot: 'geogeovanabot',
       id: '',
       ready: false
     };
 
-    // SISTEMA AVANÇADO DE CAPTURA FBP/FBC - COPIADO DA V1
-    const getCookie = (n) => document.cookie.split('; ').find(r => r.startsWith(n + '='))?.split('=')[1] || '';
+    // FUNÇÕES AUXILIARES
     const getParam = (n) => new URLSearchParams(window.location.search).get(n) || '';
 
-    // FUNÇÃO PARA CAPTURAR FBP/FBC COM GERAÇÃO GARANTIDA
-    function getFacebookPixelData() {
-      const strategies = [
-        // Estratégia 1: Cookies diretos
-        () => ({ fbp: getCookie('_fbp'), fbc: getCookie('_fbc') }),
-        
-        // Estratégia 2: LocalStorage
-        () => ({
-          fbp: localStorage.getItem('_fbp') || getCookie('_fbp'),
-          fbc: localStorage.getItem('_fbc') || getCookie('_fbc')
-        }),
-        
-        // Estratégia 3: Facebook Pixel object
-        () => {
-          if (window.fbq && window.fbq._fbp) {
-            return { fbp: window.fbq._fbp, fbc: window.fbq._fbc || getCookie('_fbc') };
-          }
-          return { fbp: getCookie('_fbp'), fbc: getCookie('_fbc') };
-        },
-        
-        // Estratégia 4: URL parameters (fbc)
-        () => ({
-          fbp: getCookie('_fbp'),
-          fbc: getParam('fbclid') ? `fb.1.${Date.now()}.${getParam('fbclid')}` : getCookie('_fbc')
-        })
-      ];
-
-      let result = { fbp: '', fbc: '' };
-      
-      // Tenta todas as estratégias
-      for (const strategy of strategies) {
-        const strategyResult = strategy();
-        if (strategyResult.fbp && !result.fbp) result.fbp = strategyResult.fbp;
-        if (strategyResult.fbc && !result.fbc) result.fbc = strategyResult.fbc;
-        
-        // Se já tem ambos, para
-        if (result.fbp && result.fbc) break;
-      }
-      
-      // ESTRATÉGIA 5: GERAR FBP SE AINDA ESTIVER VAZIO (FORMATO CORRETO)
-      if (!result.fbp) {
-        const timestamp = Date.now();
-        // Gerar número aleatório de 18 dígitos (igual ao Facebook original)
-        const randomNumber = Math.floor(Math.random() * 900000000000000000) + 100000000000000000;
-        result.fbp = `fb.1.${timestamp}.${randomNumber}`;
-        
-        // Salvar o FBP gerado como cookie (90 dias)
-        try {
-          const expires = new Date();
-          expires.setTime(expires.getTime() + (90 * 24 * 60 * 60 * 1000));
-          document.cookie = `_fbp=${result.fbp}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-          console.log('🔧 FBP gerado automaticamente (18 dígitos):', result.fbp);
-        } catch (e) {
-          console.warn('Erro ao salvar FBP gerado:', e);
-        }
-      }
-      
-      if (result.fbp || result.fbc) {
-        console.log('✅ FBP/FBC final capturado:', result);
-        return result;
-      }
-      
-      return { fbp: '', fbc: '' };
-    }
-
-    // FUNÇÃO PARA PROCESSAR DADOS - TEMPO IDEAL
+    // FUNÇÃO PARA PROCESSAR DADOS
     async function processUserDataOnLoad() {
       console.log('🚀 [GEOVANA] Processando dados...');
 
-      // 1. CAPTURA AVANÇADA DO FACEBOOK PIXEL - TEMPO IDEAL (3.5s)
-      console.log('🔍 Iniciando captura avançada Facebook Pixel...');
-      const fbData = await waitForFacebookPixelLoad(3500);
-      userData.fbp = fbData.fbp;
-      userData.fbc = fbData.fbc;
-      
-      // Log detalhado do resultado
-      if (userData.fbp || userData.fbc) {
-        console.log('✅ Facebook Pixel capturado com sucesso!');
-        console.log('📊 FBP:', userData.fbp || 'N/A');
-        console.log('📊 FBC:', userData.fbc || 'N/A');
-      } else {
-        console.log('⚠️ Facebook Pixel não encontrado após todas as tentativas');
-      }
-
-      // 2. BUSCAR BOT E SALVAR DADOS - IGUAL V1
+      // BUSCAR BOT E SALVAR DADOS
       try {
         const referer = document.referrer;
 
@@ -364,8 +276,6 @@
               utm_campaign: getParam('utm_campaign'),
               utm_content: getParam('utm_content'),
               utm_term: getParam('utm_term'),
-              fbp: userData.fbp,
-              fbc: userData.fbc,
               referer: referer,
               user_city: userLocation.city,
               user_country: userLocation.country
@@ -385,46 +295,6 @@
       }
     }
 
-    // FUNÇÃO PARA AGUARDAR FACEBOOK PIXEL - COM GERAÇÃO GARANTIDA
-    async function waitForFacebookPixelLoad(maxWaitTime = 3500) {
-      const startTime = Date.now();
-      let attempts = 0;
-      const maxAttempts = 35; // 3.5 segundos / 100ms = 35 tentativas
-      
-      return new Promise((resolve) => {
-        const checkPixelData = () => {
-          attempts++;
-          const pixelData = getFacebookPixelData();
-          
-          // SEMPRE terá pelo menos FBP agora (gerado se necessário)
-          const hasValidData = pixelData.fbp || pixelData.fbc;
-          const timeoutReached = (Date.now() - startTime) > maxWaitTime;
-          const maxAttemptsReached = attempts >= maxAttempts;
-          
-          if (hasValidData || timeoutReached || maxAttemptsReached) {
-            console.log(`✅ Facebook Pixel finalizado na tentativa ${attempts} (${Date.now() - startTime}ms):`, pixelData);
-            
-            // GARANTIA FINAL: Se ainda não tem FBP, força geração (FORMATO CORRETO)
-            if (!pixelData.fbp) {
-              const timestamp = Date.now();
-              // Gerar número aleatório de 18 dígitos (igual ao Facebook original)
-              const randomNumber = Math.floor(Math.random() * 900000000000000000) + 100000000000000000;
-              pixelData.fbp = `fb.1.${timestamp}.${randomNumber}`;
-              console.log('🛡️ FBP de emergência gerado (18 dígitos):', pixelData.fbp);
-            }
-            
-            resolve(pixelData);
-            return;
-          }
-          
-          // Continuar tentando a cada 100ms
-          setTimeout(checkPixelData, 100);
-        };
-        
-        // Primeira verificação imediata
-        checkPixelData();
-      });
-    }
 
     // FUNÇÃO PARA DETECTAR LOCALIZAÇÃO - USANDO SUA CHAVE PRO
     async function detectUserLocation() {
