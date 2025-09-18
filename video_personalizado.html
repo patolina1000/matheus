@@ -1217,27 +1217,61 @@
 
     // Função para verificar status do pagamento
     function startPaymentStatusCheck(transactionId) {
-        if (window.paymentStatusInterval) {
-            clearInterval(window.paymentStatusInterval);
-        }
-
+        // Verificação real de status via API (integração com webhook)
+        let attempts = 0;
+        const maxAttempts = 30; // 5 minutos (10s * 30)
+        
         window.paymentStatusInterval = setInterval(async () => {
+            attempts++;
+            
             try {
+                // Verifica status real do pagamento via API
                 const status = await pixIntegration.checkTransactionStatus(transactionId);
+                
                 if (status && status.status === 'COMPLETED') {
                     clearInterval(window.paymentStatusInterval);
-                    window.paymentStatusInterval = null;
+                    updatePaymentStatus('completed', 'Pagamento confirmado!');
                     alert('Pagamento confirmado! Redirecionando...');
-                    window.location.href = '/obrigado.html';
+                    window.location.href = 'obrigado.html';
+                    return;
                 } else if (status && (status.status === 'CANCELED' || status.status === 'FAILED')) {
                     clearInterval(window.paymentStatusInterval);
-                    window.paymentStatusInterval = null;
-                    alert('Pagamento não foi processado.');
+                    updatePaymentStatus('failed', 'Pagamento não foi processado');
+                    return;
                 }
             } catch (error) {
-                console.error('Erro ao verificar status:', error);
+                console.error('Erro ao verificar status do pagamento:', error);
             }
-        }, 5000); // Verifica a cada 5 segundos
+            
+            // Verifica se atingiu o limite de tentativas
+            if (attempts >= maxAttempts) {
+                updatePaymentStatus('expired', 'Tempo esgotado');
+                clearInterval(window.paymentStatusInterval);
+            }
+        }, 10000); // Verifica a cada 10 segundos
+    }
+    
+    // Função para atualizar status do pagamento
+    function updatePaymentStatus(status, message) {
+        const statusDot = document.querySelector('.pix-status-dot');
+        const statusText = document.querySelector('.pix-status-indicator span');
+        
+        if (statusDot && statusText) {
+            // Remove classes anteriores
+            statusDot.classList.remove('status-pending', 'status-completed', 'status-failed', 'status-expired');
+            statusText.classList.remove('status-pending', 'status-completed', 'status-failed', 'status-expired');
+            
+            // Adiciona classe correspondente ao status
+            statusDot.classList.add(`status-${status}`);
+            statusText.classList.add(`status-${status}`);
+            
+            // Atualiza texto
+            statusText.textContent = message;
+            
+            // Mostra indicador
+            statusDot.style.display = 'inline-block';
+            statusText.style.display = 'inline';
+        }
     }
 
     // Fecha modal ao clicar no overlay
