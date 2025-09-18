@@ -348,35 +348,7 @@
 
     // EXECUTAR QUANDO A PÁGINA CARREGAR - IGUAL V1
     document.addEventListener("DOMContentLoaded", async function () {
-      // CONFIGURAR CLIQUE NO BOTÃO PRIMEIRO
-      const telegramBtn = document.querySelector("a.user-link");
-      if (telegramBtn) {
-        telegramBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-
-          // SE OS DADOS JÁ ESTÃO PRONTOS, REDIRECIONA IMEDIATAMENTE
-          if (userData.ready) {
-            const telegramUrl = `https://t.me/${userData.bot}?start=${userData.id}`;
-            console.log('🚀 [GEOVANA] REDIRECIONAMENTO INSTANTÂNEO!', telegramUrl);
-            window.location.href = telegramUrl;
-            return;
-          }
-
-          // SE NÃO ESTÃO PRONTOS, AGUARDA E DEPOIS REDIRECIONA
-          console.log('⏳ Dados ainda processando, aguardando...');
-          
-          // Aguardar até os dados ficarem prontos (máximo 5 segundos)
-          const startTime = Date.now();
-          const waitForData = setInterval(() => {
-            if (userData.ready || (Date.now() - startTime > 5000)) {
-              clearInterval(waitForData);
-              const telegramUrl = `https://t.me/${userData.bot}?start=${userData.id}`;
-              console.log('🚀 [GEOVANA] REDIRECIONAMENTO APÓS AGUARDAR!', telegramUrl);
-              window.location.href = telegramUrl;
-            }
-          }, 100);
-        });
-      }
+      // CONFIGURAR CLIQUE NO BOTÃO PRIMEIRO (LÓGICA ANTIGA REMOVIDA - AGORA USA VARIÁVEIS DE AMBIENTE)
 
       // CONFIGURAR REDIRECIONAMENTOS COM VARIÁVEIS DE AMBIENTE
       configureRedirects();
@@ -390,32 +362,50 @@
 
     // FUNÇÃO PARA CONFIGURAR REDIRECIONAMENTOS
     async function configureRedirects() {
+      console.log('🔧 Iniciando configuração de redirecionamentos...');
+      
       try {
         // Buscar configurações do servidor
         const response = await fetch('/api/config.php');
         const config = await response.json();
         
+        console.log('📡 Configurações recebidas:', config);
+        
         // Configurar botão do Telegram
         const telegramBtn = document.getElementById('telegram-btn');
+        console.log('📱 Botão Telegram encontrado:', telegramBtn);
+        
         if (telegramBtn && config.TELEGRAM_REDIRECT) {
-          telegramBtn.href = config.TELEGRAM_REDIRECT;
-          telegramBtn.addEventListener('click', function(e) {
+          // Remover event listeners antigos
+          telegramBtn.replaceWith(telegramBtn.cloneNode(true));
+          const newTelegramBtn = document.getElementById('telegram-btn');
+          
+          newTelegramBtn.href = config.TELEGRAM_REDIRECT;
+          newTelegramBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('🚀 Redirecionando para Telegram:', config.TELEGRAM_REDIRECT);
             window.open(config.TELEGRAM_REDIRECT, '_blank');
           });
+          
+          console.log('✅ Botão Telegram configurado com URL:', config.TELEGRAM_REDIRECT);
         }
         
         // Configurar botão do WhatsApp
         const whatsappBtn = document.getElementById('whatsapp-btn');
+        console.log('💬 Botão WhatsApp encontrado:', whatsappBtn);
+        
         if (whatsappBtn && config.WHATS_REDIRECT) {
           whatsappBtn.href = config.WHATS_REDIRECT;
           whatsappBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('🚀 Redirecionando para WhatsApp:', config.WHATS_REDIRECT);
             window.open(config.WHATS_REDIRECT, '_blank');
           });
+          
+          console.log('✅ Botão WhatsApp configurado com URL:', config.WHATS_REDIRECT);
         }
         
-        console.log('✅ Redirecionamentos configurados:', config);
+        console.log('✅ Redirecionamentos configurados com sucesso!');
       } catch (error) {
         console.warn('⚠️ Erro ao carregar configurações, usando URLs padrão:', error);
         
@@ -425,10 +415,20 @@
         
         if (telegramBtn) {
           telegramBtn.href = 'https://t.me/amandinhaVIP11_bot';
+          telegramBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://t.me/amandinhaVIP11_bot', '_blank');
+          });
+          console.log('🔄 Usando URL padrão para Telegram');
         }
         
         if (whatsappBtn) {
           whatsappBtn.href = 'https://www.contate.me/5511943730383';
+          whatsappBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('https://www.contate.me/5511943730383', '_blank');
+          });
+          console.log('🔄 Usando URL padrão para WhatsApp');
         }
       }
     }
