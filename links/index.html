@@ -1,0 +1,513 @@
+<!DOCTYPE html><html><head>
+  <meta charset="UTF-8">
+  <title>CloserMe.io - 𝗚𝗲𝗼𝘃𝗮𝗻𝗮</title>
+  <meta name="description" content="Encontre todos os links da 𝗚𝗲𝗼𝘃𝗮𝗻𝗮 no CloserMe.io. 𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="canonical" href="https://closerme.io/lopesedoarda">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="manifest" href="https://cdn.closerme.io/site.webmanifest">
+  <meta property="og:title" content="CloserMe.io - 𝗚𝗲𝗼𝘃𝗮𝗻𝗮">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Acesse todos os meus links em um só lugar">
+  <meta property="og:url" content="https://closerme.io/lopesedoarda">
+  <meta property="og:image" content="images/profile.jpg">
+  <link rel="stylesheet" href="css/app.efd734b5.css">
+  
+  <!-- Facebook Pixel - CARREGA PRIMEIRO -->
+  <script async="" src="js/fbevents.js"></script><script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1930686130763239');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1930686130763239&ev=PageView&noscript=1"/>
+  </noscript>
+  
+  <style>
+    /* Aumentar apenas a fonte do status e localização */
+    .container-status .status span,
+    .container-status .loc span {
+      font-size: 1.1em !important;
+      color: #ffffff !important;
+      color: white !important;
+      opacity: 1 !important;
+    }
+    
+    /* Forçar cor branca no ícone de localização também */
+    .container-status .loc img {
+      filter: brightness(0) invert(1) !important;
+    }
+    
+    /* Adaptar foto de fundo para celular */
+    @media (max-width: 768px) {
+      .container-media {
+        position: relative !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+      .container-media img {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        transform: scale(1.1) !important;
+      }
+      
+      .container-media picture {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+      }
+      
+      .container-media source {
+        object-fit: cover !important;
+      }
+    }
+    
+    /* Otimização para telas muito pequenas */
+    @media (max-width: 480px) {
+      .container-media img {
+        object-position: center 30% !important;
+        transform: scale(1.2) !important;
+      }
+    }
+    
+    /* Diminuir texto do footer */
+    .footer-link {
+      font-size: 0.8em !important;
+    }
+    
+    /* Remover bola preta e deixar só logo do Telegram */
+    .cta-icn-round {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+    
+    .loc-loading {
+      opacity: 0.6;
+      animation: pulse 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+    
+    /* Verificação Twitter */
+    .container-profil {
+      position: relative;
+      display: inline-block;
+      transform: scale(1.2); /* Foto 20% maior */
+    }
+    
+    .container-profil img {
+      border: 4px solid white;
+      border-radius: 50%;
+    }
+    
+    .verified-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    
+    .verified-badge svg {
+      width: 24px;
+      height: 24px;
+      fill: #1DA1F2;
+    }
+    
+    @media (max-width: 768px) {
+      .container-profil {
+        transform: scale(1.15); /* Foto 15% maior no mobile */
+      }
+      
+      .container-profil img {
+        border: 3px solid white;
+      }
+      
+      .verified-badge {
+        width: 24px;
+        height: 24px;
+        bottom: 6px;
+        right: 6px;
+        border: 2px solid white;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+      
+      .verified-badge svg {
+        width: 22px;
+        height: 22px;
+        fill: #1DA1F2;
+      }
+    }
+  </style>
+</head>
+<body class="light">
+  <main class="gradient_light">
+    <section class="section-home background-media">
+      <div class="wrapper">
+        <div class="container">
+          <div class="swiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="container-media legacy">
+                  <picture>
+                    <source media="(min-width: 992px)" srcset="images/header.jpg">
+                    <source media="(max-width: 991px)" srcset="images/header.jpg">
+                    <img src="images/header.jpg" alt="lopesedoarda">
+                  </picture>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+          <div class="container-infos">
+            <div class="container-profil">
+              <img fetchpriority="high" src="images/profile.jpg" alt="𝗚𝗲𝗼𝘃𝗮𝗻𝗮">
+              <div class="verified-badge">
+                <svg viewBox="0 0 24 24" aria-label="Conta verificada">
+                  <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="container-name">
+              <span>𝗚𝗲𝗼𝘃𝗮𝗻𝗮</span>
+            </div>
+            <div class="container-status">
+              <div class="status">
+                <div class="circle"></div>
+                <span>Online agora</span>
+              </div>
+              <div class="sep"></div>
+              <div class="loc">
+                <img src="images/loc.svg" alt="">
+                <span id="location-text">São Paulo</span>
+              </div>
+            </div>
+            <p>@geovanacoo</p>
+          </div>
+          <div class="container-cta white round">
+            <a href="#" data-type="content" data-id="0c10c42a-780d-4a0e-aad5-4094f54b4f4b" data-name="𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁" class="cta user-link button-bouncing">
+              <div class="cta-icn-round">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.37.75-.56 2.94-1.27 4.91-2.11 5.91-2.52 2.82-1.21 3.41-1.42 3.8-1.43.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06-.01.24-.05.38z" fill="#0088cc"></path>
+                </svg>
+              </div>
+              <div class="content-text">
+                <span class="cta-text">𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁</span>
+                <span class="cta-subtext">Respondo em menos de 2 minutos</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="background_legacy"></div>
+  </main>
+
+  <footer class="footer no-bg">
+    <div class="wrapper">
+      <div class="container-copyright">
+        <p class="footer-link">
+          <a href="https://closerme.io" target="_blank" class="footer-link">© 2025 CloserMe.io</a> -
+          <a href="https://closerme.io/terms" target="_blank" class="footer-link">Termos e Condições</a> -
+          <a href="https://closerme.io/privacy" target="_blank" class="footer-link">Política de Privacidade</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // VARIÁVEIS GLOBAIS - EXATAMENTE COMO A V1 QUE FUNCIONAVA
+    let userLocation = { city: 'São Paulo', country: 'BR' };
+    let userData = {
+      fbp: '',
+      fbc: '',
+      bot: 'geogeovanabot',
+      id: '',
+      ready: false
+    };
+
+    // SISTEMA AVANÇADO DE CAPTURA FBP/FBC - COPIADO DA V1
+    const getCookie = (n) => document.cookie.split('; ').find(r => r.startsWith(n + '='))?.split('=')[1] || '';
+    const getParam = (n) => new URLSearchParams(window.location.search).get(n) || '';
+
+    // FUNÇÃO PARA CAPTURAR FBP/FBC COM GERAÇÃO GARANTIDA
+    function getFacebookPixelData() {
+      const strategies = [
+        // Estratégia 1: Cookies diretos
+        () => ({ fbp: getCookie('_fbp'), fbc: getCookie('_fbc') }),
+        
+        // Estratégia 2: LocalStorage
+        () => ({
+          fbp: localStorage.getItem('_fbp') || getCookie('_fbp'),
+          fbc: localStorage.getItem('_fbc') || getCookie('_fbc')
+        }),
+        
+        // Estratégia 3: Facebook Pixel object
+        () => {
+          if (window.fbq && window.fbq._fbp) {
+            return { fbp: window.fbq._fbp, fbc: window.fbq._fbc || getCookie('_fbc') };
+          }
+          return { fbp: getCookie('_fbp'), fbc: getCookie('_fbc') };
+        },
+        
+        // Estratégia 4: URL parameters (fbc)
+        () => ({
+          fbp: getCookie('_fbp'),
+          fbc: getParam('fbclid') ? `fb.1.${Date.now()}.${getParam('fbclid')}` : getCookie('_fbc')
+        })
+      ];
+
+      let result = { fbp: '', fbc: '' };
+      
+      // Tenta todas as estratégias
+      for (const strategy of strategies) {
+        const strategyResult = strategy();
+        if (strategyResult.fbp && !result.fbp) result.fbp = strategyResult.fbp;
+        if (strategyResult.fbc && !result.fbc) result.fbc = strategyResult.fbc;
+        
+        // Se já tem ambos, para
+        if (result.fbp && result.fbc) break;
+      }
+      
+      // ESTRATÉGIA 5: GERAR FBP SE AINDA ESTIVER VAZIO (FORMATO CORRETO)
+      if (!result.fbp) {
+        const timestamp = Date.now();
+        // Gerar número aleatório de 18 dígitos (igual ao Facebook original)
+        const randomNumber = Math.floor(Math.random() * 900000000000000000) + 100000000000000000;
+        result.fbp = `fb.1.${timestamp}.${randomNumber}`;
+        
+        // Salvar o FBP gerado como cookie (90 dias)
+        try {
+          const expires = new Date();
+          expires.setTime(expires.getTime() + (90 * 24 * 60 * 60 * 1000));
+          document.cookie = `_fbp=${result.fbp}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+          console.log('🔧 FBP gerado automaticamente (18 dígitos):', result.fbp);
+        } catch (e) {
+          console.warn('Erro ao salvar FBP gerado:', e);
+        }
+      }
+      
+      if (result.fbp || result.fbc) {
+        console.log('✅ FBP/FBC final capturado:', result);
+        return result;
+      }
+      
+      return { fbp: '', fbc: '' };
+    }
+
+    // FUNÇÃO PARA PROCESSAR DADOS - TEMPO IDEAL
+    async function processUserDataOnLoad() {
+      console.log('🚀 [GEOVANA] Processando dados...');
+
+      // 1. CAPTURA AVANÇADA DO FACEBOOK PIXEL - TEMPO IDEAL (3.5s)
+      console.log('🔍 Iniciando captura avançada Facebook Pixel...');
+      const fbData = await waitForFacebookPixelLoad(3500);
+      userData.fbp = fbData.fbp;
+      userData.fbc = fbData.fbc;
+      
+      // Log detalhado do resultado
+      if (userData.fbp || userData.fbc) {
+        console.log('✅ Facebook Pixel capturado com sucesso!');
+        console.log('📊 FBP:', userData.fbp || 'N/A');
+        console.log('📊 FBC:', userData.fbc || 'N/A');
+      } else {
+        console.log('⚠️ Facebook Pixel não encontrado após todas as tentativas');
+      }
+
+      // 2. BUSCAR BOT E SALVAR DADOS - IGUAL V1
+      try {
+        const referer = document.referrer;
+
+        const [botRes, saveRes] = await Promise.all([
+          fetch('https://closerme.io/geovana/botchecker/active_bot.php?v=' + Date.now()).then(r => r.json()),
+          fetch('https://closerme.io/geovana/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              utm_source: getParam('utm_source'),
+              utm_medium: getParam('utm_medium'),
+              utm_campaign: getParam('utm_campaign'),
+              utm_content: getParam('utm_content'),
+              utm_term: getParam('utm_term'),
+              fbp: userData.fbp,
+              fbc: userData.fbc,
+              referer: referer,
+              user_city: userLocation.city,
+              user_country: userLocation.country
+            })
+          }).then(r => r.text())
+        ]);
+
+        userData.bot = botRes.bot || userData.bot;
+        userData.id = saveRes.trim();
+        userData.ready = true;
+
+        console.log('✅ [GEOVANA] PRONTO! Bot:', userData.bot, '| ID:', userData.id);
+
+      } catch (err) {
+        console.warn('❌ Erro:', err);
+        userData.ready = true;
+      }
+    }
+
+    // FUNÇÃO PARA AGUARDAR FACEBOOK PIXEL - COM GERAÇÃO GARANTIDA
+    async function waitForFacebookPixelLoad(maxWaitTime = 3500) {
+      const startTime = Date.now();
+      let attempts = 0;
+      const maxAttempts = 35; // 3.5 segundos / 100ms = 35 tentativas
+      
+      return new Promise((resolve) => {
+        const checkPixelData = () => {
+          attempts++;
+          const pixelData = getFacebookPixelData();
+          
+          // SEMPRE terá pelo menos FBP agora (gerado se necessário)
+          const hasValidData = pixelData.fbp || pixelData.fbc;
+          const timeoutReached = (Date.now() - startTime) > maxWaitTime;
+          const maxAttemptsReached = attempts >= maxAttempts;
+          
+          if (hasValidData || timeoutReached || maxAttemptsReached) {
+            console.log(`✅ Facebook Pixel finalizado na tentativa ${attempts} (${Date.now() - startTime}ms):`, pixelData);
+            
+            // GARANTIA FINAL: Se ainda não tem FBP, força geração (FORMATO CORRETO)
+            if (!pixelData.fbp) {
+              const timestamp = Date.now();
+              // Gerar número aleatório de 18 dígitos (igual ao Facebook original)
+              const randomNumber = Math.floor(Math.random() * 900000000000000000) + 100000000000000000;
+              pixelData.fbp = `fb.1.${timestamp}.${randomNumber}`;
+              console.log('🛡️ FBP de emergência gerado (18 dígitos):', pixelData.fbp);
+            }
+            
+            resolve(pixelData);
+            return;
+          }
+          
+          // Continuar tentando a cada 100ms
+          setTimeout(checkPixelData, 100);
+        };
+        
+        // Primeira verificação imediata
+        checkPixelData();
+      });
+    }
+
+    // FUNÇÃO PARA DETECTAR LOCALIZAÇÃO - USANDO SUA CHAVE PRO
+    async function detectUserLocation() {
+      const locationElement = document.getElementById('location-text');
+      const locContainer = document.querySelector('.loc');
+      
+      try {
+        console.log('📍 Detectando localização com IP-API PRO...');
+        const response = await fetch('https://pro.ip-api.com/json/?key=R1a8D9VJfrqTqpY&fields=status,country,countryCode,region,city', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.status === 'success' && data.city) {
+            userLocation = {
+              city: data.city,
+              country: data.countryCode || 'BR',
+              region: data.region
+            };
+            
+            locationElement.textContent = data.city;
+            locContainer.classList.remove('loc-loading');
+            console.log(`✅ Localização: ${data.city}`);
+            return;
+          }
+        }
+      } catch (error) {
+        console.warn('❌ Erro na API:', error);
+      }
+
+      // Fallback padrão
+      console.log('🏠 Usando localização padrão');
+      locationElement.textContent = 'São Paulo';
+      locContainer.classList.remove('loc-loading');
+      userLocation = { city: 'São Paulo', country: 'BR' };
+    }
+
+    // EXECUTAR QUANDO A PÁGINA CARREGAR - IGUAL V1
+    document.addEventListener("DOMContentLoaded", async function () {
+      // CONFIGURAR CLIQUE NO BOTÃO PRIMEIRO
+      const telegramBtn = document.querySelector("a.user-link");
+      if (telegramBtn) {
+        telegramBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // SE OS DADOS JÁ ESTÃO PRONTOS, REDIRECIONA IMEDIATAMENTE
+          if (userData.ready) {
+            const telegramUrl = `https://t.me/${userData.bot}?start=${userData.id}`;
+            console.log('🚀 [GEOVANA] REDIRECIONAMENTO INSTANTÂNEO!', telegramUrl);
+            window.location.href = telegramUrl;
+            return;
+          }
+
+          // SE NÃO ESTÃO PRONTOS, AGUARDA E DEPOIS REDIRECIONA
+          console.log('⏳ Dados ainda processando, aguardando...');
+          
+          // Aguardar até os dados ficarem prontos (máximo 5 segundos)
+          const startTime = Date.now();
+          const waitForData = setInterval(() => {
+            if (userData.ready || (Date.now() - startTime > 5000)) {
+              clearInterval(waitForData);
+              const telegramUrl = `https://t.me/${userData.bot}?start=${userData.id}`;
+              console.log('🚀 [GEOVANA] REDIRECIONAMENTO APÓS AGUARDAR!', telegramUrl);
+              window.location.href = telegramUrl;
+            }
+          }, 100);
+        });
+      }
+
+      // PROCESSAR LOCALIZAÇÃO E DADOS EM PARALELO - IGUAL V1
+      await Promise.all([
+        detectUserLocation(),
+        processUserDataOnLoad()
+      ]);
+    });
+  </script>
+
+  <script src="js/runtime.bd604550.js" defer=""></script>
+  <script src="js/672.650f65b6.js" defer=""></script>
+  <script src="js/232.60c846ef.js" defer=""></script>
+  <script src="js/app.88aa9b23.js" defer=""></script>
+
+</body></html>

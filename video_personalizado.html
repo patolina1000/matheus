@@ -1231,12 +1231,17 @@
                 if (status && status.status === 'COMPLETED') {
                     clearInterval(window.paymentStatusInterval);
                     updatePaymentStatus('completed', 'Pagamento confirmado!');
-                    alert('Pagamento confirmado! Redirecionando...');
-                    window.location.href = 'obrigado.html';
+                    // Mostra mensagem de sucesso no modal
+                    showPaymentSuccessMessage();
+                    // Redireciona após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = 'obrigado.html';
+                    }, 2000);
                     return;
                 } else if (status && (status.status === 'CANCELED' || status.status === 'FAILED')) {
                     clearInterval(window.paymentStatusInterval);
                     updatePaymentStatus('failed', 'Pagamento não foi processado');
+                    showPaymentErrorMessage('Pagamento não foi processado');
                     return;
                 }
             } catch (error) {

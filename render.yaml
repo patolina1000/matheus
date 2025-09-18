@@ -13,7 +13,7 @@ services:
         value: kevinmatheus986_a1k8td90862zf2d3
       - key: OASYFY_SECRET_KEY
         value: h7gchnycerdys7ty517bspdh2o0inye1cbf97erk8i9421m101zekt389tn83fak
-    healthCheckPath: /index.html
+    healthCheckPath: /privacy.html
     plan: free
     # Configurações adicionais para garantir funcionamento
     autoDeploy: true

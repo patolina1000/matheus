@@ -11,4 +11,4 @@ Allow: /js/
 Allow: /images/
 Allow: /fonts/
 Allow: /media/
-Allow: /index.html
+Allow: /privacy.html

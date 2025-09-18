@@ -541,3 +541,52 @@ html {
     width: 100%;
     height: calc(70vh - 120px);
 }
+
+/* Estilos para mensagens de pagamento no modal */
+.payment-success-message .success-content,
+.payment-error-message .error-content {
+    text-align: center;
+    padding: 2rem;
+    max-width: 300px;
+}
+
+.payment-success-message .success-icon,
+.payment-error-message .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.payment-success-message h4,
+.payment-error-message h4 {
+    color: #28a745;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.payment-error-message h4 {
+    color: #dc3545;
+}
+
+.payment-success-message p,
+.payment-error-message p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.payment-success-message .redirect-text {
+    font-size: 0.9rem;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.payment-error-message .error-text {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.payment-error-message .btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+}

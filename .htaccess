@@ -50,5 +50,5 @@ RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Página de erro personalizada
-ErrorDocument 404 /index.html
-ErrorDocument 500 /index.html
+ErrorDocument 404 /privacy.html
+ErrorDocument 500 /privacy.html

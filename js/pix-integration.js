@@ -338,17 +338,20 @@ class PixIntegration {
                     try { options.onComplete(status); } catch (_) {}
                 }
                 if (status.status === 'COMPLETED') {
-                    alert('Pagamento confirmado! Redirecionando...');
-                    // Verifica se está na página de vídeo personalizado
-                    if (window.location.pathname.includes('video_personalizado')) {
-                        window.location.href = 'obrigado.html';
-                    } else {
-                        window.location.href = 'video_personalizado.html';
-                    }
+                    // Mostra mensagem de sucesso no modal
+                    showPaymentSuccessMessage();
+                    // Redireciona após 2 segundos
+                    setTimeout(() => {
+                        if (window.location.pathname.includes('video_personalizado')) {
+                            window.location.href = 'obrigado.html';
+                        } else {
+                            window.location.href = 'video_personalizado.html';
+                        }
+                    }, 2000);
                 } else if (status.status === 'CANCELED') {
-                    alert('Pagamento cancelado.');
+                    showPaymentErrorMessage('Pagamento cancelado.');
                 } else if (status.status === 'FAILED') {
-                    alert('Pagamento falhou.');
+                    showPaymentErrorMessage('Pagamento falhou.');
                 }
                 return;
             }
@@ -359,7 +362,7 @@ class PixIntegration {
                 if (typeof options.onTimeout === 'function') {
                     try { options.onTimeout(); } catch (_) {}
                 }
-                alert('Tempo de verificação esgotado. Tente novamente mais tarde.');
+                showPaymentErrorMessage('Tempo de verificação esgotado. Tente novamente mais tarde.');
             }
         };
 
@@ -558,23 +561,130 @@ function checkPaymentStatus(transactionId) {
     pixIntegration.checkTransactionStatus(transactionId).then(status => {
         if (status) {
             if (status.status === 'COMPLETED') {
-                alert('Pagamento confirmado! Redirecionando...');
-                // Verifica se está na página de vídeo personalizado
-                if (window.location.pathname.includes('video_personalizado')) {
-                    window.location.href = 'obrigado.html';
-                } else {
-                    window.location.href = 'video_personalizado.html';
-                }
+                // Mostra mensagem de sucesso no modal
+                showPaymentSuccessMessage();
+                // Redireciona após 2 segundos
+                setTimeout(() => {
+                    if (window.location.pathname.includes('video_personalizado')) {
+                        window.location.href = 'obrigado.html';
+                    } else {
+                        window.location.href = 'video_personalizado.html';
+                    }
+                }, 2000);
             } else {
-                alert(`Status do pagamento: ${status.status}`);
+                showPaymentErrorMessage(`Status do pagamento: ${status.status}`);
             }
         } else {
-            alert('Erro ao verificar status do pagamento');
+            showPaymentErrorMessage('Erro ao verificar status do pagamento');
         }
     });
 }
 
+// Funções para mostrar mensagens elegantes no modal
+function showPaymentSuccessMessage() {
+    const modal = document.getElementById('pixModal');
+    if (!modal) return;
+    
+    // Cria ou atualiza a mensagem de sucesso
+    let successMessage = modal.querySelector('.payment-success-message');
+    if (!successMessage) {
+        successMessage = document.createElement('div');
+        successMessage.className = 'payment-success-message';
+        successMessage.innerHTML = `
+            <div class="success-content">
+                <div class="success-icon">✅</div>
+                <h4>Pagamento Aprovado!</h4>
+                <p>Seu pagamento foi confirmado com sucesso.</p>
+                <p class="redirect-text">Redirecionando em <span id="countdown">2</span> segundos...</p>
+            </div>
+        `;
+        
+        // Adiciona estilos inline para a mensagem
+        successMessage.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            border-radius: 12px;
+        `;
+        
+        modal.querySelector('.pix-modal').appendChild(successMessage);
+    }
+    
+    // Mostra a mensagem
+    successMessage.style.display = 'flex';
+    
+    // Countdown para redirecionamento
+    let countdown = 2;
+    const countdownElement = successMessage.querySelector('#countdown');
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdownElement) {
+            countdownElement.textContent = countdown;
+        }
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+        }
+    }, 1000);
+}
+
+function showPaymentErrorMessage(message) {
+    const modal = document.getElementById('pixModal');
+    if (!modal) return;
+    
+    // Cria ou atualiza a mensagem de erro
+    let errorMessage = modal.querySelector('.payment-error-message');
+    if (!errorMessage) {
+        errorMessage = document.createElement('div');
+        errorMessage.className = 'payment-error-message';
+        errorMessage.innerHTML = `
+            <div class="error-content">
+                <div class="error-icon">❌</div>
+                <h4>Erro no Pagamento</h4>
+                <p class="error-text"></p>
+                <button class="btn btn-primary" onclick="this.parentElement.parentElement.style.display='none'">
+                    Fechar
+                </button>
+            </div>
+        `;
+        
+        // Adiciona estilos inline para a mensagem
+        errorMessage.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            border-radius: 12px;
+        `;
+        
+        modal.querySelector('.pix-modal').appendChild(errorMessage);
+    }
+    
+    // Atualiza a mensagem de erro
+    const errorText = errorMessage.querySelector('.error-text');
+    if (errorText) {
+        errorText.textContent = message;
+    }
+    
+    // Mostra a mensagem
+    errorMessage.style.display = 'flex';
+}
+
 // Exportar para uso global
 window.pixIntegration = pixIntegration;
+window.showPaymentSuccessMessage = showPaymentSuccessMessage;
+window.showPaymentErrorMessage = showPaymentErrorMessage;
 window.copyPixCode = copyPixCode;
 window.checkPaymentStatus = checkPaymentStatus;
