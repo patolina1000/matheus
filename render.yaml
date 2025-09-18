@@ -13,6 +13,10 @@ services:
         value: kevinmatheus986_a1k8td90862zf2d3
       - key: OASYFY_SECRET_KEY
         value: h7gchnycerdys7ty517bspdh2o0inye1cbf97erk8i9421m101zekt389tn83fak
+      - key: TELEGRAM_REDIRECT
+        value: https://t.me/amandinhaVIP11_bot
+      - key: WHATS_REDIRECT
+        value: https://www.contate.me/5511943730383
     healthCheckPath: /privacy.html
     plan: free
     # Configurações adicionais para garantir funcionamento
