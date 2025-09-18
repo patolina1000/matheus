@@ -29,6 +29,13 @@ RUN echo "<VirtualHost *:80>\n\
     <Directory /var/www/html>\n\
         AllowOverride All\n\
         Require all granted\n\
+        DirectoryIndex index.html index.php index.htm\n\
+    </Directory>\n\
+    # Configurar tipos MIME para arquivos estáticos\n\
+    <Directory /var/www/html/links>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+        DirectoryIndex index.html index.php index.htm\n\
     </Directory>\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
