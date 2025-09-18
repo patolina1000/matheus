@@ -343,7 +343,7 @@ class PixIntegration {
                     // Redireciona após 2 segundos
                     setTimeout(() => {
                         if (window.location.pathname.includes('video_personalizado')) {
-                            window.location.href = 'obrigado.html';
+                            window.location.href = 'obrigado.php';
                         } else {
                             window.location.href = 'video_personalizado.html';
                         }
@@ -566,7 +566,7 @@ function checkPaymentStatus(transactionId) {
                 // Redireciona após 2 segundos
                 setTimeout(() => {
                     if (window.location.pathname.includes('video_personalizado')) {
-                        window.location.href = 'obrigado.html';
+                        window.location.href = 'obrigado.php';
                     } else {
                         window.location.href = 'video_personalizado.html';
                     }
