@@ -112,21 +112,7 @@ function getWebhookLogs($date, $filter, $limit) {
  * Analisa uma linha de log e extrai informações
  */
 function parseLogLine($line, $sourceFile) {
-    // Padrão 1: SimpleLogger format [timestamp] [level] [ip] [requestId] message
-    if (preg_match('/^\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] (.+)$/', $line, $matches)) {
-        return [
-            'timestamp' => $matches[1],
-            'level' => strtolower($matches[2]),
-            'ip' => $matches[3],
-            'requestId' => $matches[4],
-            'message' => $matches[5],
-            'source' => $sourceFile,
-            'type' => determineLogType($matches[5], $matches[2]),
-            'data' => extractLogData($matches[5])
-        ];
-    }
-    
-    // Padrão 2: JSON logs (webhook, performance, audit)
+    // Padrão 1: JSON logs (webhook, performance, audit) - PRIORIDADE ALTA
     if (strpos($line, '{') === 0) {
         $jsonData = json_decode($line, true);
         if ($jsonData && isset($jsonData['timestamp'])) {
@@ -141,6 +127,20 @@ function parseLogLine($line, $sourceFile) {
                 'data' => $jsonData['context'] ?? $jsonData
             ];
         }
+    }
+    
+    // Padrão 2: SimpleLogger format [timestamp] [level] [ip] [requestId] message
+    if (preg_match('/^\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] (.+)$/', $line, $matches)) {
+        return [
+            'timestamp' => $matches[1],
+            'level' => strtolower($matches[2]),
+            'ip' => $matches[3],
+            'requestId' => $matches[4],
+            'message' => $matches[5],
+            'source' => $sourceFile,
+            'type' => determineLogType($matches[5], $matches[2]),
+            'data' => extractLogData($matches[5])
+        ];
     }
     
     // Padrão 3: Logs simples (fallback)
@@ -167,11 +167,21 @@ function isWebhookRelated($logEntry) {
     $message = strtolower($logEntry['message']);
     $source = strtolower($logEntry['source']);
     
+    // Verificar por arquivo de origem primeiro (mais confiável)
+    if (strpos($source, 'webhook') !== false || 
+        strpos($source, 'performance') !== false ||
+        strpos($source, 'audit') !== false) {
+        return true;
+    }
+    
     // Verificar por palavras-chave na mensagem
     $webhookKeywords = [
         'webhook', 'transaction', 'pix', 'payment', 'oasyfy',
         'api-proxy', 'generate_pix', 'check_status', 'callback',
-        'paid', 'created', 'canceled', 'refunded', 'completed'
+        'paid', 'created', 'canceled', 'refunded', 'completed',
+        'processando', 'pagamento', 'processado', 'confirmado',
+        'liberado', 'acesso', 'email', 'confirmação', 'backup',
+        'sistemas internos', 'status do pedido', 'banco de dados'
     ];
     
     foreach ($webhookKeywords as $keyword) {
@@ -180,11 +190,16 @@ function isWebhookRelated($logEntry) {
         }
     }
     
-    // Verificar por arquivo de origem
-    if (strpos($source, 'webhook') !== false || 
-        strpos($source, 'performance') !== false ||
-        strpos($source, 'audit') !== false) {
-        return true;
+    // Verificar se contém dados de transação
+    if (isset($logEntry['data']) && is_array($logEntry['data'])) {
+        $data = $logEntry['data'];
+        if (isset($data['transaction_id']) || 
+            isset($data['event']) || 
+            isset($data['amount']) ||
+            isset($data['client_email']) ||
+            isset($data['client_name'])) {
+            return true;
+        }
     }
     
     return false;
@@ -195,28 +210,52 @@ function isWebhookRelated($logEntry) {
  */
 function determineLogType($message, $level) {
     $message = strtolower($message);
+    $level = strtolower($level);
     
+    // Primeiro verificar o nível do log
+    if ($level === 'error' || $level === 'critical') {
+        return 'error';
+    }
+    
+    if ($level === 'warning') {
+        return 'warning';
+    }
+    
+    // Depois verificar a mensagem
     if (strpos($message, 'enviado') !== false || 
         strpos($message, 'sent') !== false ||
-        strpos($message, 'enviando') !== false) {
+        strpos($message, 'enviando') !== false ||
+        strpos($message, 'request') !== false) {
         return 'sent';
     }
     
     if (strpos($message, 'recebido') !== false || 
         strpos($message, 'received') !== false ||
-        strpos($message, 'webhook recebido') !== false) {
+        strpos($message, 'webhook recebido') !== false ||
+        strpos($message, 'webhook init') !== false ||
+        strpos($message, 'processando') !== false ||
+        strpos($message, 'pagamento') !== false ||
+        strpos($message, 'transaction') !== false) {
         return 'received';
     }
     
     if (strpos($message, 'erro') !== false || 
         strpos($message, 'error') !== false ||
-        strpos($message, 'falha') !== false) {
+        strpos($message, 'falha') !== false ||
+        strpos($message, 'failed') !== false) {
         return 'error';
     }
     
     if (strpos($message, 'aviso') !== false || 
         strpos($message, 'warning') !== false) {
         return 'warning';
+    }
+    
+    // Verificar se é relacionado a PIX ou API
+    if (strpos($message, 'pix') !== false || 
+        strpos($message, 'api') !== false ||
+        strpos($message, 'proxy') !== false) {
+        return 'api';
     }
     
     return 'info';
