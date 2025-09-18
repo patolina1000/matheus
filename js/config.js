@@ -35,17 +35,17 @@ const OASYFY_CONFIG = {
             '1-mes': {
                 id: 'assinatura-1-mes',
                 name: 'Assinatura Privacy - 1 mês',
-                price: 1.00
+                price: 19.90
             },
             '3-meses': {
                 id: 'assinatura-3-meses',
                 name: 'Assinatura Privacy - 3 meses (30% off)',
-                price: 1.00
+                price: 41.90
             },
             '6-meses': {
                 id: 'assinatura-6-meses',
                 name: 'Assinatura Privacy - 6 meses (50% off)',
-                price: 1.00
+                price: 59.90
             }
         },
         
