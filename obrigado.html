@@ -1,3 +1,7 @@
+<?php
+// Incluir configurações
+require_once 'config.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,57 +11,82 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/core.css">
     <style>
-        body { background: #f7f9fc; }
-        .thankyou-card { max-width: 560px; margin: 10vh auto; }
+        body { 
+            background: #f7f9fc; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .thankyou-card { 
+            max-width: 500px; 
+            margin: 20vh auto; 
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .logo {
+            height: 60px;
+            margin-bottom: 30px;
+        }
+        .title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .message {
+            color: #7f8c8d;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .redirect-info {
+            margin-top: 30px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            color: #27ae60;
+            font-size: 14px;
+        }
     </style>
-    <script>
-        (function(){
-            try {
-                const key = 'pix_payments';
-                const list = JSON.parse(localStorage.getItem(key) || '[]');
-                if (list.length > 0) {
-                    const last = list.find(i => i.status === 'COMPLETED') || list[0];
-                    window.__PIX_LAST__ = last;
-                }
-            } catch (e) {}
-        })();
-    </script>
-    <script defer>
-        document.addEventListener('DOMContentLoaded', function(){
-            var info = window.__PIX_LAST__ || null;
-            if (info) {
-                var elId = document.getElementById('tx-id');
-                var elAmt = document.getElementById('tx-amount');
-                if (elId && info.transactionId) elId.textContent = info.transactionId;
-                if (elAmt && (info.amount || (info.provider && info.provider.amount))) {
-                    var v = info.amount || (info.provider && info.provider.amount);
-                    elAmt.textContent = 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }
-            }
-        });
-    </script>
     <link rel="icon" href="/images/logo.png">
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    
 </head>
 <body>
     <div class="container">
         <div class="card shadow thankyou-card">
             <div class="card-body text-center p-5">
-                <img src="/images/logo.svg" alt="Logo" style="height:48px" class="mb-3"/>
-                <h3 class="mb-2">Pagamento confirmado!</h3>
-                <p class="text-muted mb-4">Obrigado pela sua compra. Seu pagamento via PIX foi aprovado.</p>
-                <div class="alert alert-success text-start" role="alert">
-                    <div><strong>Status:</strong> Confirmado</div>
-                    <div><strong>Transação:</strong> <span id="tx-id">—</span></div>
-                    <div><strong>Valor:</strong> <span id="tx-amount">—</span></div>
+                <img src="/images/logo.svg" alt="Logo" class="logo"/>
+                <h2 class="title">Pagamento confirmado!</h2>
+                <p class="message">Obrigado pela sua compra. Seu pagamento via PIX foi aprovado.</p>
+                
+                <div class="redirect-info">
+                    <i class="fas fa-clock"></i> Você será redirecionado automaticamente em <span id="countdown">5</span> segundos...
                 </div>
-                <a href="/" class="btn btn-primary">Voltar para o início</a>
             </div>
         </div>
     </div>
+
+    <script>
+        // Contador regressivo
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                // Redirecionar para a URL configurada
+                window.location.href = '<?php echo REDIRECT_URL; ?>';
+            }
+        }, 1000);
+        
+        // Permitir redirecionamento imediato ao clicar
+        document.addEventListener('click', function() {
+            clearInterval(timer);
+            window.location.href = '<?php echo REDIRECT_URL; ?>';
+        });
+    </script>
 </body>
 </html>
 
