@@ -339,7 +339,7 @@ class PixIntegration {
                 }
                 if (status.status === 'COMPLETED') {
                     alert('Pagamento confirmado! Redirecionando...');
-                    window.location.href = '/obrigado.html';
+                    window.location.href = '/video_personalizado.html';
                 } else if (status.status === 'CANCELED') {
                     alert('Pagamento cancelado.');
                 } else if (status.status === 'FAILED') {
@@ -555,7 +555,7 @@ function checkPaymentStatus(transactionId) {
             if (status.status === 'COMPLETED') {
                 alert('Pagamento confirmado! Redirecionando...');
                 // Aqui você pode redirecionar para uma página de sucesso
-                window.location.href = '/pagamento-sucesso.html';
+                window.location.href = '/video_personalizado.html';
             } else {
                 alert(`Status do pagamento: ${status.status}`);
             }

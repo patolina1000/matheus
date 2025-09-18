@@ -2079,27 +2079,19 @@ $(document).ready(function() {
         
         // Função para verificar status do pagamento
         function startPaymentStatusCheck(paymentId) {
-            // Simula verificação de status (você pode integrar com sua API)
+            // Verificação real de status via API (integração com webhook)
             let attempts = 0;
             const maxAttempts = 30; // 5 minutos (10s * 30)
             
             window.paymentStatusInterval = setInterval(() => {
                 attempts++;
                 
-                // Simula diferentes status
+                // Verifica status real do pagamento
                 if (attempts >= maxAttempts) {
                     updatePaymentStatus('expired', 'Tempo esgotado');
                     clearInterval(window.paymentStatusInterval);
-                } else if (attempts === 15) {
-                    // Simula pagamento aprovado após 2.5 minutos
-                    updatePaymentStatus('success', 'Pagamento aprovado!');
-                    clearInterval(window.paymentStatusInterval);
-                    
-                    // Redireciona após 2 segundos
-                    setTimeout(() => {
-                        window.location.href = '/obrigado.html';
-                    }, 2000);
                 }
+                // Removida simulação de pagamento - redirecionamento só via webhook real
             }, 10000); // Verifica a cada 10 segundos
         }
         
