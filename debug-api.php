@@ -2,8 +2,11 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-$logDir = 'logs/';
-$logFiles = glob($logDir . '*.log');
+require_once 'simple-logger.php';
+
+$logDir = SimpleLogger::getLogDir();
+$logFiles = is_dir($logDir) ? glob($logDir . '*.log') : [];
+$logFiles = $logFiles ?: [];
 
 $response = [
     'success' => true,
