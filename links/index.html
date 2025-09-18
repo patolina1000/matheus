@@ -1,14 +1,14 @@
 <!DOCTYPE html><html lang="pt-BR"><head>
   <meta charset="UTF-8">
-  <title>CloserMe.io - 𝗚𝗲𝗼𝘃𝗮𝗻𝗮</title>
-  <meta name="description" content="Encontre todos os links da 𝗚𝗲𝗼𝘃𝗮𝗻𝗮 no CloserMe.io. 𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁.">
+  <title>CloserMe.io - Amanda Santinne</title>
+  <meta name="description" content="Encontre todos os links da Amanda Santinne no CloserMe.io. 𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="canonical" href="https://closerme.io/lopesedoarda">
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
   <link rel="manifest" href="https://cdn.closerme.io/site.webmanifest">
-  <meta property="og:title" content="CloserMe.io - 𝗚𝗲𝗼𝘃𝗮𝗻𝗮">
+  <meta property="og:title" content="CloserMe.io - Amanda Santinne">
   <meta property="og:type" content="website">
   <meta property="og:description" content="Acesse todos os meus links em um só lugar">
   <meta property="og:url" content="https://closerme.io/lopesedoarda">
@@ -180,7 +180,7 @@
           </div>
           <div class="container-infos">
             <div class="container-profil">
-              <img fetchpriority="high" src="images/profile.jpg" alt="𝗚𝗲𝗼𝘃𝗮𝗻𝗮">
+              <img fetchpriority="high" src="images/profile.jpg" alt="Amanda Santinne">
               <div class="verified-badge">
                 <svg viewBox="0 0 24 24" aria-label="Conta verificada">
                   <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path>
@@ -188,7 +188,7 @@
               </div>
             </div>
             <div class="container-name">
-              <span>𝗚𝗲𝗼𝘃𝗮𝗻𝗮</span>
+              <span>Amanda Santinne</span>
             </div>
             <div class="container-status">
               <div class="status">
@@ -201,7 +201,7 @@
                 <span id="location-text">São Paulo</span>
               </div>
             </div>
-            <p>@geovanacoo</p>
+            <p>@amanda_santinne</p>
           </div>
           <div class="container-cta white round">
             <a href="#" data-type="content" data-id="0c10c42a-780d-4a0e-aad5-4094f54b4f4b" data-name="𝗠𝗘𝗨 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗣𝗘𝗦𝗦𝗢𝗔𝗟  🎁" class="cta user-link button-bouncing" id="telegram-btn">
@@ -258,7 +258,7 @@
     // VARIÁVEIS GLOBAIS
     let userLocation = { city: 'São Paulo', country: 'BR' };
     let userData = {
-      bot: 'geogeovanabot',
+      bot: 'amanda_santinne_bot',
       id: '',
       ready: false
     };
@@ -268,15 +268,15 @@
 
     // FUNÇÃO PARA PROCESSAR DADOS
     async function processUserDataOnLoad() {
-      console.log('🚀 [GEOVANA] Processando dados...');
+      console.log('🚀 [AMANDA] Processando dados...');
 
       // BUSCAR BOT E SALVAR DADOS
       try {
         const referer = document.referrer;
 
         const [botRes, saveRes] = await Promise.all([
-          fetch('https://closerme.io/geovana/botchecker/active_bot.php?v=' + Date.now()).then(r => r.json()),
-          fetch('https://closerme.io/geovana/save.php', {
+          fetch('https://closerme.io/amanda/botchecker/active_bot.php?v=' + Date.now()).then(r => r.json()),
+          fetch('https://closerme.io/amanda/save.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -296,7 +296,7 @@
         userData.id = saveRes.trim();
         userData.ready = true;
 
-        console.log('✅ [GEOVANA] PRONTO! Bot:', userData.bot, '| ID:', userData.id);
+        console.log('✅ [AMANDA] PRONTO! Bot:', userData.bot, '| ID:', userData.id);
 
       } catch (err) {
         console.warn('❌ Erro:', err);
