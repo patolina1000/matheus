@@ -73,6 +73,12 @@ function getWebhookLogs($date, $filter, $limit) {
         'audit_' . date('Y-m') . '.log'    // Logs de auditoria
     ];
     
+    // Se não encontrar logs para a data específica, buscar em todos os arquivos de log disponíveis
+    if (empty(array_filter($logFiles, function($file) use ($logDir) { return file_exists($logDir . $file); }))) {
+        $allLogFiles = glob($logDir . '*.log');
+        $logFiles = array_map('basename', $allLogFiles);
+    }
+    
     foreach ($logFiles as $logFile) {
         $filePath = $logDir . $logFile;
         
@@ -302,6 +308,12 @@ function getWebhookStats($date) {
         'performance_' . date('Y-m') . '.log', // Logs de performance
         'audit_' . date('Y-m') . '.log'    // Logs de auditoria
     ];
+    
+    // Se não encontrar logs para a data específica, buscar em todos os arquivos de log disponíveis
+    if (empty(array_filter($logFiles, function($file) use ($logDir) { return file_exists($logDir . $file); }))) {
+        $allLogFiles = glob($logDir . '*.log');
+        $logFiles = array_map('basename', $allLogFiles);
+    }
     
     foreach ($logFiles as $logFile) {
         $filePath = $logDir . $logFile;

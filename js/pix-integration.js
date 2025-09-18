@@ -341,9 +341,9 @@ class PixIntegration {
                     alert('Pagamento confirmado! Redirecionando...');
                     // Verifica se está na página de vídeo personalizado
                     if (window.location.pathname.includes('video_personalizado')) {
-                        window.location.href = '/obrigado.html';
+                        window.location.href = 'obrigado.html';
                     } else {
-                        window.location.href = '/video_personalizado.html';
+                        window.location.href = 'video_personalizado.html';
                     }
                 } else if (status.status === 'CANCELED') {
                     alert('Pagamento cancelado.');
@@ -561,9 +561,9 @@ function checkPaymentStatus(transactionId) {
                 alert('Pagamento confirmado! Redirecionando...');
                 // Verifica se está na página de vídeo personalizado
                 if (window.location.pathname.includes('video_personalizado')) {
-                    window.location.href = '/obrigado.html';
+                    window.location.href = 'obrigado.html';
                 } else {
-                    window.location.href = '/video_personalizado.html';
+                    window.location.href = 'video_personalizado.html';
                 }
             } else {
                 alert(`Status do pagamento: ${status.status}`);
