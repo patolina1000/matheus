@@ -1,6 +1,17 @@
 <?php
-// Incluir configurações
-require_once 'config.php';
+// Configuração de redirecionamento
+$redirect_url = 'https://google.com'; // URL padrão
+
+// Tentar carregar configurações do config.php
+if (file_exists('config.php')) {
+    require_once 'config.php';
+    if (defined('REDIRECT_URL')) {
+        $redirect_url = REDIRECT_URL;
+    }
+} else {
+    // Se config.php não existir, tentar carregar variáveis de ambiente diretamente
+    $redirect_url = $_ENV['REDIRECT_URL'] ?? 'https://google.com';
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -71,7 +82,7 @@ require_once 'config.php';
                 </div>
                 
                 <div class="debug-info">
-                    <strong>Debug:</strong> Redirecionando para: <?php echo REDIRECT_URL; ?>
+                    <strong>Debug:</strong> Redirecionando para: <?php echo $redirect_url; ?>
                 </div>
             </div>
         </div>
@@ -79,7 +90,7 @@ require_once 'config.php';
 
     <script>
         // URL de redirecionamento
-        const redirectUrl = '<?php echo REDIRECT_URL; ?>';
+        const redirectUrl = '<?php echo $redirect_url; ?>';
         
         // Contador regressivo
         let countdown = 5;
