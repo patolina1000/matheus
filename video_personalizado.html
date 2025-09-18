@@ -847,12 +847,21 @@
 
   <!-- Scripts necessários para PIX -->
   <script src="js/jquery.min.js"></script>
-  <script src="js/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/pix-integration.js"></script>
 
   <script>
+    // Verifica se SweetAlert2 está disponível
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Swal === 'undefined') {
+            console.warn('SweetAlert2 não foi carregado corretamente');
+        } else {
+            console.log('SweetAlert2 carregado com sucesso');
+        }
+    });
+
     // Timer (05:00 -> 00:00)
     function startTimer(totalSeconds){
       let t = totalSeconds;
