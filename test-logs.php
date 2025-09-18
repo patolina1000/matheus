@@ -16,8 +16,11 @@ SimpleLogger::pix('TEST', 'Teste de PIX log');
 SimpleLogger::webhook('TEST', 'Teste de webhook log');
 
 // Verificar arquivos de log
-$logDir = 'logs/';
-$logFiles = glob($logDir . '*.log');
+$logDir = SimpleLogger::getLogDir();
+$logFiles = is_dir($logDir) ? glob($logDir . '*.log') : [];
+$logFiles = $logFiles ?: [];
+
+$appLogFile = $logDir . 'app_' . date('Y-m-d') . '.log';
 
 $response = [
     'success' => true,
@@ -26,13 +29,13 @@ $response = [
     'log_files' => $logFiles,
     'log_files_count' => count($logFiles),
     'current_date' => date('Y-m-d'),
-    'app_log_file' => $logDir . 'app_' . date('Y-m-d') . '.log',
-    'app_log_exists' => file_exists($logDir . 'app_' . date('Y-m-d') . '.log')
+    'app_log_file' => $appLogFile,
+    'app_log_exists' => file_exists($appLogFile)
 ];
 
 // Se o arquivo de log do dia existe, mostrar algumas linhas
-if (file_exists($logDir . 'app_' . date('Y-m-d') . '.log')) {
-    $lines = file($logDir . 'app_' . date('Y-m-d') . '.log', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+if (file_exists($appLogFile)) {
+    $lines = file($appLogFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $response['app_log_lines_count'] = count($lines);
     $response['app_log_last_5_lines'] = array_slice($lines, -5);
 }

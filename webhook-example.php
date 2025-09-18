@@ -188,10 +188,15 @@ $logConfig = getOasyfyConfig('log');
 $idempotencyConfig = getOasyfyConfig('idempotency');
 $systemConfig = getOasyfyConfig('system');
 
-define('WEBHOOK_LOG_FILE', $logConfig['log_dir'] . 'webhook_' . date('Y-m') . '.log');
-define('ERROR_LOG_FILE', $logConfig['log_dir'] . 'errors_' . date('Y-m') . '.log');
-define('PERFORMANCE_LOG_FILE', $logConfig['log_dir'] . 'performance_' . date('Y-m') . '.log');
-define('AUDIT_LOG_FILE', $logConfig['log_dir'] . 'audit_' . date('Y-m') . '.log');
+$effectiveLogDir = SimpleLogger::getLogDir();
+
+// Atualizar diretório de logs efetivo nas configurações em tempo de execução
+$logConfig['log_dir'] = $effectiveLogDir;
+
+define('WEBHOOK_LOG_FILE', $effectiveLogDir . 'webhook_' . date('Y-m') . '.log');
+define('ERROR_LOG_FILE', $effectiveLogDir . 'errors_' . date('Y-m') . '.log');
+define('PERFORMANCE_LOG_FILE', $effectiveLogDir . 'performance_' . date('Y-m') . '.log');
+define('AUDIT_LOG_FILE', $effectiveLogDir . 'audit_' . date('Y-m') . '.log');
 define('PROCESSED_TRANSACTIONS_FILE', 'data/processed_transactions.json');
 define('IDEMPOTENCY_CACHE_FILE', 'data/idempotency_cache.json');
 define('MAX_RETRY_ATTEMPTS', $systemConfig['retry_attempts']);
@@ -201,7 +206,9 @@ define('LOG_ROTATION_DAYS', $logConfig['log_rotation_days']);
 define('CACHE_CLEANUP_INTERVAL', $idempotencyConfig['cache_cleanup_interval']);
 
 // Criar diretórios se não existirem
-if (!file_exists('logs')) mkdir('logs', 0755, true);
+if (!is_dir($effectiveLogDir)) {
+    @mkdir($effectiveLogDir, 0755, true);
+}
 if (!file_exists('data')) mkdir('data', 0755, true);
 
 /**
@@ -373,9 +380,9 @@ class Logger {
     }
     
     private static function cleanupOldLogs() {
-        $logDir = 'logs/';
+        $logDir = SimpleLogger::getLogDir();
         $cutoffTime = time() - (LOG_ROTATION_DAYS * 24 * 3600);
-        
+
         if (is_dir($logDir)) {
             $files = glob($logDir . '*.log');
             foreach ($files as $file) {

@@ -1,12 +1,14 @@
 <?php
 /**
  * Monitor de Webhook PIX Oasy.fy
- * 
+ *
  * Script para monitorar logs, estatísticas e status do webhook
  */
 
 // Configurações
-$logDir = 'logs/';
+require_once 'simple-logger.php';
+
+$logDir = SimpleLogger::getLogDir();
 $dataDir = 'data/';
 $refreshInterval = 5; // segundos
 

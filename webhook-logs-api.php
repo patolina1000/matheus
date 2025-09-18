@@ -7,6 +7,10 @@
 // Incluir sistema de logs simples
 require_once 'simple-logger.php';
 
+if (!defined('SIMPLE_LOGGER_LOG_DIR')) {
+    define('SIMPLE_LOGGER_LOG_DIR', SimpleLogger::getLogDir());
+}
+
 // Headers para CORS
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -47,8 +51,8 @@ try {
     
     if ($debug) {
         $response['debug'] = [
-            'log_dir' => 'logs/',
-            'log_files_found' => glob('logs/*.log'),
+            'log_dir' => SIMPLE_LOGGER_LOG_DIR,
+            'log_files_found' => glob(SIMPLE_LOGGER_LOG_DIR . '*.log'),
             'date_requested' => $date,
             'filter_requested' => $filter
         ];
@@ -68,11 +72,11 @@ try {
  * Obtém logs de webhooks
  */
 function getWebhookLogs($date, $filter, $limit) {
-    $logDir = 'logs/';
-    
+    $logDir = SIMPLE_LOGGER_LOG_DIR;
+
     // Criar diretório se não existir
-    if (!file_exists($logDir)) {
-        mkdir($logDir, 0755, true);
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
     }
     
     $webhookLogs = [];
@@ -88,7 +92,7 @@ function getWebhookLogs($date, $filter, $limit) {
     
     // Se não encontrar logs para a data específica, buscar em todos os arquivos de log disponíveis
     if (empty(array_filter($logFiles, function($file) use ($logDir) { return file_exists($logDir . $file); }))) {
-        $allLogFiles = glob($logDir . '*.log');
+        $allLogFiles = glob($logDir . '*.log') ?: [];
         $logFiles = array_map('basename', $allLogFiles);
     }
     
@@ -393,11 +397,11 @@ function shouldIncludeLog($logEntry, $filter) {
  * Obtém estatísticas dos logs
  */
 function getWebhookStats($date) {
-    $logDir = 'logs/';
-    
+    $logDir = SIMPLE_LOGGER_LOG_DIR;
+
     // Criar diretório se não existir
-    if (!file_exists($logDir)) {
-        mkdir($logDir, 0755, true);
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
     }
     
     $stats = [
@@ -422,7 +426,7 @@ function getWebhookStats($date) {
     
     // Se não encontrar logs para a data específica, buscar em todos os arquivos de log disponíveis
     if (empty(array_filter($logFiles, function($file) use ($logDir) { return file_exists($logDir . $file); }))) {
-        $allLogFiles = glob($logDir . '*.log');
+        $allLogFiles = glob($logDir . '*.log') ?: [];
         $logFiles = array_map('basename', $allLogFiles);
     }
     
@@ -477,11 +481,11 @@ function getWebhookStats($date) {
  * Limpa logs antigos
  */
 function cleanupOldLogs() {
-    $logDir = 'logs/';
+    $logDir = SIMPLE_LOGGER_LOG_DIR;
     $cutoff = time() - (7 * 24 * 3600); // 7 dias atrás
-    
+
     if (is_dir($logDir)) {
-        $files = glob($logDir . 'app_*.log');
+        $files = glob($logDir . 'app_*.log') ?: [];
         foreach ($files as $file) {
             if (filemtime($file) < $cutoff) {
                 unlink($file);

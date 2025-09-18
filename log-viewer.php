@@ -7,7 +7,7 @@
 require_once 'simple-logger.php';
 
 // Configurações
-$logDir = 'logs/';
+$logDir = SimpleLogger::getLogDir();
 $maxLines = 1000; // Máximo de linhas a exibir
 $defaultFilter = $_GET['filter'] ?? 'all';
 $defaultDate = $_GET['date'] ?? date('Y-m-d');
@@ -45,7 +45,7 @@ function readLogs($date, $filter = 'all', $maxLines = 1000) {
 // Função para obter datas disponíveis
 function getAvailableDates() {
     global $logDir;
-    $files = glob($logDir . 'app_*.log');
+    $files = glob($logDir . 'app_*.log') ?: [];
     $dates = [];
     
     foreach ($files as $file) {
