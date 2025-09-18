@@ -2083,15 +2083,33 @@ $(document).ready(function() {
             let attempts = 0;
             const maxAttempts = 30; // 5 minutos (10s * 30)
             
-            window.paymentStatusInterval = setInterval(() => {
+            window.paymentStatusInterval = setInterval(async () => {
                 attempts++;
                 
-                // Verifica status real do pagamento
+                try {
+                    // Verifica status real do pagamento via API
+                    const status = await pixIntegration.checkTransactionStatus(paymentId);
+                    
+                    if (status && status.status === 'COMPLETED') {
+                        clearInterval(window.paymentStatusInterval);
+                        updatePaymentStatus('completed', 'Pagamento confirmado!');
+                        alert('Pagamento confirmado! Redirecionando...');
+                        window.location.href = 'video_personalizado.html';
+                        return;
+                    } else if (status && (status.status === 'CANCELED' || status.status === 'FAILED')) {
+                        clearInterval(window.paymentStatusInterval);
+                        updatePaymentStatus('failed', 'Pagamento não foi processado');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status do pagamento:', error);
+                }
+                
+                // Verifica se atingiu o limite de tentativas
                 if (attempts >= maxAttempts) {
                     updatePaymentStatus('expired', 'Tempo esgotado');
                     clearInterval(window.paymentStatusInterval);
                 }
-                // Removida simulação de pagamento - redirecionamento só via webhook real
             }, 10000); // Verifica a cada 10 segundos
         }
         
