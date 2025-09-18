@@ -131,7 +131,7 @@
     }
     .price-section h3{color:var(--text);margin-bottom:6px}
     .old-price{display:block;color:#9b9b9b;text-decoration:line-through;font-size:18px;margin-bottom:6px}
-    .new-price{display:block;font-size:40px;font-weight:900;margin-bottom:8px;background:var(--badge-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .new-price{display:block;font-size:40px;font-weight:900;margin-bottom:8px;background:var(--badge-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     .price-installment{font-size:15px;color:var(--muted)}
 
     /* Oferta + Timer */
@@ -162,6 +162,505 @@
       .new-price{font-size:34px}
       .btn{display:block;margin:10px auto;max-width:320px}
       .brand-card img{height:34px}
+    }
+
+    /* ESTILOS DO MODAL PIX - DESIGN PRIVACY */
+    .pix-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+    }
+
+    .pix-modal {
+        background: white;
+        border-radius: 20px;
+        padding: 0;
+        max-width: 450px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: pixModalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes pixModalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .pix-modal-body {
+        padding: 0;
+    }
+
+    .pix-modal-content {
+        padding: 25px;
+    }
+
+    /* Card Principal */
+    .pix-checkout-card {
+        background: white;
+        border-radius: 16px;
+        padding: 0;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    /* Banner do Topo */
+    .pix-banner {
+        position: relative;
+        height: 120px;
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .banner-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(2px);
+        transform: scale(1.1);
+    }
+
+    .banner-content {
+        position: relative;
+        z-index: 2;
+        padding: 20px 60px 20px 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(255, 122, 0, 0.8), rgba(255, 94, 98, 0.8));
+    }
+
+    .banner-creator-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .banner-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.9);
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .banner-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .banner-creator-details {
+        color: white;
+    }
+
+    .banner-creator-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 2px 0;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .banner-creator-username {
+        font-size: 14px;
+        margin: 0;
+        opacity: 0.9;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .banner-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: all 0.2s ease;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+
+    .banner-close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    /* Seção de Benefícios */
+    .benefits-section {
+        margin-bottom: 20px;
+    }
+
+    .benefits-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 15px 0;
+        text-align: center;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .benefit-icon {
+        color: #10b154;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* Seção do Plano */
+    .plan-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .plan-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .plan-text {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 5px 0;
+    }
+
+    .plan-name {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .value-label {
+        font-size: 12px;
+        color: #888;
+        margin: 0 0 5px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .plan-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ff7a00;
+        margin: 0;
+    }
+
+    /* QR Code */
+    .pix-qr-section {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .qr-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 15px 0;
+    }
+
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    #pixQRCode {
+        display: block;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .pix-qr-message {
+        display: none;
+        margin: 10px 0 0;
+        font-size: 15px;
+        color: #666;
+    }
+
+    .pix-qr-message.is-visible {
+        display: block;
+    }
+
+    .pix-qr-message.is-error {
+        color: #ff4d4f;
+    }
+
+    .qr-instructions {
+        color: #666;
+        font-size: 15px;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Chave PIX */
+    .pix-key-section {
+        margin-bottom: 0;
+    }
+
+    .pix-key-label {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 10px 0;
+        text-align: center;
+    }
+
+    .pix-key-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .pix-key-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 12px;
+        background: #f8f9fa;
+        color: #333;
+        font-family: monospace;
+    }
+
+    .pix-key-input:focus {
+        outline: none;
+        border-color: #ff7a00;
+        background: white;
+    }
+
+    .pix-copy-btn {
+        background: #ff7a00;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .pix-copy-btn:hover {
+        background: #e66a00;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(245, 129, 112, 0.3);
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+        .pix-modal {
+            width: 95%;
+            margin: 20px;
+            max-width: none;
+        }
+
+        .pix-modal-body {
+            padding: 0;
+        }
+
+        .pix-modal-content {
+            padding: 20px;
+        }
+
+        .pix-banner {
+            height: 100px;
+        }
+
+        .banner-content {
+            padding: 15px 50px 15px 15px;
+        }
+
+        .banner-avatar {
+            width: 45px;
+            height: 45px;
+            border-width: 2px;
+        }
+
+        .banner-creator-name {
+            font-size: 16px;
+        }
+
+        .banner-creator-username {
+            font-size: 13px;
+        }
+
+        .banner-close-btn {
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+        }
+
+        .banner-close-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .benefits-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-item {
+            font-size: 13px;
+            padding: 8px 0;
+        }
+
+        .plan-section {
+            padding: 15px;
+        }
+
+        .plan-price {
+            font-size: 20px;
+        }
+
+        .qr-title {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .pix-key-container {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pix-copy-btn {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pix-modal {
+            width: 98%;
+            margin: 10px;
+        }
+
+        .pix-banner {
+            height: 90px;
+        }
+
+        .banner-content {
+            padding: 12px 45px 12px 12px;
+        }
+
+        .banner-creator-info {
+            gap: 10px;
+        }
+
+        .banner-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .banner-creator-name {
+            font-size: 15px;
+        }
+
+        .banner-creator-username {
+            font-size: 12px;
+        }
+
+        .banner-close-btn {
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+        }
+
+        .banner-close-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .pix-modal-body {
+            padding: 0;
+        }
+
+        .pix-modal-content {
+            padding: 15px;
+        }
+
+        .benefits-title {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-item {
+            font-size: 13px;
+            padding: 8px 0;
+        }
+
+        .plan-section {
+            padding: 12px;
+        }
+
+        .plan-price {
+            font-size: 18px;
+        }
+
+        .qr-title {
+            font-size: 14px;
+        }
+
+        .pix-key-input {
+            font-size: 11px;
+            padding: 10px 12px;
+        }
+
+        .pix-copy-btn {
+            font-size: 13px;
+            padding: 12px 15px;
+        }
     }
   </style>
 </head>
@@ -252,10 +751,10 @@
       </div>
     </div>
 
-    <!-- CTAs (href vazio p/ sua API de PIX) -->
+    <!-- CTAs -->
     <div class="cta-section fade-in">
-      <a href="" class="btn btn-primary">GARANTIR MEU VÍDEO PERSONALIZADO</a>
-      <a href="" class="btn btn-secondary">Não, sou frouxo</a>
+      <a href="javascript:void(0)" class="btn btn-primary" onclick="generatePixPayment(17.00, 'Vídeo Personalizado')">GARANTIR MEU VÍDEO PERSONALIZADO</a>
+      <a href="javascript:void(0)" class="btn btn-secondary">Não, sou frouxo</a>
     </div>
 
     <!-- Footer -->
@@ -263,6 +762,95 @@
       <p>© 2025 Todos os direitos reservados.</p>
     </div>
   </div>
+
+  <!-- Modal PIX -->
+  <div id="pixModal" class="pix-modal-overlay" style="display: none;">
+      <div class="pix-modal">
+          <div class="pix-modal-body">
+              <!-- Card Principal -->
+              <div class="pix-checkout-card">
+                  <!-- Banner do Topo -->
+                  <div class="pix-banner">
+                      <div class="banner-background" id="bannerBackground"></div>
+                      <div class="banner-content">
+                          <div class="banner-creator-info">
+                              <div class="banner-avatar">
+                                  <img src="images/perfil.jpg" alt="Foto da criadora" id="bannerCreatorImage">
+                              </div>
+                              <div class="banner-creator-details">
+                                  <h3 class="banner-creator-name" id="bannerCreatorName">Stella Beghini</h3>
+                                  <p class="banner-creator-username" id="bannerCreatorUsername">@stella_beghini</p>
+                              </div>
+                          </div>
+                          <button class="banner-close-btn" onclick="closePixModal()" aria-label="Fechar">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                          </button>
+                      </div>
+                  </div>
+
+                  <!-- Conteúdo com Padding -->
+                  <div class="pix-modal-content">
+                      <!-- Benefícios Exclusivos -->
+                      <div class="benefits-section">
+                      <h3 class="benefits-title">Benefícios Exclusivos</h3>
+                      <ul class="benefits-list">
+                          <li class="benefit-item">
+                              <span class="benefit-icon">✓</span>
+                              <span>Vídeo personalizado com seu nome</span>
+                          </li>
+                          <li class="benefit-item">
+                              <span class="benefit-icon">✓</span>
+                              <span>10 minutos de conteúdo explícito</span>
+                          </li>
+                          <li class="benefit-item">
+                              <span class="benefit-icon">✓</span>
+                              <span>Entrega sigilosa e privada</span>
+                          </li>
+                      </ul>
+                  </div>
+
+                  <!-- Informações do Plano -->
+                  <div class="plan-section">
+                      <div class="plan-info">
+                          <p class="plan-text">Plano: <span class="plan-name" id="planName">Vídeo Personalizado</span></p>
+                          <p class="value-label">Valor</p>
+                          <p class="plan-price" id="planPrice">R$ 17,00</p>
+                      </div>
+                  </div>
+
+                  <!-- QR Code PIX -->
+                  <div class="pix-qr-section">
+                      <h4 class="qr-title">Pagamento PIX</h4>
+                      <div class="qr-container">
+                          <canvas id="pixQRCode" role="img" aria-label="Código QR para pagamento PIX"></canvas>
+                          <p id="pixQRCodeMessage" class="pix-qr-message" aria-live="polite"></p>
+                      </div>
+                      <p class="qr-instructions">Escaneie o QR Code com seu app de pagamento</p>
+                  </div>
+
+                  <!-- Chave PIX -->
+                  <div class="pix-key-section">
+                      <p class="pix-key-label">Ou copie a chave PIX:</p>
+                      <div class="pix-key-container">
+                          <input type="text" id="pixCodeInput" readonly class="pix-key-input">
+                          <button onclick="copyPixCode()" class="pix-copy-btn">Copiar chave PIX</button>
+                      </div>
+                  </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Scripts necessários para PIX -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/pix-integration.js"></script>
 
   <script>
     // Timer (05:00 -> 00:00)
@@ -299,6 +887,370 @@
         el.style.transition='opacity .8s ease, transform .8s ease';
         observer.observe(el);
       });
+    });
+
+    // Função para gerar pagamento PIX
+    async function generatePixPayment(amount, planName) {
+        try {
+            // Verifica se SweetAlert2 está carregado
+            if (typeof Swal === 'undefined') {
+                console.error('SweetAlert2 não está carregado');
+                alert('Erro: Biblioteca de notificações não carregada. Recarregue a página.');
+                return;
+            }
+
+            // Mostra loading
+            Swal.fire({
+                title: 'Gerando PIX...',
+                text: 'Aguarde enquanto processamos seu pagamento',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Dados do pagamento
+            const paymentData = {
+                amount: amount,
+                products: [{
+                    name: planName,
+                    price: amount,
+                    quantity: 1
+                }],
+                metadata: {
+                    source: 'video-personalizado'
+                }
+            };
+
+            // Gera o PIX (com dados aleatórios do cliente)
+            const result = await pixIntegration.generatePixPayment(paymentData);
+
+            // Fecha o loading
+            Swal.close();
+
+            if (result.success) {
+                // Dados da criadora (pode ser personalizado conforme necessário)
+                const creatorData = {
+                    image: 'images/perfil.jpg',
+                    name: 'Stella Beghini',
+                    username: '@stella_beghini'
+                };
+
+                // Dados do plano
+                const planData = {
+                    name: planName,
+                    amount: amount
+                };
+
+                // Exibe o modal PIX customizado
+                showPixModal({
+                    pix_code: result.data.pix.code,
+                    amount: result.data.amount,
+                    id: result.data.transactionId
+                }, creatorData, planData);
+                
+                // Salva o transactionId para consultas futuras
+                localStorage.setItem('currentTransactionId', result.data.transactionId);
+                
+            } else {
+                // Mostra erro
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro ao gerar PIX',
+                    text: result.error || 'Ocorreu um erro inesperado',
+                    confirmButtonText: 'Tentar novamente'
+                });
+            }
+        } catch (error) {
+            if (typeof Swal !== 'undefined') {
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Ocorreu um erro ao processar o pagamento',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                console.error('Erro ao gerar PIX:', error);
+                alert('Erro ao processar o pagamento. Recarregue a página.');
+            }
+        }
+    }
+
+    // Funções do Modal PIX
+    function normalizeQRCodeGlobal() {
+        if (typeof QRCode === 'object' && QRCode && typeof QRCode.toCanvas === 'function' && !QRCode.__isFunctionWrapper) {
+            const qrCodeLib = QRCode;
+            const qrCodeWrapper = function() {
+                return qrCodeLib.toCanvas.apply(qrCodeLib, arguments);
+            };
+            Object.assign(qrCodeWrapper, qrCodeLib);
+            qrCodeWrapper.__isFunctionWrapper = true;
+            window.QRCode = qrCodeWrapper;
+        }
+    }
+
+    // Função para mostrar o modal PIX
+    function showPixModal(pixData, creatorData = null, planData = null) {
+        console.log('showPixModal chamada com dados:', pixData);
+        const modal = document.getElementById('pixModal');
+        let qrCanvas = document.getElementById('pixQRCode');
+        const qrMessageElement = document.getElementById('pixQRCodeMessage');
+        const pixCodeInput = document.getElementById('pixCodeInput');
+
+        // Atualiza dados da criadora se fornecidos
+        if (creatorData) {
+            // Elementos do banner
+            const bannerCreatorImage = document.getElementById('bannerCreatorImage');
+            const bannerCreatorName = document.getElementById('bannerCreatorName');
+            const bannerCreatorUsername = document.getElementById('bannerCreatorUsername');
+            const bannerBackground = document.getElementById('bannerBackground');
+            
+            // Atualiza elementos do banner
+            if (bannerCreatorImage && creatorData.avatar) {
+                bannerCreatorImage.src = creatorData.avatar;
+            } else if (bannerCreatorImage && creatorData.image) {
+                bannerCreatorImage.src = creatorData.image;
+            }
+            if (bannerCreatorName && creatorData.name) {
+                bannerCreatorName.textContent = creatorData.name;
+            }
+            if (bannerCreatorUsername && creatorData.username) {
+                bannerCreatorUsername.textContent = creatorData.username;
+            }
+            
+            // Configura imagem de fundo do banner
+            if (bannerBackground) {
+                const bannerImage = creatorData.banner || creatorData.image;
+                if (bannerImage) {
+                    bannerBackground.style.backgroundImage = `url('${bannerImage}')`;
+                }
+            }
+        }
+
+        // Atualiza dados do plano se fornecidos
+        if (planData) {
+            const planName = document.getElementById('planName');
+            const planPrice = document.getElementById('planPrice');
+            
+            if (planName && planData.name) {
+                planName.textContent = planData.name;
+            }
+            if (planPrice && planData.amount) {
+                // Formata o valor em reais (já está em reais, não centavos)
+                const priceInReais = planData.amount.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+                planPrice.textContent = priceInReais;
+            }
+        }
+
+        normalizeQRCodeGlobal();
+
+        function updateQrMessage(message, isError) {
+            if (!qrMessageElement) {
+                return;
+            }
+
+            if (message) {
+                qrMessageElement.textContent = message;
+                qrMessageElement.classList.add('is-visible');
+                if (isError) {
+                    qrMessageElement.classList.add('is-error');
+                } else {
+                    qrMessageElement.classList.remove('is-error');
+                }
+            } else {
+                qrMessageElement.textContent = '';
+                qrMessageElement.classList.remove('is-visible');
+                qrMessageElement.classList.remove('is-error');
+            }
+        }
+
+        function ensurePixCanvas() {
+            if (!qrCanvas) {
+                qrCanvas = document.getElementById('pixQRCode');
+            }
+
+            if (!qrCanvas) {
+                console.error('Elemento do canvas do QR Code não encontrado na DOM.');
+                return null;
+            }
+
+            if (qrCanvas.tagName.toLowerCase() !== 'canvas') {
+                const replacement = document.createElement('canvas');
+                replacement.id = 'pixQRCode';
+
+                if (qrCanvas.parentNode) {
+                    qrCanvas.parentNode.replaceChild(replacement, qrCanvas);
+                }
+
+                qrCanvas = replacement;
+            } else if (qrCanvas.parentNode) {
+                const replacement = qrCanvas.cloneNode(false);
+                replacement.id = 'pixQRCode';
+                qrCanvas.parentNode.replaceChild(replacement, qrCanvas);
+                qrCanvas = replacement;
+            }
+
+            qrCanvas.setAttribute('role', 'img');
+            qrCanvas.setAttribute('aria-label', 'Código QR para pagamento PIX');
+            qrCanvas.style.display = '';
+            return qrCanvas;
+        }
+
+        // Debug: Verifica se a biblioteca está carregada
+        console.log('Verificando biblioteca QRCode...');
+        console.log('typeof QRCode:', typeof QRCode);
+        console.log('pixData:', pixData);
+        console.log('pixData.pix_code:', pixData.pix_code);
+
+        // Gera QR Code se a biblioteca estiver disponível
+        if (typeof QRCode !== 'undefined' && pixData.pix_code) {
+            console.log('✅ Condições atendidas, gerando QR Code...');
+            const canvasElement = ensurePixCanvas();
+
+            if (canvasElement) {
+                updateQrMessage('', false);
+
+                QRCode.toCanvas(canvasElement, pixData.pix_code, {
+                    width: 250,
+                    height: 250,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    },
+                    margin: 2,
+                    errorCorrectionLevel: 'M'
+                }, function (error) {
+                    if (error) {
+                        console.error('Erro ao gerar QR Code:', error);
+                        canvasElement.style.display = 'none';
+                        updateQrMessage('Erro ao gerar QR Code', true);
+                    } else {
+                        console.log('✅ QR Code gerado com sucesso!');
+                        canvasElement.style.display = '';
+                        updateQrMessage('', false);
+                    }
+                });
+            } else {
+                updateQrMessage('QR Code não disponível', true);
+            }
+        } else {
+            // Fallback se QRCode não estiver disponível
+            if (typeof QRCode === 'undefined') {
+                console.error('❌ Biblioteca QRCode não está carregada!');
+            }
+            if (!pixData.pix_code) {
+                console.error('❌ Código PIX não fornecido!');
+            }
+            console.warn('Biblioteca QRCode não carregada ou código PIX não fornecido');
+            if (qrCanvas) {
+                qrCanvas.style.display = 'none';
+            }
+            updateQrMessage('QR Code não disponível', false);
+        }
+
+        // Define o código PIX no input
+        if (pixCodeInput && pixData.pix_code) {
+            pixCodeInput.value = pixData.pix_code;
+        }
+
+        // Mostra o modal
+        modal.style.display = 'flex';
+
+        // Inicia verificação de status se disponível
+        if (pixData.id) {
+            startPaymentStatusCheck(pixData.id);
+        }
+    }
+
+    // Função para fechar o modal PIX
+    function closePixModal() {
+        const modal = document.getElementById('pixModal');
+        modal.style.display = 'none';
+        
+        // Para verificação de status
+        if (window.paymentStatusInterval) {
+            clearInterval(window.paymentStatusInterval);
+            window.paymentStatusInterval = null;
+        }
+    }
+
+    // Função para copiar código PIX
+    function copyPixCode() {
+        const pixCodeInput = document.getElementById('pixCodeInput');
+        const button = event.target;
+        
+        if (pixCodeInput && pixCodeInput.value) {
+            // Seleciona o texto
+            pixCodeInput.select();
+            pixCodeInput.setSelectionRange(0, 99999); // Para mobile
+            
+            // Copia para clipboard
+            document.execCommand('copy');
+            
+            // Feedback visual
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Copiado!';
+            button.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'linear-gradient(45deg, #F58170, #F9AF77)';
+            }, 2000);
+        }
+    }
+
+    // Função para verificar status do pagamento
+    function startPaymentStatusCheck(transactionId) {
+        if (window.paymentStatusInterval) {
+            clearInterval(window.paymentStatusInterval);
+        }
+
+        window.paymentStatusInterval = setInterval(async () => {
+            try {
+                const status = await pixIntegration.checkTransactionStatus(transactionId);
+                if (status && status.status === 'COMPLETED') {
+                    clearInterval(window.paymentStatusInterval);
+                    window.paymentStatusInterval = null;
+                    alert('Pagamento confirmado! Redirecionando...');
+                    window.location.href = '/obrigado.html';
+                } else if (status && (status.status === 'CANCELED' || status.status === 'FAILED')) {
+                    clearInterval(window.paymentStatusInterval);
+                    window.paymentStatusInterval = null;
+                    alert('Pagamento não foi processado.');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar status:', error);
+            }
+        }, 5000); // Verifica a cada 5 segundos
+    }
+
+    // Fecha modal ao clicar no overlay
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('pixModal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePixModal();
+                }
+            });
+        }
+
+        // Fecha modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePixModal();
+            }
+        });
+
+        // Normaliza o objeto global do QR Code assim que o DOM estiver pronto
+        if (typeof QRCode !== 'undefined') {
+            normalizeQRCodeGlobal();
+        }
     });
   </script>
 </body>
