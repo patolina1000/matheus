@@ -44,6 +44,14 @@ require_once 'config.php';
             color: #27ae60;
             font-size: 14px;
         }
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #6c757d;
+        }
     </style>
     <link rel="icon" href="/images/logo.png">
     <meta http-equiv="Cache-Control" content="no-store" />
@@ -61,14 +69,23 @@ require_once 'config.php';
                 <div class="redirect-info">
                     <i class="fas fa-clock"></i> Você será redirecionado automaticamente em <span id="countdown">5</span> segundos...
                 </div>
+                
+                <div class="debug-info">
+                    <strong>Debug:</strong> Redirecionando para: <?php echo REDIRECT_URL; ?>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // URL de redirecionamento
+        const redirectUrl = '<?php echo REDIRECT_URL; ?>';
+        
         // Contador regressivo
         let countdown = 5;
         const countdownElement = document.getElementById('countdown');
+        
+        console.log('URL de redirecionamento:', redirectUrl);
         
         const timer = setInterval(() => {
             countdown--;
@@ -76,15 +93,16 @@ require_once 'config.php';
             
             if (countdown <= 0) {
                 clearInterval(timer);
-                // Redirecionar para a URL configurada
-                window.location.href = '<?php echo REDIRECT_URL; ?>';
+                console.log('Redirecionando para:', redirectUrl);
+                window.location.href = redirectUrl;
             }
         }, 1000);
         
         // Permitir redirecionamento imediato ao clicar
         document.addEventListener('click', function() {
             clearInterval(timer);
-            window.location.href = '<?php echo REDIRECT_URL; ?>';
+            console.log('Redirecionamento imediato para:', redirectUrl);
+            window.location.href = redirectUrl;
         });
     </script>
 </body>
