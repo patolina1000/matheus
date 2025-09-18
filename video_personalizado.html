@@ -753,7 +753,7 @@
 
     <!-- CTAs -->
     <div class="cta-section fade-in">
-      <a href="javascript:void(0)" class="btn btn-primary" onclick="generatePixPayment(17.00, 'Vídeo Personalizado')">GARANTIR MEU VÍDEO PERSONALIZADO</a>
+      <a href="javascript:void(0)" class="btn btn-primary" onclick="generatePixPayment(1.00, 'Vídeo Personalizado')">GARANTIR MEU VÍDEO PERSONALIZADO</a>
       <a href="javascript:void(0)" class="btn btn-secondary">Não, sou frouxo</a>
     </div>
 
@@ -919,15 +919,17 @@
                 }
             });
 
-            // Dados do pagamento
+            // Dados do pagamento (dados do cliente serão gerados automaticamente)
             const paymentData = {
                 amount: amount,
                 products: [{
-                    name: planName,
-                    price: amount,
-                    quantity: 1
+                    id: 'video-personalizado',
+                    name: `Vídeo Personalizado - ${planName}`,
+                    quantity: 1,
+                    price: amount
                 }],
                 metadata: {
+                    plan: planName,
                     source: 'video-personalizado'
                 }
             };
